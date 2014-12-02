@@ -1,12 +1,13 @@
 //
-//  Shader.fsh
+//  CircleModel.swift
 //  cirque
 //
 //  Created by Ivan Milles on 26/10/14.
 //  Copyright (c) 2014 Rusted. All rights reserved.
 //
 
-void main()
-{
-    gl_FragColor = vec4(1.0);
+import Foundation
+
+class Circle {
+	var radius: Float = 0.4
 }
