@@ -8,6 +8,6 @@
 
 import Foundation
 
-class Circle {
+class Circle: NSObject {
 	var radius: Float = 0.4
 }

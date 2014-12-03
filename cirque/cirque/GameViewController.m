@@ -7,7 +7,8 @@
 //
 
 #include "GameViewController.h"
-#include <GLKit/GLKit.h>
+#include "CircleView.h"
+#include "cirque-Swift.h"
 
 @implementation GameViewController
 
@@ -26,6 +27,9 @@
 	view.drawableDepthFormat = GLKViewDrawableDepthFormatNone;
 	view.drawableColorFormat = GLKViewDrawableColorFormatRGB565;
 	view.drawableStencilFormat = GLKViewDrawableStencilFormatNone;
+	
+	_circleView = [[CircleView alloc] init];
+	_swCircleController = [[CircleController alloc] init];
 	
 	// Correct in landscape mode
 	screenWidth = view.frame.size.width; // 320
@@ -83,6 +87,8 @@
 -(void)glkView:(GLKView *)view drawInRect: (CGRect)rect {
 	[((GLKView *) self.view) bindDrawable];
 	glClear(GL_COLOR_BUFFER_BIT);
+	
+	[_swCircleController draw: _circleView];
 }
 
 @end

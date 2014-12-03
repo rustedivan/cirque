@@ -9,6 +9,8 @@
 #import <UIKit/UIKit.h>
 #import <GLKit/GLKit.h>
 
+@class CircleView;
+@class CircleController;
 @interface GameViewController : GLKViewController
 {
 	int screenWidth;
@@ -19,6 +21,8 @@
 
 @property (strong, nonatomic) EAGLContext *context;
 @property (strong, nonatomic) GLKBaseEffect *effect;
+@property (strong, nonatomic) CircleView *circleView;
+@property (strong, nonatomic) CircleController *swCircleController;
 
 - (void)setupGL;
 - (void)tearDownGL;

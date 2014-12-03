@@ -17,6 +17,7 @@
 		14D605A119FCEB530096E228 /* CircleModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 14D605A019FCEB530096E228 /* CircleModel.swift */; };
 		14D605A319FCEC900096E228 /* CircleController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 14D605A219FCEC900096E228 /* CircleController.swift */; };
 		14E181991A2E4E3B007AE3E5 /* GameViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 14E181981A2E4E3B007AE3E5 /* GameViewController.m */; };
+		14E181A11A2F9FE4007AE3E5 /* CircleView.m in Sources */ = {isa = PBXBuildFile; fileRef = 14E181A01A2F9FE4007AE3E5 /* CircleView.m */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -46,6 +47,8 @@
 		14E181961A2E4E3A007AE3E5 /* cirque-Bridging-Header.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "cirque-Bridging-Header.h"; sourceTree = "<group>"; };
 		14E181971A2E4E3B007AE3E5 /* GameViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GameViewController.h; sourceTree = "<group>"; };
 		14E181981A2E4E3B007AE3E5 /* GameViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = GameViewController.m; sourceTree = "<group>"; };
+		14E1819F1A2F9FE4007AE3E5 /* CircleView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CircleView.h; sourceTree = "<group>"; };
+		14E181A01A2F9FE4007AE3E5 /* CircleView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CircleView.m; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -92,8 +95,7 @@
 				14D6057C19FCE63C0096E228 /* AppDelegate.swift */,
 				14D605A219FCEC900096E228 /* CircleController.swift */,
 				14D605A019FCEB530096E228 /* CircleModel.swift */,
-				14E181971A2E4E3B007AE3E5 /* GameViewController.h */,
-				14E181981A2E4E3B007AE3E5 /* GameViewController.m */,
+				14E181A21A2FA31D007AE3E5 /* ObjC legacy */,
 				14D6058719FCE63C0096E228 /* Images.xcassets */,
 				14D6058419FCE63C0096E228 /* Main.storyboard */,
 				14D6058919FCE63C0096E228 /* LaunchScreen.xib */,
@@ -126,6 +128,17 @@
 				14D6059519FCE63C0096E228 /* Info.plist */,
 			);
 			name = "Supporting Files";
+			sourceTree = "<group>";
+		};
+		14E181A21A2FA31D007AE3E5 /* ObjC legacy */ = {
+			isa = PBXGroup;
+			children = (
+				14E181971A2E4E3B007AE3E5 /* GameViewController.h */,
+				14E181981A2E4E3B007AE3E5 /* GameViewController.m */,
+				14E1819F1A2F9FE4007AE3E5 /* CircleView.h */,
+				14E181A01A2F9FE4007AE3E5 /* CircleView.m */,
+			);
+			name = "ObjC legacy";
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -231,6 +244,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				14E181991A2E4E3B007AE3E5 /* GameViewController.m in Sources */,
+				14E181A11A2F9FE4007AE3E5 /* CircleView.m in Sources */,
 				14D605A119FCEB530096E228 /* CircleModel.swift in Sources */,
 				14D6057D19FCE63C0096E228 /* AppDelegate.swift in Sources */,
 				14D605A319FCEC900096E228 /* CircleController.swift in Sources */,
@@ -294,6 +308,7 @@
 				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
 				COPY_PHASE_STRIP = NO;
+				DEFINES_MODULE = YES;
 				ENABLE_STRICT_OBJC_MSGSEND = YES;
 				GCC_C_LANGUAGE_STANDARD = gnu99;
 				GCC_DYNAMIC_NO_PIC = NO;
@@ -337,6 +352,7 @@
 				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
 				COPY_PHASE_STRIP = YES;
+				DEFINES_MODULE = YES;
 				ENABLE_NS_ASSERTIONS = NO;
 				ENABLE_STRICT_OBJC_MSGSEND = YES;
 				GCC_C_LANGUAGE_STANDARD = gnu99;

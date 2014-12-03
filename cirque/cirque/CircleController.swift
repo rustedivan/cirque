@@ -8,6 +8,10 @@
 
 import Foundation
 
-class CircleController {
+class CircleController: NSObject {
 	var circle: Circle = Circle()
+	
+	func draw(view: CircleView) {
+		view.render(circle);
+	}
 }
