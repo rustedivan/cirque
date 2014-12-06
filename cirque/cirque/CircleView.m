@@ -58,7 +58,7 @@
 	glEnableVertexAttribArray([_circleShader getAttribute:@"position"]);
 	glVertexAttribPointer([_circleShader getAttribute:@"position"], 2, GL_FLOAT, GL_FALSE, 0, 0);
 
-	glDrawElements(GL_LINE_LOOP, nV, GL_UNSIGNED_INT, circleIndices);
+	glDrawElements(GL_TRIANGLE_STRIP, nV, GL_UNSIGNED_INT, circleIndices);
 	
 	glBindVertexArrayOES(0);
 }

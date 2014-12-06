@@ -15,15 +15,23 @@ public class Circle: NSObject {
 	public var indices: Array<UInt> = Array()
 	
 	override init() {
-		let circleFidelity: UInt = 360
-		let radius: Float = 100.0
+		let circleFidelity: UInt = 90
+		let radius: Float = 150.0
+		let thickness: Float = 10.0
 		let sector: Float = Float(2.0 * M_PI) / Float(circleFidelity)
 		
-		for (var i: UInt = 0; i < circleFidelity; i++) {
+		for (var i: UInt = 0; i < circleFidelity + 1; i++) {
 			let a = Float(i) * sector
-			vertices.append(cos(a) * radius)
-			vertices.append(sin(a) * radius)
-			indices.append(UInt(i))
+			let innerRadius = radius - thickness/2.0
+			let outerRadius = radius + thickness/2.0
+			
+			vertices.append(cos(a) * innerRadius)
+			vertices.append(sin(a) * innerRadius)
+			vertices.append(cos(a) * outerRadius)
+			vertices.append(sin(a) * outerRadius)
+			
+			indices.append(UInt(2 * i + 0))
+			indices.append(UInt(2 * i + 1))
 		}
 	}
 }
