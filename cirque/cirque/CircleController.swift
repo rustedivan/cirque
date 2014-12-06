@@ -10,8 +10,14 @@ import Foundation
 
 class CircleController: NSObject {
 	var circle: Circle = Circle()
+	var frames = 0
 	
 	func draw(view: CircleView) {
 		view.render(circle);
+		frames++
+		if frames > 30 {
+			circle = Circle()
+			frames = 0
+		}
 	}
 }

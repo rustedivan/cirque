@@ -43,10 +43,11 @@
 	int nV = (int) model.indices.count;
 	int circleIndices[nV];
 	float coords[nV * 2];
+	NSArray *vertices = model.vertices;
 	for (int i = 0; i < nV; i++) {
 		circleIndices[i] = i;
-		float x = ((NSNumber *)model.vertices[2 * i + 0]).floatValue;
-		float y = ((NSNumber *)model.vertices[2 * i + 1]).floatValue;
+		float x = ((NSNumber *)vertices[2 * i + 0]).floatValue;
+		float y = ((NSNumber *)vertices[2 * i + 1]).floatValue;
 		coords[2 * i + 0] = x;
 		coords[2 * i + 1] = y;
 	}
