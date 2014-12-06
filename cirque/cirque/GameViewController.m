@@ -1,11 +1,3 @@
-//
-//  GameViewController.m
-//  cirque
-//
-//  Created by Ivan Milles on 02/12/14.
-//  Copyright (c) 2014 Rusted. All rights reserved.
-//
-
 #include "GameViewController.h"
 #include "CircleView.h"
 #include "cirque-Swift.h"
@@ -28,15 +20,40 @@
 	view.drawableColorFormat = GLKViewDrawableColorFormatRGB565;
 	view.drawableStencilFormat = GLKViewDrawableStencilFormatNone;
 	
-	_circleView = [[CircleView alloc] init];
-	_swCircleController = [[CircleController alloc] init];
-	
-	// Correct in landscape mode
 	screenWidth = view.frame.size.width; // 320
 	screenHeight = view.frame.size.height; // 480
 	
 	[self setupGL];
+	
+	_circleView = [[CircleView alloc] init];
+	_circleView.viewSize = view.frame.size;
+	_swCircleController = [[CircleController alloc] init];
 }
+
+- (void)tearDownGL {
+	[EAGLContext setCurrentContext: self.context];
+}
+
+-(void) touchesMoved:(NSSet *)touches withEvent:(UIEvent *)event {
+	[touches enumerateObjectsUsingBlock: ^(id obj, BOOL *stop) {
+		UITouch *touch = obj;
+		CGPoint touchPoint = [touch locationInView:self.view];
+		
+		CGPoint point;
+		point.x = touchPoint.x;
+		point.y = screenHeight - touchPoint.y;
+		
+		oldPos = point;
+	}];
+}
+
+-(void)glkView:(GLKView *)view drawInRect: (CGRect)rect {
+	[((GLKView *) self.view) bindDrawable];
+	glClear(GL_COLOR_BUFFER_BIT);
+	
+	[_swCircleController draw: _circleView];
+}
+
 
 - (void)viewDidUnload {
 	[super viewDidUnload];
@@ -64,31 +81,7 @@
 
 - (void)setupGL {
 	[EAGLContext setCurrentContext: self.context];
-	glClearColor(1, 1, 0, 1);
-}
-
-- (void)tearDownGL {
-	[EAGLContext setCurrentContext: self.context];
-}
-
--(void) touchesMoved:(NSSet *)touches withEvent:(UIEvent *)event {
-	[touches enumerateObjectsUsingBlock: ^(id obj, BOOL *stop) {
-		UITouch *touch = obj;
-		CGPoint touchPoint = [touch locationInView:self.view];
-		 
-		CGPoint point;
-		point.x = touchPoint.x;
-		point.y = screenHeight - touchPoint.y;
-		 
-		oldPos = point;
-	}];
-}
-
--(void)glkView:(GLKView *)view drawInRect: (CGRect)rect {
-	[((GLKView *) self.view) bindDrawable];
-	glClear(GL_COLOR_BUFFER_BIT);
-	
-	[_swCircleController draw: _circleView];
+	glClearColor(1, 1, 1, 1);
 }
 
 @end

@@ -7,8 +7,12 @@
 //
 
 #import <Foundation/Foundation.h>
+#import <CoreGraphics/CGGeometry.h>
 
 @class Circle;
+@class ES2Program;
 @interface CircleView : NSObject
+@property (assign) CGSize viewSize;
+
 -(void) render: (Circle *) model;
 @end
