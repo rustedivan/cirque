@@ -14,8 +14,11 @@ class CircleController: NSObject {
 	
 	func draw(view: CircleView) {
 		view.render(circle);
+
 		frames++
-		if frames > 30 {
+		if frames <= 90 {
+			circle.stepCircle()
+		} else if frames > 120 {
 			circle = Circle()
 			frames = 0
 		}

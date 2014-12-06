@@ -36,7 +36,7 @@
 	[_circleShader use];
 	
 	GLKMatrix4 mvpMatrix = GLKMatrix4MakeOrtho(0, _viewSize.width, 0, _viewSize.height,  10, -10);
-	mvpMatrix = GLKMatrix4Translate(mvpMatrix, 150, 150, 0);
+	mvpMatrix = GLKMatrix4Translate(mvpMatrix, _viewSize.width/2, _viewSize.height/2, 0);
 	[_circleShader setUniform: @"modelViewProjectionMatrix" matrixValue: mvpMatrix];
 	
 	// $ Crazy to do this per-frame. Memory-map a buffer?
