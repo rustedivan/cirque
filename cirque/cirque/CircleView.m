@@ -40,8 +40,11 @@
 	[_circleShader setUniform: @"modelViewProjectionMatrix" matrixValue: mvpMatrix];
 	
 	// $ Crazy to do this per-frame. Memory-map a buffer?
-	NSArray* nsSegments = model.segments;
-	int nSegments = (int) nsSegments.count;
+	Trail* trail = model.segments;
+	int nSegments = (int) trail.nPoints;
+	
+	if (nSegments < 2) return;
+	
 	int nVertices = nSegments * 2;
 	int nCoords = nVertices * 2;
 	int circleIndices[nVertices];
@@ -50,18 +53,26 @@
 	int vertexIndex = 0;
 	int coordIndex = 0;
 	float thickness = 5.0f;
-	for (Segment *s in nsSegments) {
-		float a = s.angle;
-		float ir = s.radius - (thickness / 2.0f);
-		float or = s.radius + (thickness / 2.0f);
+
+	NSArray* angles = trail.segmentAngles;
+	
+	for (int i = 0; i < nSegments; i++) {
+		float a = ((NSNumber *)angles[i]).floatValue;
+		
+		// Given center point pC and angle, calculate left and right points pL and pR
+		CGVector span = CGVectorMake(sin(a) * thickness / 2.0f, -cos(a) * thickness / 2.0f);
+		CGPoint pC = [trail point:i];
+		CGPoint pL = CGPointMake(pC.x + span.dx, pC.y + span.dy);
+		CGPoint pR = CGPointMake(pC.x - span.dx, pC.y - span.dy);
+		
 		// Add the two vertices
 		circleIndices[vertexIndex] = vertexIndex;		vertexIndex++;
-		coords[coordIndex] = cos(a) * ir;						coordIndex++;
-		coords[coordIndex] = sin(a) * ir;						coordIndex++;
-		
+		coords[coordIndex] = pL.x;	coordIndex++;
+		coords[coordIndex] = pL.y;	coordIndex++;
+
 		circleIndices[vertexIndex] = vertexIndex;		vertexIndex++;
-		coords[coordIndex] = cos(a) * or;						coordIndex++;
-		coords[coordIndex] = sin(a) * or;						coordIndex++;
+		coords[coordIndex] = pR.x;	coordIndex++;
+		coords[coordIndex] = pR.y;	coordIndex++;
 	}
 	
 	glBindVertexArrayOES(_vertexArray);

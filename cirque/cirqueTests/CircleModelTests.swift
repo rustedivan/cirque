@@ -20,17 +20,5 @@ class CircleModelTests: XCTestCase {
 	}
 
 	func testAddSegment() {
-		let circle = Circle()
-		
-		XCTAssertEqual(circle.segments.count, 0, "Circle didn't start out empty")
-		
-		circle.addSegment(0.0, radius: 100.0)
-		circle.addSegment(0.707, radius: 120.0)
-
-		XCTAssertEqual(circle.segments.count, 2, "Circle didn't add segments")
-		XCTAssertEqual(circle.segments[0].radius, Float(100.0), "Circle didn't record segment properly")
-		XCTAssertEqual(circle.segments[0].angle, Float(0.0), "Circle didn't record segment properly")
-		XCTAssertEqual(circle.segments[1].radius, Float(120.0), "Circle didn't record segment properly")
-		XCTAssertEqual(circle.segments[1].angle, Float(0.707), "Circle didn't record segment properly")
 	}
 }

@@ -14,13 +14,14 @@ class CircleController: NSObject {
 	
 	func draw(view: CircleView) {
 		view.render(circle);
-
+		
+		let r = 10.0 + Float(frames) / 100.0
+		let a = 0.01 * Float(frames)
+		let x = CGFloat(cos(a) * r)
+		let y = CGFloat(sin(a) * r)
+		let p = CGPoint(x: x, y: y)
+		circle.addSegment(CGPoint(x: x, y: y))
+		
 		frames++
-		if frames <= 90 {
-			circle.stepCircle()
-		} else if frames > 120 {
-			circle = Circle()
-			frames = 0
-		}
 	}
 }
