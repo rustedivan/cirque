@@ -7,6 +7,8 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		1402B4C51A34560400E335B3 /* CircleModelTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1402B4C41A34560400E335B3 /* CircleModelTests.swift */; };
+		1402B4C61A34561300E335B3 /* CircleModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 14D605A019FCEB530096E228 /* CircleModel.swift */; };
 		1469001F1A33411900B11A2D /* OpenGLES.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1469001E1A33411900B11A2D /* OpenGLES.framework */; };
 		146900221A33439500B11A2D /* ES2Program.m in Sources */ = {isa = PBXBuildFile; fileRef = 146900211A33439500B11A2D /* ES2Program.m */; };
 		14D6057D19FCE63C0096E228 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 14D6057C19FCE63C0096E228 /* AppDelegate.swift */; };
@@ -33,6 +35,7 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
+		1402B4C41A34560400E335B3 /* CircleModelTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CircleModelTests.swift; sourceTree = "<group>"; };
 		1469001E1A33411900B11A2D /* OpenGLES.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = OpenGLES.framework; path = System/Library/Frameworks/OpenGLES.framework; sourceTree = SDKROOT; };
 		146900201A33439500B11A2D /* ES2Program.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ES2Program.h; sourceTree = "<group>"; };
 		146900211A33439500B11A2D /* ES2Program.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ES2Program.m; sourceTree = "<group>"; };
@@ -132,6 +135,7 @@
 			isa = PBXGroup;
 			children = (
 				14D6059619FCE63C0096E228 /* cirqueTests.swift */,
+				1402B4C41A34560400E335B3 /* CircleModelTests.swift */,
 				14D6059419FCE63C0096E228 /* Supporting Files */,
 			);
 			path = cirqueTests;
@@ -273,7 +277,9 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				1402B4C61A34561300E335B3 /* CircleModel.swift in Sources */,
 				14D6059719FCE63C0096E228 /* cirqueTests.swift in Sources */,
+				1402B4C51A34560400E335B3 /* CircleModelTests.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

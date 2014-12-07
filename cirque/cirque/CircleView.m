@@ -40,26 +40,38 @@
 	[_circleShader setUniform: @"modelViewProjectionMatrix" matrixValue: mvpMatrix];
 	
 	// $ Crazy to do this per-frame. Memory-map a buffer?
-	int nV = (int) model.indices.count;
-	int circleIndices[nV];
-	float coords[nV * 2];
-	NSArray *vertices = model.vertices;
-	for (int i = 0; i < nV; i++) {
-		circleIndices[i] = i;
-		float x = ((NSNumber *)vertices[2 * i + 0]).floatValue;
-		float y = ((NSNumber *)vertices[2 * i + 1]).floatValue;
-		coords[2 * i + 0] = x;
-		coords[2 * i + 1] = y;
+	NSArray* nsSegments = model.segments;
+	int nSegments = (int) nsSegments.count;
+	int nVertices = nSegments * 2;
+	int nCoords = nVertices * 2;
+	int circleIndices[nVertices];
+	float coords[nCoords];
+
+	int vertexIndex = 0;
+	int coordIndex = 0;
+	float thickness = 5.0f;
+	for (Segment *s in nsSegments) {
+		float a = s.angle;
+		float ir = s.radius - (thickness / 2.0f);
+		float or = s.radius + (thickness / 2.0f);
+		// Add the two vertices
+		circleIndices[vertexIndex] = vertexIndex;		vertexIndex++;
+		coords[coordIndex] = cos(a) * ir;						coordIndex++;
+		coords[coordIndex] = sin(a) * ir;						coordIndex++;
+		
+		circleIndices[vertexIndex] = vertexIndex;		vertexIndex++;
+		coords[coordIndex] = cos(a) * or;						coordIndex++;
+		coords[coordIndex] = sin(a) * or;						coordIndex++;
 	}
 	
 	glBindVertexArrayOES(_vertexArray);
 	glBindBuffer(GL_ARRAY_BUFFER, _vertexBuffer);
-	glBufferData(GL_ARRAY_BUFFER, 2 * nV * sizeof(float), coords, GL_DYNAMIC_DRAW);
+	glBufferData(GL_ARRAY_BUFFER, nCoords * sizeof(float), coords, GL_DYNAMIC_DRAW);
 	
 	glEnableVertexAttribArray([_circleShader getAttribute:@"position"]);
 	glVertexAttribPointer([_circleShader getAttribute:@"position"], 2, GL_FLOAT, GL_FALSE, 0, 0);
 
-	glDrawElements(GL_TRIANGLE_STRIP, nV, GL_UNSIGNED_INT, circleIndices);
+	glDrawElements(GL_TRIANGLE_STRIP, nVertices, GL_UNSIGNED_INT, circleIndices);
 	
 	glBindVertexArrayOES(0);
 }

@@ -9,10 +9,26 @@
 import Foundation
 import Darwin
 
+// $ This is only necessary because the bridging header
+//   doesn't take Array<(Float, Float)>. When the renderer
+//	 is in Swift, just chuck all of this stuff... [1]
+@objc
+class Segment {
+	var angle: Float = 0.0
+	var radius: Float = 0.0
+	
+	convenience init (a: Float, r: Float) {
+		self.init()
+		angle = a
+		radius = r
+	}
+}
+
 @objc
 public class Circle: NSObject {
-	public var vertices: Array<Float> = Array()
-	public var indices: Array<UInt> = Array()
+	var vertices: Array<Float> = Array()
+	var indices: Array<UInt> = Array()
+	var segments: Array<Segment> = Array()	// $ [1] ...and replace with <(Float, Float)>
 	var p: Float
 	
 	override init() {
@@ -20,27 +36,19 @@ public class Circle: NSObject {
 		super.init()
 	}
 	
+	func addSegment(angle: Float, radius: Float) {
+		segments.append(Segment(a: angle, r: radius))
+	}
+	
 	func stepCircle() {
 		let circleFidelity: UInt = 90
 		let radius: Float = 120.0
-		let thickness: Float = 10.0
 		let sector: Float = Float(2.0 * M_PI) / Float(circleFidelity)
 		
-//		for (var i: UInt = 0; i < circleFidelity + 1; i++) {
-		let i = indices.count / 2
+		let i = segments.count
 		let a = Float(i) * sector
 		let r = radius * messUpRadiusFactor(a, param: p)
-		let innerRadius = r - thickness/2.0
-		let outerRadius = r + thickness/2.0
-		
-		vertices.append(cos(a) * innerRadius)
-		vertices.append(sin(a) * innerRadius)
-		vertices.append(cos(a) * outerRadius)
-		vertices.append(sin(a) * outerRadius)
-		
-		indices.append(UInt(2 * i + 0))
-		indices.append(UInt(2 * i + 1))
-//		}
+		addSegment(a, radius: r)
 	}
 	
 	private func messUpRadiusFactor(angle: Float, param: Float) -> Float {
@@ -56,4 +64,6 @@ public class Circle: NSObject {
 		let t4 = (t * t * t - t * t) * m1
 		return Float(t1 + t2 + t3 + t4)
 	}
+	
+	
 }
