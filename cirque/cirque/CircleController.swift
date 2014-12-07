@@ -14,14 +14,21 @@ class CircleController: NSObject {
 	
 	func draw(view: CircleView) {
 		view.render(circle);
+	}
+	
+	func beginNewCircle(p: CGPoint) {
+		circle.begin()
+		circle.addSegment(p)
+	}
+	
+	func addSegment(p: CGPoint) {
+		circle.addSegment(p)
+	}
+
+	func endCircle(p: CGPoint) {
+		circle.addSegment(p)
+		circle.end()
 		
-		let r = 10.0 + Float(frames * frames) / 1000.0
-		let a = 0.1 * Float(frames)
-		let x = CGFloat(cos(a) * r)
-		let y = CGFloat(sin(a) * r)
-		let p = CGPoint(x: x, y: y)
-		circle.addSegment(CGPoint(x: x, y: y))
-		
-		frames++
+		println(circle.segments.points)
 	}
 }

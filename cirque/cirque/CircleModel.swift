@@ -13,7 +13,15 @@ import CoreGraphics.CGGeometry
 public class Circle: NSObject {
 	var segments = Trail()
 	
+	func begin() {
+		println("Create new circle")
+	}
+	
 	func addSegment(p: CGPoint) {
 		segments.addPoint(p)
+	}
+	
+	func end() {
+		println("Ended circle")
 	}
 }

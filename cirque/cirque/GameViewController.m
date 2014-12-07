@@ -34,6 +34,19 @@
 	[EAGLContext setCurrentContext: self.context];
 }
 
+-(void) touchesBegan:(NSSet *)touches withEvent:(UIEvent *)event {
+	[touches enumerateObjectsUsingBlock: ^(id obj, BOOL *stop) {
+		UITouch *touch = obj;
+		CGPoint touchPoint = [touch locationInView:self.view];
+		
+		CGPoint point;
+		point.x = touchPoint.x;
+		point.y = screenHeight - touchPoint.y;
+		
+		[_swCircleController beginNewCircle: point];
+	}];
+}
+
 -(void) touchesMoved:(NSSet *)touches withEvent:(UIEvent *)event {
 	[touches enumerateObjectsUsingBlock: ^(id obj, BOOL *stop) {
 		UITouch *touch = obj;
@@ -43,7 +56,22 @@
 		point.x = touchPoint.x;
 		point.y = screenHeight - touchPoint.y;
 		
+		[_swCircleController addSegment: point];
+		
 		oldPos = point;
+	}];
+}
+
+-(void) touchesEnded:(NSSet *)touches withEvent:(UIEvent *)event {
+	[touches enumerateObjectsUsingBlock: ^(id obj, BOOL *stop) {
+		UITouch *touch = obj;
+		CGPoint touchPoint = [touch locationInView:self.view];
+		
+		CGPoint point;
+		point.x = touchPoint.x;
+		point.y = screenHeight - touchPoint.y;
+		
+		[_swCircleController endCircle: point];
 	}];
 }
 
