@@ -54,7 +54,7 @@
 	int coordIndex = 0;
 	float thickness = 5.0f;
 
-	NSArray* angles = trail.segmentAngles;
+	NSArray* angles = trail.angles;
 	
 	for (int i = 0; i < nSegments; i++) {
 		float a = ((NSNumber *)angles[i]).floatValue;

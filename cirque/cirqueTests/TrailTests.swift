@@ -23,9 +23,9 @@ class TrailTests: XCTestCase {
 
 	func testTrailWithOutSegmentHasNoAngles() {
 		var t = Trail()
-		XCTAssertEqual(t.segmentAngles().count, 0, "Degenerate trail should have no angles")
+		XCTAssertEqual(t.angles.count, 0, "Degenerate trail should have no angles")
 		t.addPoint(CGPoint(x: 0.0, y: 0.0))
-		XCTAssertEqual(t.segmentAngles().count, 0, "Degenerate trail should have no angles")
+		XCTAssertEqual(t.angles.count, 0, "Degenerate trail should have no angles")
 	}
 
 	func testTrailGeneratesAnglesForAllSegments() {
@@ -33,10 +33,10 @@ class TrailTests: XCTestCase {
 		
 		t.addPoint(CGPoint(x: 0.0, y: 0.0))
 		t.addPoint(CGPoint(x: 100.0, y: 0.0))
-		XCTAssertEqual(t.segmentAngles().count, 2, "Trail should have one angle per point")
+		XCTAssertEqual(t.angles.count, 2, "Trail should have one angle per point")
 		
 		t.addPoint(CGPoint(x: 100.0, y: 0.0))
-		XCTAssertEqual(t.segmentAngles().count, 3, "Trail should have one angle per point")
+		XCTAssertEqual(t.angles.count, 3, "Trail should have one angle per point")
 	}
 
 	func testTrailShouldGenerateIntermediateAngles() {
@@ -45,7 +45,7 @@ class TrailTests: XCTestCase {
 		t.addPoint(CGPoint(x: 0.0, y: 0.0))
 		t.addPoint(CGPoint(x: 100.0, y: 0.0))
 		t.addPoint(CGPoint(x: 100.0, y: 100.0))
-		let angles = t.segmentAngles()
+		let angles = t.angles
 		XCTAssertEqualWithAccuracy(angles[1], Float(M_PI_4), 0.01, "Segment should be angled between its neighbours")
 	}
 	
@@ -55,8 +55,24 @@ class TrailTests: XCTestCase {
 		t.addPoint(CGPoint(x: 0.0, y: 0.0))
 		t.addPoint(CGPoint(x: 100.0, y: 0.0))
 		t.addPoint(CGPoint(x: 100.0, y: 100.0))
-		let angles = t.segmentAngles()
+		let angles = t.angles
 		XCTAssertEqualWithAccuracy(angles[0], Float(0.0), 0.01, "End point should point at its neighbor")
 		XCTAssertEqualWithAccuracy(angles[2], Float(M_PI_2), 0.01, "End point should point at its neighbor")
+	}
+	
+	func testTrailShouldRecalculateTrailEndWhenExtending() {
+		var t = Trail()
+		
+		t.addPoint(CGPoint(x: 0.0, y: 0.0))
+		t.addPoint(CGPoint(x: 10.0, y: 0.0))
+		t.addPoint(CGPoint(x: 20.0, y: 0.0))
+		t.addPoint(CGPoint(x: 30.0, y: 0.0))
+		
+		var angles = t.angles
+		XCTAssertEqualWithAccuracy(angles[3], Float(0.0), 0.01, "End point should be aligned")
+		t.addPoint(CGPoint(x: 30.0, y: 10.0))
+		angles = t.angles
+		XCTAssertEqualWithAccuracy(angles[4], Float(M_PI_2), 0.01, "New end point should be aligned")
+		XCTAssertEqualWithAccuracy(angles[3], Float(M_PI_4), 0.01, "Last end point should be updated")
 	}
 }
