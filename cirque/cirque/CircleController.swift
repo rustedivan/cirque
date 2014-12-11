@@ -28,7 +28,5 @@ class CircleController: NSObject {
 	func endCircle(p: CGPoint) {
 		circle.addSegment(p)
 		circle.end()
-		
-		println(circle.segments.points)
 	}
 }
