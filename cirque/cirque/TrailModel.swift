@@ -12,8 +12,8 @@ import CoreGraphics.CGGeometry
 
 @objc
 class Trail: NSObject {
-	var points: Array<CGPoint> = Array()
-	var angles: Array<Float> = Array()
+	var points = PointArray()
+	var angles: Array<CGFloat> = Array()
 	
 	func addPoint(p: CGPoint) {
 		points.append(p)
@@ -21,8 +21,8 @@ class Trail: NSObject {
 	}
 	
 	private func updateAngles() {
-		func angleBetween(p1: CGPoint, p2: CGPoint) -> Float {
-			return atan2(Float(p2.y - p1.y), Float(p2.x - p1.x))	// $ Not really sure why these casts are necessary
+		func angleBetween(p1: CGPoint, p2: CGPoint) -> CGFloat {
+			return atan2(p2.y - p1.y, p2.x - p1.x)
 		}
 		
 		let n = points.count

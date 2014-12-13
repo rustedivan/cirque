@@ -13,8 +13,11 @@
 		1402B4CB1A3469CC00E335B3 /* TrailTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1402B4CA1A3469CC00E335B3 /* TrailTests.swift */; };
 		1402B4CD1A346C7D00E335B3 /* TrailModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1402B4CC1A346C7D00E335B3 /* TrailModel.swift */; };
 		1402B4CE1A346D6C00E335B3 /* TrailModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1402B4CC1A346C7D00E335B3 /* TrailModel.swift */; };
+		141A8E181A3C6C36002ED07F /* CircleFitter.swift in Sources */ = {isa = PBXBuildFile; fileRef = 141A8E171A3C6C36002ED07F /* CircleFitter.swift */; };
+		141A8E1A1A3C6C6B002ED07F /* CircleFitterTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 141A8E191A3C6C6B002ED07F /* CircleFitterTests.swift */; };
 		1469001F1A33411900B11A2D /* OpenGLES.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1469001E1A33411900B11A2D /* OpenGLES.framework */; };
 		146900221A33439500B11A2D /* ES2Program.m in Sources */ = {isa = PBXBuildFile; fileRef = 146900211A33439500B11A2D /* ES2Program.m */; };
+		14D197091A3C844600832ACA /* CircleFitter.swift in Sources */ = {isa = PBXBuildFile; fileRef = 141A8E171A3C6C36002ED07F /* CircleFitter.swift */; };
 		14D6057D19FCE63C0096E228 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 14D6057C19FCE63C0096E228 /* AppDelegate.swift */; };
 		14D6057F19FCE63C0096E228 /* Shader.fsh in Resources */ = {isa = PBXBuildFile; fileRef = 14D6057E19FCE63C0096E228 /* Shader.fsh */; };
 		14D6058119FCE63C0096E228 /* Shader.vsh in Resources */ = {isa = PBXBuildFile; fileRef = 14D6058019FCE63C0096E228 /* Shader.vsh */; };
@@ -44,6 +47,8 @@
 		1402B4C81A34680B00E335B3 /* CircleViewTests.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CircleViewTests.m; sourceTree = "<group>"; };
 		1402B4CA1A3469CC00E335B3 /* TrailTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TrailTests.swift; sourceTree = "<group>"; };
 		1402B4CC1A346C7D00E335B3 /* TrailModel.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TrailModel.swift; sourceTree = "<group>"; };
+		141A8E171A3C6C36002ED07F /* CircleFitter.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CircleFitter.swift; sourceTree = "<group>"; };
+		141A8E191A3C6C6B002ED07F /* CircleFitterTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CircleFitterTests.swift; sourceTree = "<group>"; };
 		1469001E1A33411900B11A2D /* OpenGLES.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = OpenGLES.framework; path = System/Library/Frameworks/OpenGLES.framework; sourceTree = SDKROOT; };
 		146900201A33439500B11A2D /* ES2Program.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ES2Program.h; sourceTree = "<group>"; };
 		146900211A33439500B11A2D /* ES2Program.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ES2Program.m; sourceTree = "<group>"; };
@@ -119,6 +124,7 @@
 				14D6057C19FCE63C0096E228 /* AppDelegate.swift */,
 				14D605A219FCEC900096E228 /* CircleController.swift */,
 				14D605A019FCEB530096E228 /* CircleModel.swift */,
+				141A8E171A3C6C36002ED07F /* CircleFitter.swift */,
 				1402B4CC1A346C7D00E335B3 /* TrailModel.swift */,
 				14D6058719FCE63C0096E228 /* Images.xcassets */,
 				14E181A21A2FA31D007AE3E5 /* ObjC legacy */,
@@ -146,6 +152,7 @@
 				14D6059619FCE63C0096E228 /* cirqueTests.swift */,
 				1402B4C41A34560400E335B3 /* CircleModelTests.swift */,
 				1402B4CA1A3469CC00E335B3 /* TrailTests.swift */,
+				141A8E191A3C6C6B002ED07F /* CircleFitterTests.swift */,
 				1402B4C81A34680B00E335B3 /* CircleViewTests.m */,
 				14D6059419FCE63C0096E228 /* Supporting Files */,
 				1402B4C71A34680B00E335B3 /* cirqueTests-Bridging-Header.h */,
@@ -281,6 +288,7 @@
 				14D605A119FCEB530096E228 /* CircleModel.swift in Sources */,
 				146900221A33439500B11A2D /* ES2Program.m in Sources */,
 				14D6057D19FCE63C0096E228 /* AppDelegate.swift in Sources */,
+				141A8E181A3C6C36002ED07F /* CircleFitter.swift in Sources */,
 				14D605A319FCEC900096E228 /* CircleController.swift in Sources */,
 				1402B4CD1A346C7D00E335B3 /* TrailModel.swift in Sources */,
 			);
@@ -290,10 +298,12 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				141A8E1A1A3C6C6B002ED07F /* CircleFitterTests.swift in Sources */,
 				1402B4CE1A346D6C00E335B3 /* TrailModel.swift in Sources */,
 				1402B4C91A34680B00E335B3 /* CircleViewTests.m in Sources */,
 				1402B4C61A34561300E335B3 /* CircleModel.swift in Sources */,
 				14D6059719FCE63C0096E228 /* cirqueTests.swift in Sources */,
+				14D197091A3C844600832ACA /* CircleFitter.swift in Sources */,
 				1402B4CB1A3469CC00E335B3 /* TrailTests.swift in Sources */,
 				1402B4C51A34560400E335B3 /* CircleModelTests.swift in Sources */,
 			);

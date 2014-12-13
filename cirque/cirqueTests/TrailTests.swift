@@ -46,7 +46,7 @@ class TrailTests: XCTestCase {
 		t.addPoint(CGPoint(x: 100.0, y: 0.0))
 		t.addPoint(CGPoint(x: 100.0, y: 100.0))
 		let angles = t.angles
-		XCTAssertEqualWithAccuracy(angles[1], Float(M_PI_4), 0.01, "Segment should be angled between its neighbours")
+		XCTAssertEqualWithAccuracy(angles[1], CGFloat(M_PI_4), 0.01, "Segment should be angled between its neighbours")
 	}
 	
 	func testTrailShouldHaveAngledEndSegments() {
@@ -56,8 +56,8 @@ class TrailTests: XCTestCase {
 		t.addPoint(CGPoint(x: 100.0, y: 0.0))
 		t.addPoint(CGPoint(x: 100.0, y: 100.0))
 		let angles = t.angles
-		XCTAssertEqualWithAccuracy(angles[0], Float(0.0), 0.01, "End point should point at its neighbor")
-		XCTAssertEqualWithAccuracy(angles[2], Float(M_PI_2), 0.01, "End point should point at its neighbor")
+		XCTAssertEqualWithAccuracy(angles[0], CGFloat(0.0), 0.01, "End point should point at its neighbor")
+		XCTAssertEqualWithAccuracy(angles[2], CGFloat(M_PI_2), 0.01, "End point should point at its neighbor")
 	}
 	
 	func testTrailShouldRecalculateTrailEndWhenExtending() {
@@ -69,10 +69,10 @@ class TrailTests: XCTestCase {
 		t.addPoint(CGPoint(x: 30.0, y: 0.0))
 		
 		var angles = t.angles
-		XCTAssertEqualWithAccuracy(angles[3], Float(0.0), 0.01, "End point should be aligned")
+		XCTAssertEqualWithAccuracy(angles[3], CGFloat(0.0), 0.01, "End point should be aligned")
 		t.addPoint(CGPoint(x: 30.0, y: 10.0))
 		angles = t.angles
-		XCTAssertEqualWithAccuracy(angles[4], Float(M_PI_2), 0.01, "New end point should be aligned")
-		XCTAssertEqualWithAccuracy(angles[3], Float(M_PI_4), 0.01, "Last end point should be updated")
+		XCTAssertEqualWithAccuracy(angles[4], CGFloat(M_PI_2), 0.01, "New end point should be aligned")
+		XCTAssertEqualWithAccuracy(angles[3], CGFloat(M_PI_4), 0.01, "Last end point should be updated")
 	}
 }
