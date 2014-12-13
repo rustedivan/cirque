@@ -13,7 +13,7 @@ class CircleController: NSObject {
 	var frames = 0
 	
 	func draw(view: CircleView) {
-		view.render(circle);
+		view.render(circle)
 	}
 	
 	func beginNewCircle(p: CGPoint) {
