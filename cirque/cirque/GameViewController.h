@@ -23,6 +23,7 @@
 @property (strong, nonatomic) GLKBaseEffect *effect;
 @property (strong, nonatomic) CircleView *circleView;
 @property (strong, nonatomic) CircleController *swCircleController;
+@property (weak, nonatomic) IBOutlet UILabel *errorLabel;
 
 - (void)setupGL;
 - (void)tearDownGL;

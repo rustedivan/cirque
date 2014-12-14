@@ -25,8 +25,9 @@ class CircleController: NSObject {
 		circle.addSegment(p)
 	}
 
-	func endCircle(p: CGPoint) {
+	func endCircle(p: CGPoint) -> Float {
 		circle.addSegment(p)
 		circle.end()
+		return circle.calculateFitError()
 	}
 }

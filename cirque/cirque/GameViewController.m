@@ -43,6 +43,7 @@
 		point.x = touchPoint.x;
 		point.y = screenHeight - touchPoint.y;
 		
+		_errorLabel.text = @"";
 		[_swCircleController beginNewCircle: point];
 	}];
 }
@@ -71,7 +72,9 @@
 		point.x = touchPoint.x;
 		point.y = screenHeight - touchPoint.y;
 		
-		[_swCircleController endCircle: point];
+		float error = [_swCircleController endCircle: point];
+		_errorLabel.text = [NSString stringWithFormat:@"Error: %.2f", error];
+		_swCircleController = [[CircleController alloc] init];
 	}];
 }
 

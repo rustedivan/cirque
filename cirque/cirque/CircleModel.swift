@@ -26,12 +26,15 @@ public class Circle: NSObject {
 	}
 	
 	func end() {
+	}
+	
+	func calculateFitError() -> Float {
 		let cf = CircleFitter()
 		let fit = cf.fitCenterAndRadius(segments.points)
 		let polarized = polarizePoints(segments.points, around: fit.center)
 		let deviations = deviationsFromFit(polarPoints: polarized, radius: fit.radius)
 		let rmsError = sqrt(deviations.reduce(0.0) {$0 + $1 * $1} / CGFloat(deviations.count))
-		println("Error: \(rmsError)")
+		return Float(rmsError)
 	}
 	
 	func polarizePoints(points: PointArray, around c: CGPoint) -> PolarArray {
