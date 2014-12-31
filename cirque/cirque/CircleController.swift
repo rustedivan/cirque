@@ -10,7 +10,7 @@ import Foundation
 
 class CircleController: NSObject {
 	var circle: Circle = Circle()
-	var frames = 0
+	
 	
 	func draw(view: CircleView) {
 		view.render(circle)
@@ -28,6 +28,13 @@ class CircleController: NSObject {
 	func endCircle(p: CGPoint) -> Float {
 		circle.addSegment(p)
 		circle.end()
-		return circle.calculateFitError()
+		
+//		circle.dumpAsSwiftArray()
+		
+		let fit = CircleFitter().fitCenterAndRadius(circle.segments.points)
+		let polar = circle.polarizePoints(circle.segments.points, around: fit.center)
+		let analyser = TrailAnalyser(points: polar)
+		
+		return Float(analyser.strokeCongestion().angle)
 	}
 }

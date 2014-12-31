@@ -28,15 +28,6 @@ public class Circle: NSObject {
 	func end() {
 	}
 	
-	func calculateFitError() -> Float {
-		let cf = CircleFitter()
-		let fit = cf.fitCenterAndRadius(segments.points)
-		let polarized = polarizePoints(segments.points, around: fit.center)
-		let deviations = deviationsFromFit(polarPoints: polarized, radius: fit.radius)
-		let rmsError = sqrt(deviations.reduce(0.0) {$0 + $1 * $1} / CGFloat(deviations.count))
-		return Float(rmsError)
-	}
-	
 	func polarizePoints(points: PointArray, around c: CGPoint) -> PolarArray {
 		var polar: PolarArray = []
 		
@@ -50,15 +41,40 @@ public class Circle: NSObject {
 			
 			polar.append((r: r, a: a))
 		}
-		
+
+		// Normalize angles
+		for i in 0 ..< polar.count {
+			if polar[i].a < 0.0 {polar[i].a += CGFloat(M_PI * 2.0)}
+			if polar[i].a > CGFloat(2.0 * M_PI) {polar[i].a -= CGFloat(M_PI * 2.0)}
+		}
+
 		return polar
 	}
-	
-	func deviationsFromFit(polarPoints points: PolarArray, radius: CGFloat) -> Array<CGFloat> {
-		var deviations = [CGFloat]()
-		for p in points {
-			deviations.append(p.r - radius)
+}
+
+extension Circle {
+	func dumpAsSwiftArray() {
+		let l = 5
+		let a = segments.points
+		var o = Array<Slice<CGPoint>>()
+		var i = 0
+		while i+l < a.count {
+			let s = a[i..<i+l]
+			o.append(s)
+			i += l
 		}
-		return deviations
+		o.append(a[i..<a.count])
+		
+		println("\nlet a = [");
+		for i in 0 ..< o.count {
+			print("\t")
+			for j in 0 ..< o[i].count {
+				let x = Float(o[i][j].x)
+				let y = Float(o[i][j].y)
+				print(String(format:"(%.2f, %.2f), ", x, y))
+			}
+			println("")
+		}
+		println("]")
 	}
 }

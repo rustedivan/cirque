@@ -15,6 +15,13 @@ class Trail: NSObject {
 	var points = PointArray()
 	var angles: Array<CGFloat> = Array()
 	
+	convenience init(tuples: Array<(Double, Double)>) {
+		self.init()
+		for t in tuples {
+			addPoint(CGPoint(x: t.0, y: t.1))
+		}
+	}
+	
 	func addPoint(p: CGPoint) {
 		points.append(p)
 		updateAngles()

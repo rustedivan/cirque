@@ -15,8 +15,12 @@
 		1402B4CE1A346D6C00E335B3 /* TrailModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1402B4CC1A346C7D00E335B3 /* TrailModel.swift */; };
 		141A8E181A3C6C36002ED07F /* CircleFitter.swift in Sources */ = {isa = PBXBuildFile; fileRef = 141A8E171A3C6C36002ED07F /* CircleFitter.swift */; };
 		141A8E1A1A3C6C6B002ED07F /* CircleFitterTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 141A8E191A3C6C6B002ED07F /* CircleFitterTests.swift */; };
+		145855C41A502BED00C44CB1 /* TrailAnalyserTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 145855C31A502BED00C44CB1 /* TrailAnalyserTests.swift */; };
+		145A267F1A52BDD700B3FBAB /* MockTrails.swift in Sources */ = {isa = PBXBuildFile; fileRef = 145A267E1A52BDD700B3FBAB /* MockTrails.swift */; };
 		1469001F1A33411900B11A2D /* OpenGLES.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1469001E1A33411900B11A2D /* OpenGLES.framework */; };
 		146900221A33439500B11A2D /* ES2Program.m in Sources */ = {isa = PBXBuildFile; fileRef = 146900211A33439500B11A2D /* ES2Program.m */; };
+		14D189431A52C50E00CD0862 /* TrailAnalyser.swift in Sources */ = {isa = PBXBuildFile; fileRef = 14D189421A52C50E00CD0862 /* TrailAnalyser.swift */; };
+		14D189441A52C51500CD0862 /* TrailAnalyser.swift in Sources */ = {isa = PBXBuildFile; fileRef = 14D189421A52C50E00CD0862 /* TrailAnalyser.swift */; };
 		14D197091A3C844600832ACA /* CircleFitter.swift in Sources */ = {isa = PBXBuildFile; fileRef = 141A8E171A3C6C36002ED07F /* CircleFitter.swift */; };
 		14D6057D19FCE63C0096E228 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 14D6057C19FCE63C0096E228 /* AppDelegate.swift */; };
 		14D6057F19FCE63C0096E228 /* Shader.fsh in Resources */ = {isa = PBXBuildFile; fileRef = 14D6057E19FCE63C0096E228 /* Shader.fsh */; };
@@ -49,9 +53,13 @@
 		1402B4CC1A346C7D00E335B3 /* TrailModel.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TrailModel.swift; sourceTree = "<group>"; };
 		141A8E171A3C6C36002ED07F /* CircleFitter.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CircleFitter.swift; sourceTree = "<group>"; };
 		141A8E191A3C6C6B002ED07F /* CircleFitterTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CircleFitterTests.swift; sourceTree = "<group>"; };
+		145855C31A502BED00C44CB1 /* TrailAnalyserTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TrailAnalyserTests.swift; sourceTree = "<group>"; };
+		145A267D1A51B61300B3FBAB /* Playground.playground */ = {isa = PBXFileReference; lastKnownFileType = file.playground; path = Playground.playground; sourceTree = "<group>"; };
+		145A267E1A52BDD700B3FBAB /* MockTrails.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MockTrails.swift; sourceTree = "<group>"; };
 		1469001E1A33411900B11A2D /* OpenGLES.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = OpenGLES.framework; path = System/Library/Frameworks/OpenGLES.framework; sourceTree = SDKROOT; };
 		146900201A33439500B11A2D /* ES2Program.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ES2Program.h; sourceTree = "<group>"; };
 		146900211A33439500B11A2D /* ES2Program.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ES2Program.m; sourceTree = "<group>"; };
+		14D189421A52C50E00CD0862 /* TrailAnalyser.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TrailAnalyser.swift; sourceTree = "<group>"; };
 		14D6057719FCE63C0096E228 /* cirque.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = cirque.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		14D6057B19FCE63C0096E228 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		14D6057C19FCE63C0096E228 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
@@ -103,6 +111,7 @@
 		14D6056E19FCE63C0096E228 = {
 			isa = PBXGroup;
 			children = (
+				145A267D1A51B61300B3FBAB /* Playground.playground */,
 				14D6057919FCE63C0096E228 /* cirque */,
 				14D6059319FCE63C0096E228 /* cirqueTests */,
 				14D6057819FCE63C0096E228 /* Products */,
@@ -126,6 +135,7 @@
 				14D605A019FCEB530096E228 /* CircleModel.swift */,
 				141A8E171A3C6C36002ED07F /* CircleFitter.swift */,
 				1402B4CC1A346C7D00E335B3 /* TrailModel.swift */,
+				14D189421A52C50E00CD0862 /* TrailAnalyser.swift */,
 				14D6058719FCE63C0096E228 /* Images.xcassets */,
 				14E181A21A2FA31D007AE3E5 /* ObjC legacy */,
 				14D6057A19FCE63C0096E228 /* Supporting Files */,
@@ -151,8 +161,9 @@
 			children = (
 				14D6059619FCE63C0096E228 /* cirqueTests.swift */,
 				1402B4C41A34560400E335B3 /* CircleModelTests.swift */,
-				1402B4CA1A3469CC00E335B3 /* TrailTests.swift */,
 				141A8E191A3C6C6B002ED07F /* CircleFitterTests.swift */,
+				1402B4CA1A3469CC00E335B3 /* TrailTests.swift */,
+				145855C31A502BED00C44CB1 /* TrailAnalyserTests.swift */,
 				1402B4C81A34680B00E335B3 /* CircleViewTests.m */,
 				14D6059419FCE63C0096E228 /* Supporting Files */,
 				1402B4C71A34680B00E335B3 /* cirqueTests-Bridging-Header.h */,
@@ -163,6 +174,7 @@
 		14D6059419FCE63C0096E228 /* Supporting Files */ = {
 			isa = PBXGroup;
 			children = (
+				145A267E1A52BDD700B3FBAB /* MockTrails.swift */,
 				14D6059519FCE63C0096E228 /* Info.plist */,
 			);
 			name = "Supporting Files";
@@ -284,6 +296,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				14E181991A2E4E3B007AE3E5 /* GameViewController.m in Sources */,
+				14D189431A52C50E00CD0862 /* TrailAnalyser.swift in Sources */,
 				14E181A11A2F9FE4007AE3E5 /* CircleView.m in Sources */,
 				14D605A119FCEB530096E228 /* CircleModel.swift in Sources */,
 				146900221A33439500B11A2D /* ES2Program.m in Sources */,
@@ -299,12 +312,15 @@
 			buildActionMask = 2147483647;
 			files = (
 				141A8E1A1A3C6C6B002ED07F /* CircleFitterTests.swift in Sources */,
+				145855C41A502BED00C44CB1 /* TrailAnalyserTests.swift in Sources */,
+				145A267F1A52BDD700B3FBAB /* MockTrails.swift in Sources */,
 				1402B4CE1A346D6C00E335B3 /* TrailModel.swift in Sources */,
 				1402B4C91A34680B00E335B3 /* CircleViewTests.m in Sources */,
 				1402B4C61A34561300E335B3 /* CircleModel.swift in Sources */,
 				14D6059719FCE63C0096E228 /* cirqueTests.swift in Sources */,
 				14D197091A3C844600832ACA /* CircleFitter.swift in Sources */,
 				1402B4CB1A3469CC00E335B3 /* TrailTests.swift in Sources */,
+				14D189441A52C51500CD0862 /* TrailAnalyser.swift in Sources */,
 				1402B4C51A34560400E335B3 /* CircleModelTests.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
