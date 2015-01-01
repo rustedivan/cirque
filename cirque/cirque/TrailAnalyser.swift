@@ -23,18 +23,84 @@ extension TrailAnalyser {
 	/*	Measure the relative RMS of radial errors, i.e. how round the circle is.
 			Given a fitted circle, calculate each point's radial displacement from
 			the fit. Find the RMS relative to the size of the circle. */
-	func radialFitness(radius: CGFloat) -> Double {
+	func radialFitness(radius: Double) -> Double {
 		let errorThreshold = 0.05
 
 		let deviations = deviationsFromFit(radius)
-		let rmsError = sqrt(deviations.reduce(0.0) {$0 + $1 * $1} / CGFloat(deviations.count))
-		let relativeRMS = Double(rmsError / radius)
+		let rmsError = sqrt(deviations.reduce(0.0) {$0 + $1 * $1} / Double(deviations.count))
+		let relativeRMS = rmsError / radius
 		
 		return (relativeRMS > errorThreshold) ? relativeRMS : 0.0
 	}
 	
-	func deviationsFromFit(radius: CGFloat) -> Array<CGFloat> {
-		return points.map {$0.r - radius}
+	/*	Find area of the stroke where radius diverges from its ideal path.
+			Calculate a moving average on the radius samples with a window size of 45º
+			around the circle. Report the largest absolute deviation from the mean.
+			Report the value and map its center to an angle.
+	*/
+	func radialDeviation(radius: Double) -> (peak: Double, angle: CGFloat) {
+		let errorThreshold = 1.0
+		
+		// Calculate moving average
+		let n = points.count
+		let windowSize = n / 8
+		let mask = Array<Int>(0..<windowSize)
+		var smoothed = Array<Double>(count: n, repeatedValue: 0.0)
+		for i in 0..<n {
+			var avg = 0.0
+			for j in mask {
+				avg += Double(points[(i + j) % n].r) - radius
+			}
+			smoothed[i] = avg / Double(windowSize)
+		}
+		
+		// Find largest/smallest value among the averages
+		var largestValue = -1.0
+		var smallestValue = 100000.0
+		var largestIndex = -1
+		var smallestIndex = n + 1
+		for i in 0..<n {
+			let v = smoothed[i]
+			if v > largestValue {largestValue = v; largestIndex = i}
+			if v < smallestValue {smallestValue = v; smallestIndex = i}
+		}
+		
+		// Return the largest value and its associated angle (taken from center of window)
+		var outV = 0.0
+		var outI = 0
+		if (abs(largestValue) > abs(smallestValue)) {outV = largestValue; outI = largestIndex}
+		else {outV = smallestValue; outI = smallestIndex}
+		
+		outI = (outI + windowSize / 2) % n	// Take index from center of window
+		
+		let a = Double(points[outI].a) * 180.0 / M_PI
+		return (abs(outV) > errorThreshold) ? (peak: outV, angle: points[outI].a) : (peak: 0.0, angle: 0.0)
+	}
+	
+	/*	Measure difference between radial RMS and beginnig and end of the circle.
+	A contracting circle will have negative local relative radial RMS; an
+	an expanding circle will have a positive LRR-RMS. */
+	func radialContraction() -> Double {
+		let errorThreshold = 2.0
+		
+		let n = points.count
+		let windowSize = n / 20
+		let calcRMS = { (points: Slice<Polar>) -> Double in
+			sqrt(points.reduce(0.0) {$0 + Double($1.r * $1.r)} / Double(n))
+		}
+		
+		let startPoints = points[0 ..< windowSize]
+		let endPoints = points[n - windowSize ..< n]
+		let startRadius = calcRMS(startPoints)
+		let endRadius = calcRMS(endPoints)
+		
+		let contraction = endRadius - startRadius
+		
+		return (abs(contraction) > errorThreshold) ? contraction : 0.0
+	}
+	
+	func deviationsFromFit(radius: Double) -> Array<Double> {
+		return points.map {Double($0.r) - radius}
 	}
 }
 
@@ -69,30 +135,6 @@ extension TrailAnalyser {
 		let slope = numerator / denominator
 		
 		return (abs(slope) > errorTreshold) ? slope : 0.0
-	}
-}
-
-extension TrailAnalyser {
-	/*	Measure difference between radial RMS and beginnig and end of the circle.
-			A contracting circle will have negative local relative radial RMS; an
-			an expanding circle will have a positive LRR-RMS. */
-	func radialContraction() -> Double {
-		let errorThreshold = 2.0
-
-		let n = points.count
-		let windowSize = n / 20
-		let calcRMS = { (points: Slice<Polar>) -> Double in
-			sqrt(points.reduce(0.0) {$0 + Double($1.r * $1.r)} / Double(n))
-		}
-
-		let startPoints = points[0 ..< windowSize]
-		let endPoints = points[n - windowSize ..< n]
-		let startRadius = calcRMS(startPoints)
-		let endRadius = calcRMS(endPoints)
-		
-		let contraction = endRadius - startRadius
-
-		return (abs(contraction) > errorThreshold) ? contraction : 0.0
 	}
 }
 
