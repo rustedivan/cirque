@@ -153,6 +153,18 @@ class CircleAnalyzer: XCTestCase {
 	*/
 
 	func testFindStartEndCapsSeparation() {
+		var discard: CGFloat = 0.0
+		
+		let distantCapsTrail = polariseTestPoints(distantCaps, toRadius: &discard)
+		let veryDistantCapsTrail = polariseTestPoints(veryDistantCaps, toRadius: &discard)
+		let perfectTrail = polariseTestPoints(perfectCaps, toRadius: &discard)
+		
+		let distant = TrailAnalyser(points: distantCapsTrail).endCapsSeparation()
+		let veryDistant = TrailAnalyser(points: veryDistantCapsTrail).endCapsSeparation()
+		let perfect = TrailAnalyser(points: perfectTrail).endCapsSeparation()
+		
+		XCTAssertGreaterThan(veryDistant, distant, "More distant caps should be a larger error")
+		XCTAssertEqual(perfect, 0.0, "Close-to-perfect end caps should snap error to zero")
 	}
 	
 	/* Calculate a linear fit for the slope of the last 10% of the circle's radial measuremets.

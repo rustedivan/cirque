@@ -39,6 +39,21 @@ extension TrailAnalyser {
 }
 
 extension TrailAnalyser {
+	func endCapsSeparation() -> Double {
+		let errorThreshold = 10.0
+		
+		let startPolar = points.first!
+		let startPoint = CGPoint(x: cos(startPolar.a) * startPolar.r, y: sin(startPolar.a) * startPolar.r)
+		let endPolar = points.last!
+		let endPoint = CGPoint(x: cos(endPolar.a) * endPolar.r, y: sin(endPolar.a) * endPolar.r)
+		
+		let capsSeparationVector = CGVector(dx: endPoint.x - startPoint.x, dy: endPoint.y - startPoint.y)
+		let separation = Double(sqrt(capsSeparationVector.dx * capsSeparationVector.dx + capsSeparationVector.dy * capsSeparationVector.dy))
+		return (separation > errorThreshold) ? separation : 0.0
+	}
+}
+
+extension TrailAnalyser {
 	/*	Measure difference between radial RMS and beginnig and end of the circle.
 			A contracting circle will have negative local relative radial RMS; an
 			an expanding circle will have a positive LRR-RMS. */
