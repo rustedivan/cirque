@@ -171,9 +171,23 @@ class CircleAnalyzer: XCTestCase {
 		 Any slope that significantly deviates form zero is reported as positive or negative.
 	*/
 	func testFindAngleOfAttackOfStrokeEnd() {
+		var discard: CGFloat = 0.0
+		
+		let outwardTrail = polariseTestPoints(outwardEnd, toRadius: &discard)
+		let inwardTrail = polariseTestPoints(inwardEnd, toRadius: &discard)
+		let perfectTrail = polariseTestPoints(stableEnd, toRadius: &discard)
+		
+		let outward = TrailAnalyser(points: outwardTrail).endAngleOfAttack()
+		let inward = TrailAnalyser(points: inwardTrail).endAngleOfAttack()
+		let perfect = TrailAnalyser(points: perfectTrail).endAngleOfAttack()
+		
+		XCTAssertLessThan(inward, 0.0, "Contracting circle should be negative")
+		XCTAssertGreaterThan(outward, 0.0, "Expanding circle should be positive")
+		XCTAssertEqual(perfect, 0.0, "Close-to-perfect circle should snap error to zero")
 	}
 	
 	func testShouldRejectNonClosedCircle() {
+		
 	}
 
 	func testShouldRejectNotEvenCloseToCircle() {

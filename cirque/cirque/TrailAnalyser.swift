@@ -51,6 +51,25 @@ extension TrailAnalyser {
 		let separation = Double(sqrt(capsSeparationVector.dx * capsSeparationVector.dx + capsSeparationVector.dy * capsSeparationVector.dy))
 		return (separation > errorThreshold) ? separation : 0.0
 	}
+
+	func endAngleOfAttack() -> Double {
+		let errorTreshold = 1.0
+
+		let n = points.count
+		let windowSize = n / 20
+		let endPoints = points[n - windowSize ..< n]
+
+		let sumX = Double(endPoints.reduce(0.0) {$0 + $1.a})
+		let sumY = Double(endPoints.reduce(0.0) {$0 + $1.r})
+		let sumXY = Double(endPoints.reduce(0.0) {$0 + $1.a * $1.r})
+		let sumXX = Double(endPoints.reduce(0.0) {$0 + $1.a * $1.a})
+		
+		let numerator = Double(windowSize) * sumXY - sumX*sumY
+		let denominator = Double(windowSize) * sumXX - sumX*sumX
+		let slope = numerator / denominator
+		
+		return (abs(slope) > errorTreshold) ? slope : 0.0
+	}
 }
 
 extension TrailAnalyser {
