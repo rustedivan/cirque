@@ -21,10 +21,11 @@ class CircleAnalyzer: XCTestCase {
 		super.tearDown()
 	}
 	
-	func polariseTestPoints(points: Array<(Double, Double)>) -> PolarArray {
+	func polariseTestPoints(points: Array<(Double, Double)>, inout toRadius radius: CGFloat) -> PolarArray {
 		let t = Trail(tuples: points)
 		let cf = CircleFitter()
 		let fit = cf.fitCenterAndRadius(t.points)
+		radius = fit.radius
 		return Circle().polarizePoints(t.points, around: fit.center)
 	}
 	
@@ -51,9 +52,11 @@ class CircleAnalyzer: XCTestCase {
 								evenness is also rated on an exponential scale, 99-snapped
 	*/
 	func testCalculateStrokeEvenness() {
-		let unevenTrail = polariseTestPoints(unevenStrokeTrail)
-		let evenTrail = polariseTestPoints(evenStrokeTrail)
-		let perfectTrail = polariseTestPoints(perfectStrokeTrail)
+		var discard: CGFloat = 0.0
+		
+		let unevenTrail = polariseTestPoints(unevenStrokeTrail, toRadius: &discard)
+		let evenTrail = polariseTestPoints(evenStrokeTrail, toRadius: &discard)
+		let perfectTrail = polariseTestPoints(perfectStrokeTrail, toRadius: &discard)
 		
 		let bad = TrailAnalyser(points: unevenTrail).strokeEvenness()
 		let good = TrailAnalyser(points: evenTrail).strokeEvenness()
@@ -67,17 +70,21 @@ class CircleAnalyzer: XCTestCase {
 														to filter the data down to 8 cardinal points. Find max-deviation.
 	*/
 	func testFindStrokeCongestionDirection() {
-		let congestionDown = polariseTestPoints(congestedDown)
-		let congestion = TrailAnalyser(points: congestionDown).strokeCongestion()
+		var discard: CGFloat = 0.0
+		let congestionDown = polariseTestPoints(congestedDown, toRadius: &discard)
+		let congestionUpLeft = polariseTestPoints(congestedUpperLeft, toRadius: &discard)
+		let congestionD = TrailAnalyser(points: congestionDown).strokeCongestion()
+		let congestionUL = TrailAnalyser(points: congestionUpLeft).strokeCongestion()
 		
-		XCTAssertGreaterThan(congestion.peak, 0.0, "Did not calculate congestion")
-		XCTAssertEqualWithAccuracy(congestion.angle, CGFloat(3.0 * M_PI_2), 0.03, "Did not direct congestion")
+		XCTAssertGreaterThan(congestionD.peak, 0.0, "Did not calculate congestion")
+		XCTAssertEqualWithAccuracy(congestionD.angle, CGFloat(3.0 * M_PI_2), 0.03, "Did not direct congestion")
+		XCTAssertGreaterThan(congestionUL.peak, 0.0, "Did not calculate congestion")
+		XCTAssertEqualWithAccuracy(congestionUL.angle, CGFloat(3.0 * M_PI_4), 0.03, "Did not direct congestion")
 	}
 	
-	/* Radial evenness: calculate RMS of all radial offsets from ideal radius
-											relative to the size of the circle.
+	/* Radial deviations: given a fit circle, calculate the residial vector of radial samples.
 	*/
-	func testCalculateRadialEvenness() {
+	func testCalculateRadialDeviations() {
 		var points: PolarArray = [	(a: 0.0, r: 100.0),
 																(a: 90.0, r: 95.0),
 																(a: 180.0, r: 105.0),
@@ -92,17 +99,52 @@ class CircleAnalyzer: XCTestCase {
 	
 	/* Radial deviations: given all relative radial displacements, find the max and min values.
 	*/
-	
 	func testFindRadialDeviationsPeakPositive() {
 	}
 	
 	func testFindRadialDeviationsPeakNegative() {
 	}
 	
+	/* Radial deviation: given all relative radial displacements, calculate the RMS of them.
+	*/
+	func testFindRadialFitness() {
+		var bumpyRadius: CGFloat = 0.0;
+		var roundRadius: CGFloat = 0.0;
+		var perfectRadius: CGFloat = 0.0
+		
+		let bumpyTrail = polariseTestPoints(bumpyCircleTrail, toRadius: &bumpyRadius)
+		let roundTrail = polariseTestPoints(roundCircleTrail, toRadius: &roundRadius)
+		let perfectTrail = polariseTestPoints(perfectCircleTrail, toRadius: &perfectRadius)
+		
+		let bad = TrailAnalyser(points: bumpyTrail).radialFitness(bumpyRadius)
+		let good = TrailAnalyser(points: roundTrail).radialFitness(roundRadius)
+		let perfect = TrailAnalyser(points: perfectTrail).radialFitness(perfectRadius)
+		
+		XCTAssertLessThan(good, bad, "Uneven circle should have higher error than even stroke")
+		XCTAssertEqual(perfect, 0.0, "Close-to-perfect circle should snap error to zero")
+		
+		let largeBadTrail = bumpyTrail.map{Polar(r: $0.r * 10.0, a: $0.a)}
+		let largeBad = TrailAnalyser(points: largeBadTrail).radialFitness(bumpyRadius * 10.0)
+		XCTAssertEqualWithAccuracy(largeBad, bad, 0.01, "Scaling the circle shouldn't cause larger error")
+	}
+	
 	/* Report whether the RMS of the last 1/4 of the circle is significantly tighter
 		 or looser than the first 1/4.
 	*/
 	func testFindRadialContractionOrExpansion() {
+		var discard: CGFloat = 0.0
+		
+		let contractingTrail = polariseTestPoints(radialContractionTrail, toRadius: &discard)
+		let expandingTrail = polariseTestPoints(radialExpansionTrail, toRadius: &discard)
+		let perfectTrail = polariseTestPoints(perfectContractionTrail, toRadius: &discard)
+		
+		let contraction = TrailAnalyser(points: contractingTrail).radialContraction()
+		let expansion = TrailAnalyser(points: expandingTrail).radialContraction()
+		let perfect = TrailAnalyser(points: perfectTrail).radialContraction()
+		
+		XCTAssertLessThan(contraction, 0.0, "Contracting circle should be negative")
+		XCTAssertGreaterThan(expansion, 0.0, "Expanding circle should be positive")
+		XCTAssertEqual(perfect, 0.0, "Close-to-perfect circle should snap error to zero")
 	}
 	
 	/* Measure the distance in pixels between the start and end caps in absolute distance.

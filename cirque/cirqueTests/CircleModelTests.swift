@@ -21,10 +21,10 @@ class CircleModelTests: XCTestCase {
 	}
 	
 	func testCircleShouldPolarizePoints() {
-		var points = [CGPointMake(105.0, 98.0),
-									CGPointMake(-95.0, 98.0),
-									CGPointMake(-95.0, -102.0),
-									CGPointMake(105.0, -102.0)]
+		var points = [CGPoint(x: 105.0, y: 98.0),
+									CGPoint(x: -95.0, y: 98.0),
+									CGPoint(x: -95.0, y: -102.0),
+									CGPoint(x: 105.0, y: -102.0)]
 		var c = Circle()
 		var polar = c.polarizePoints(points, around: CGPointMake(5.0, -2.0))
 		
