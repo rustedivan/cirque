@@ -65,16 +65,16 @@ extension Circle {
 		}
 		o.append(a[i..<a.count])
 		
-		println("\nlet a = [");
+		println("\n\n\n\nlet a = [");
 		for i in 0 ..< o.count {
 			print("\t")
 			for j in 0 ..< o[i].count {
 				let x = Float(o[i][j].x)
 				let y = Float(o[i][j].y)
-				print(String(format:"(%.2f, %.2f), ", x, y))
+				print(String(format:"(%.2f, %.2f) as TestPoint, ", x, y))
 			}
 			println("")
 		}
-		println("]")
+		println("] as [TestPoint]\n\n\n")
 	}
 }
