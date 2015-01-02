@@ -19,6 +19,7 @@
 	view.drawableDepthFormat = GLKViewDrawableDepthFormatNone;
 	view.drawableColorFormat = GLKViewDrawableColorFormatRGB565;
 	view.drawableStencilFormat = GLKViewDrawableStencilFormatNone;
+	view.drawableMultisample = GLKViewDrawableMultisample4X;
 	
 	screenWidth = view.frame.size.width; // 320
 	screenHeight = view.frame.size.height; // 480

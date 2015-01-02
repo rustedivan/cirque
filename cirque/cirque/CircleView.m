@@ -51,15 +51,18 @@
 
 	int vertexIndex = 0;
 	int coordIndex = 0;
-	float thickness = 5.0f;
+	float thickness = 2.0f;
 
 	NSArray* angles = trail.angles;
+	NSArray* distances = trail.distances;
 	
 	for (int i = 0; i < nSegments; i++) {
 		float a = ((NSNumber *)angles[i]).floatValue;
+		float d = ((NSNumber *)distances[i]).floatValue;
 		
 		// Given center point pC and angle, calculate left and right points pL and pR
-		CGVector span = CGVectorMake(sin(a) * thickness / 2.0f, -cos(a) * thickness / 2.0f);
+		CGFloat width = thickness + log2(d);
+		CGVector span = CGVectorMake(sin(a) * width / 2.0f, -cos(a) * width / 2.0f);
 		CGPoint pC = [trail point:i];
 		CGPoint pL = CGPointMake(pC.x + span.dx, pC.y + span.dy);
 		CGPoint pR = CGPointMake(pC.x - span.dx, pC.y - span.dy);

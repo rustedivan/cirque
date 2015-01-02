@@ -75,4 +75,17 @@ class TrailTests: XCTestCase {
 		XCTAssertEqualWithAccuracy(angles[4], CGFloat(M_PI_2), 0.01, "New end point should be aligned")
 		XCTAssertEqualWithAccuracy(angles[3], CGFloat(M_PI_4), 0.01, "Last end point should be updated")
 	}
+	
+	func testTrailGeneratesDistancesBetweenSegments() {
+		var t = Trail()
+		
+		t.addPoint(CGPoint(x: 0.0, y: 0.0))
+		t.addPoint(CGPoint(x: 100.0, y: 0.0))
+		XCTAssertEqual(t.distances.count, 1, "Trail should have one distance per point-pair")
+		XCTAssertEqual(t.distances.last!, CGFloat(100.0), "Trail should calculate correct distance")
+		
+		t.addPoint(CGPoint(x: 100.0, y: 50.0))
+		XCTAssertEqual(t.distances.count, 2, "Trail should have one distance per point-pair")
+		XCTAssertEqual(t.distances.last!, CGFloat(50.0), "Trail should calculate correct distance")
+	}
 }

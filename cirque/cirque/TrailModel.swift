@@ -14,6 +14,7 @@ import CoreGraphics.CGGeometry
 class Trail: NSObject {
 	var points = PointArray()
 	var angles: Array<CGFloat> = Array()
+	var distances: Array<CGFloat> = Array()
 	
 	convenience init(tuples: Array<(Double, Double)>) {
 		self.init()
@@ -25,6 +26,7 @@ class Trail: NSObject {
 	func addPoint(p: CGPoint) {
 		points.append(p)
 		updateAngles()
+		updateDistances()
 	}
 	
 	private func updateAngles() {
@@ -44,6 +46,19 @@ class Trail: NSObject {
 			angles[n - 2] = angleBetween(points[n - 2], points[n - 1])
 		} else {
 			angles[n - 2] = angleBetween(points[n - 3], points[n - 1])
+		}
+	}
+	
+	private func updateDistances() {
+		if points.count < 2 {return}
+		let p1 = points.last!
+		let p2 = points[points.count-2]
+		let dP = CGVector(dx: p1.x - p2.x, dy: p1.y - p2.y)
+		let d = sqrt(dP.dx * dP.dx + dP.dy * dP.dy)
+		distances.append(d)
+		// The first and second points have the same thickness
+		if points.count == 2 {
+			distances.append(d)
 		}
 	}
 	
