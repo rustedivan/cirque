@@ -25,7 +25,7 @@ class CircleController: NSObject {
 		circle.addSegment(p)
 	}
 
-	func endCircle(p: CGPoint) -> Float {
+	func endCircle(p: CGPoint) -> Bool {
 		circle.addSegment(p)
 		circle.end()
 		
@@ -34,7 +34,6 @@ class CircleController: NSObject {
 		let fit = CircleFitter().fitCenterAndRadius(circle.segments.points)
 		let polar = circle.polarizePoints(circle.segments.points, around: fit.center)
 		let analyser = TrailAnalyser(points: polar)
-		
-		return Float(analyser.strokeCongestion().angle)
+		return analyser.isCircle(Double(fit.radius))
 	}
 }

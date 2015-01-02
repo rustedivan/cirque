@@ -209,9 +209,46 @@ class CircleAnalyzer: XCTestCase {
 	}
 	
 	func testShouldRejectNonClosedCircle() {
+		var radius = 0.0
 		
+		let notClosedTrail = polariseTestPoints(notClosed, toRadius: &radius)
+		let reject = TrailAnalyser(points: notClosedTrail).isCircle(radius)
+		
+		XCTAssertFalse(reject, "Nonclosed circle should be rejected")
 	}
 
 	func testShouldRejectNotEvenCloseToCircle() {
+		var radius1 = 0.0
+		var radius2 = 0.0
+		
+		let squareTrail = polariseTestPoints(square, toRadius: &radius1)
+		let eightTrail = polariseTestPoints(eight, toRadius: &radius2)
+		let reject1 = TrailAnalyser(points: squareTrail).isCircle(radius1)
+		let reject2 = TrailAnalyser(points: eightTrail).isCircle(radius2)
+		
+		XCTAssertFalse(reject1, "Nonround circle should be rejected")
+		XCTAssertFalse(reject2, "Nonround circle should be rejected")
+	}
+	
+	func testShouldRejectSegments() {
+		var radius1 = 0.0
+		var radius2 = 0.0
+		
+		let lineSegmentTrail = polariseTestPoints(lineSegment, toRadius: &radius1)
+		let arcSegmentTrail = polariseTestPoints(arcSegment, toRadius: &radius2)
+		let reject1 = TrailAnalyser(points: lineSegmentTrail).isCircle(radius1)
+		let reject2 = TrailAnalyser(points: arcSegmentTrail).isCircle(radius2)
+		
+		XCTAssertFalse(reject1, "Noncomplete circle should be rejected")
+		XCTAssertFalse(reject2, "Noncomplete circle should be rejected")
+	}
+	
+	func testShouldAcceptHonestCircle() {
+		var radius = 0.0
+		
+		let circleTrail = polariseTestPoints(properCircle, toRadius: &radius)
+		let reject = TrailAnalyser(points: circleTrail).isCircle(radius)
+		
+		XCTAssertTrue(reject, "Noncomplete circle should be rejected")
 	}
 }

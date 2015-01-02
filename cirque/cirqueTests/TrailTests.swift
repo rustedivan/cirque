@@ -81,11 +81,11 @@ class TrailTests: XCTestCase {
 		
 		t.addPoint(CGPoint(x: 0.0, y: 0.0))
 		t.addPoint(CGPoint(x: 100.0, y: 0.0))
-		XCTAssertEqual(t.distances.count, 1, "Trail should have one distance per point-pair")
+		XCTAssertEqual(t.distances.count, 2, "Trail should have one distance per point-pair")
 		XCTAssertEqual(t.distances.last!, CGFloat(100.0), "Trail should calculate correct distance")
 		
 		t.addPoint(CGPoint(x: 100.0, y: 50.0))
-		XCTAssertEqual(t.distances.count, 2, "Trail should have one distance per point-pair")
+		XCTAssertEqual(t.distances.count, 3, "Trail should have one distance per point-pair")
 		XCTAssertEqual(t.distances.last!, CGFloat(50.0), "Trail should calculate correct distance")
 	}
 }

@@ -146,6 +146,7 @@ extension TrailAnalyser {
 	func strokeEvenness() -> Double {
 		let errorThreshold = 5.0 * M_PI / 180.0
 		
+		// FIXME: computed property pls
 		if angleDeltas == nil {
 			angleDeltas = angleDeltas(points)
 		}
@@ -234,6 +235,38 @@ extension TrailAnalyser {
 			deltaA.append(d)
 		}
 		return deltaA
+	}
+}
+
+extension TrailAnalyser {
+	func isCircle(radius: Double) -> Bool {
+		// Circle must be closed
+		let endCapErrorThreshold = radius / 2.0	// Caps are off by half the radius
+		if (self.endCapsSeparation() > endCapErrorThreshold) {
+			println("Rejected end caps: \(self.endCapsSeparation()) > \(endCapErrorThreshold)")
+			return false
+		}
+
+		// Circle must be round
+		let radialErrorThreshold = sqrt(0.01 * (radius * radius * M_PI))	// Error area is larger than 0.5% (p^2 > E  ==> p > √E)
+		let p = abs(self.radialDeviation(radius).peak)
+		if (p > radialErrorThreshold) {
+			println("Rejected roundness: \(p) > \(radialErrorThreshold)")
+			return false
+		}
+		
+		// Circle must be complete
+		let circleLengthThreshold = 0.95 * 2.0 * M_PI
+		if angleDeltas == nil {
+			angleDeltas = angleDeltas(points)
+		}
+		let arcLength = angleDeltas!.reduce(0.0, +)
+		if (arcLength < circleLengthThreshold) {
+			println("Rejected arc length: \(arcLength) < \(circleLengthThreshold)")
+			return false
+		}
+		
+		return true
 	}
 }
 
