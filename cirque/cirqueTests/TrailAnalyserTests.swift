@@ -24,7 +24,7 @@ class CircleAnalyzer: XCTestCase {
 	func polariseTestPoints(points: Array<(Double, Double)>, inout toRadius radius: Double) -> PolarArray {
 		let t = Trail(tuples: points)
 		let cf = CircleFitter()
-		let fit = cf.fitCenterAndRadius(t.points)
+		let fit = cf.fitCenterAndRadius(t.points)!
 		radius = Double(fit.radius)
 		return Circle().polarizePoints(t.points, around: fit.center)
 	}

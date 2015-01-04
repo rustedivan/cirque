@@ -53,7 +53,7 @@ class CircleFitterTests: XCTestCase {
 	}
 	
 	func testShouldFitNewCenterAndRadius() {
-		let newCenter = cf.fitCenterAndRadius(examplePoints)
+		let newCenter = cf.fitCenterAndRadius(examplePoints)!
 		XCTAssertEqualWithAccuracy(newCenter.center.x, CGFloat(-11.84), 0.01, "Center point not fitted correctly")
 		XCTAssertEqualWithAccuracy(newCenter.center.y, CGFloat(8.45), 0.01, "Center point not fitted correctly")
 		XCTAssertEqualWithAccuracy(newCenter.radius, CGFloat(14.69), 0.01, "Radius not fitter correctly")

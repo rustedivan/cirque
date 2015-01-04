@@ -15,4 +15,6 @@
 @property (assign) CGSize viewSize;
 
 -(void) render: (Circle *) model;
+-(void) renderFitWithRadius: (CGFloat) r
+												 at: (CGPoint) c;
 @end

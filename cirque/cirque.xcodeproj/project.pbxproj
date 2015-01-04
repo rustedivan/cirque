@@ -19,6 +19,8 @@
 		145A267F1A52BDD700B3FBAB /* MockTrails.swift in Sources */ = {isa = PBXBuildFile; fileRef = 145A267E1A52BDD700B3FBAB /* MockTrails.swift */; };
 		1469001F1A33411900B11A2D /* OpenGLES.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1469001E1A33411900B11A2D /* OpenGLES.framework */; };
 		146900221A33439500B11A2D /* ES2Program.m in Sources */ = {isa = PBXBuildFile; fileRef = 146900211A33439500B11A2D /* ES2Program.m */; };
+		14AFB4801A5936BF00EC7EA7 /* CircleControllerTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 14AFB47F1A5936BF00EC7EA7 /* CircleControllerTests.swift */; };
+		14AFB4811A59394D00EC7EA7 /* CircleController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 14D605A219FCEC900096E228 /* CircleController.swift */; };
 		14D189431A52C50E00CD0862 /* TrailAnalyser.swift in Sources */ = {isa = PBXBuildFile; fileRef = 14D189421A52C50E00CD0862 /* TrailAnalyser.swift */; };
 		14D189441A52C51500CD0862 /* TrailAnalyser.swift in Sources */ = {isa = PBXBuildFile; fileRef = 14D189421A52C50E00CD0862 /* TrailAnalyser.swift */; };
 		14D197091A3C844600832ACA /* CircleFitter.swift in Sources */ = {isa = PBXBuildFile; fileRef = 141A8E171A3C6C36002ED07F /* CircleFitter.swift */; };
@@ -28,7 +30,6 @@
 		14D6058619FCE63C0096E228 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 14D6058419FCE63C0096E228 /* Main.storyboard */; };
 		14D6058819FCE63C0096E228 /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 14D6058719FCE63C0096E228 /* Images.xcassets */; };
 		14D6058B19FCE63C0096E228 /* LaunchScreen.xib in Resources */ = {isa = PBXBuildFile; fileRef = 14D6058919FCE63C0096E228 /* LaunchScreen.xib */; };
-		14D6059719FCE63C0096E228 /* cirqueTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 14D6059619FCE63C0096E228 /* cirqueTests.swift */; };
 		14D605A119FCEB530096E228 /* CircleModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 14D605A019FCEB530096E228 /* CircleModel.swift */; };
 		14D605A319FCEC900096E228 /* CircleController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 14D605A219FCEC900096E228 /* CircleController.swift */; };
 		14E181991A2E4E3B007AE3E5 /* GameViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 14E181981A2E4E3B007AE3E5 /* GameViewController.m */; };
@@ -59,6 +60,7 @@
 		1469001E1A33411900B11A2D /* OpenGLES.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = OpenGLES.framework; path = System/Library/Frameworks/OpenGLES.framework; sourceTree = SDKROOT; };
 		146900201A33439500B11A2D /* ES2Program.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ES2Program.h; sourceTree = "<group>"; };
 		146900211A33439500B11A2D /* ES2Program.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ES2Program.m; sourceTree = "<group>"; };
+		14AFB47F1A5936BF00EC7EA7 /* CircleControllerTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CircleControllerTests.swift; sourceTree = "<group>"; };
 		14D189421A52C50E00CD0862 /* TrailAnalyser.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TrailAnalyser.swift; sourceTree = "<group>"; };
 		14D6057719FCE63C0096E228 /* cirque.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = cirque.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		14D6057B19FCE63C0096E228 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
@@ -70,7 +72,6 @@
 		14D6058A19FCE63C0096E228 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = Base; path = Base.lproj/LaunchScreen.xib; sourceTree = "<group>"; };
 		14D6059019FCE63C0096E228 /* cirqueTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = cirqueTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		14D6059519FCE63C0096E228 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
-		14D6059619FCE63C0096E228 /* cirqueTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = cirqueTests.swift; sourceTree = "<group>"; };
 		14D605A019FCEB530096E228 /* CircleModel.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CircleModel.swift; sourceTree = "<group>"; };
 		14D605A219FCEC900096E228 /* CircleController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CircleController.swift; sourceTree = "<group>"; };
 		14E181961A2E4E3A007AE3E5 /* cirque-Bridging-Header.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "cirque-Bridging-Header.h"; sourceTree = "<group>"; };
@@ -159,9 +160,9 @@
 		14D6059319FCE63C0096E228 /* cirqueTests */ = {
 			isa = PBXGroup;
 			children = (
-				14D6059619FCE63C0096E228 /* cirqueTests.swift */,
-				1402B4C41A34560400E335B3 /* CircleModelTests.swift */,
+				14AFB47F1A5936BF00EC7EA7 /* CircleControllerTests.swift */,
 				141A8E191A3C6C6B002ED07F /* CircleFitterTests.swift */,
+				1402B4C41A34560400E335B3 /* CircleModelTests.swift */,
 				1402B4CA1A3469CC00E335B3 /* TrailTests.swift */,
 				145855C31A502BED00C44CB1 /* TrailAnalyserTests.swift */,
 				1402B4C81A34680B00E335B3 /* CircleViewTests.m */,
@@ -314,12 +315,13 @@
 				141A8E1A1A3C6C6B002ED07F /* CircleFitterTests.swift in Sources */,
 				145855C41A502BED00C44CB1 /* TrailAnalyserTests.swift in Sources */,
 				145A267F1A52BDD700B3FBAB /* MockTrails.swift in Sources */,
+				14AFB4811A59394D00EC7EA7 /* CircleController.swift in Sources */,
 				1402B4CE1A346D6C00E335B3 /* TrailModel.swift in Sources */,
 				1402B4C91A34680B00E335B3 /* CircleViewTests.m in Sources */,
 				1402B4C61A34561300E335B3 /* CircleModel.swift in Sources */,
-				14D6059719FCE63C0096E228 /* cirqueTests.swift in Sources */,
 				14D197091A3C844600832ACA /* CircleFitter.swift in Sources */,
 				1402B4CB1A3469CC00E335B3 /* TrailTests.swift in Sources */,
+				14AFB4801A5936BF00EC7EA7 /* CircleControllerTests.swift in Sources */,
 				14D189441A52C51500CD0862 /* TrailAnalyser.swift in Sources */,
 				1402B4C51A34560400E335B3 /* CircleModelTests.swift in Sources */,
 			);
