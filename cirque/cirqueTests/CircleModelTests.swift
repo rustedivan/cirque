@@ -40,4 +40,13 @@ class CircleModelTests: XCTestCase {
 		XCTAssertEqualWithAccuracy(polar[3].a, CGFloat(7.0 * M_PI_4), 0.01, "Incorrectly polarized")
 		XCTAssertEqualWithAccuracy(polar[3].r, CGFloat(141.0), 1.0, "Incorrectly polarized")
 	}
+	
+	func testCircleShouldFilterShortSegments() {
+		var c = Circle()
+		c.addSegment(CGPointZero)
+		XCTAssertEqual(c.distanceFromEnd(CGPoint(x: 10.0, y: 0.0)), CGFloat(10.0), "Distance incorrect")
+		XCTAssertEqual(c.distanceFromEnd(CGPoint(x: 20.0, y: 0.0)), CGFloat(20.0), "Distance incorrect")
+		XCTAssertEqual(c.distanceFromEnd(CGPoint(x: 1.0, y: 0.0)), CGFloat(1.0), "Distance incorrect")
+		XCTAssertEqual(c.distanceFromEnd(CGPoint(x: 3.0, y: 4.0)), CGFloat(5.0), "Distance incorrect")
+	}
 }

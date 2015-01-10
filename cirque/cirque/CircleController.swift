@@ -30,9 +30,14 @@ class CircleController: NSObject {
 	}
 	
 	func addSegment(p: CGPoint) {
+		let distanceFromLastSegment = circle.distanceFromEnd(p)
+		if distanceFromLastSegment < circle.segmentFilterDistance {
+			return
+		}
+		
 		circle.addSegment(p)
 		
-		if NSDate().timeIntervalSinceDate(analysisTimestamp) > 0.1 {
+		if NSDate().timeIntervalSinceDate(analysisTimestamp) > 0.2 {
 			fitCircle(circle.segments) {(fit: CircleFit?) in
 				self.bestFit = fit
 				self.analysisTimestamp = NSDate()

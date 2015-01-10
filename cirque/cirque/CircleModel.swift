@@ -16,6 +16,7 @@ typealias PolarArray = Array<Polar>
 
 @objc
 public class Circle: NSObject {
+	var segmentFilterDistance: CGFloat {get {return 3.0}}
 	var segments = Trail()
 	
 	func begin() {
@@ -49,6 +50,11 @@ public class Circle: NSObject {
 		}
 
 		return polar
+	}
+	
+	func distanceFromEnd(point: CGPoint) -> CGFloat {
+		let p = CGVector(dx: point.x - segments.points.last!.x, dy: point.y - segments.points.last!.y)
+		return sqrt(p.dx * p.dx + p.dy * p.dy)
 	}
 }
 
