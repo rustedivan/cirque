@@ -74,8 +74,13 @@
 		point.x = touchPoint.x;
 		point.y = screenHeight - touchPoint.y;
 		
-		BOOL ok = [_swCircleController endCircle: point];
-		if (!ok) {
+		NSDictionary* result = [_swCircleController endCircle: point];
+		if ([result[@"valid"] boolValue] == YES) {
+			if (result[@"score"]) {
+				NSInteger score = ([result[@"score"] floatValue] * 100.0f);
+				[_errorLabel setText: [NSString stringWithFormat: @"Score: %ld", score]];
+			}
+		} else {
 			_swCircleController = nil;
 		}
 	}];

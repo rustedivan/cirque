@@ -109,7 +109,7 @@
 	[_fitShader use];
 	GLKMatrix4 mvpMatrix = GLKMatrix4MakeOrtho(0, _viewSize.width, 0, _viewSize.height,  10, -10);
 	[_fitShader setUniform: @"modelViewProjectionMatrix" matrixValue: mvpMatrix];
-	[_circleShader setUniform: @"color" vectorX:0.6 vectorY:8.0 vectorZ:0.5];
+	[_circleShader setUniform: @"color" vectorX:0.8 vectorY:0.8 vectorZ:0.8];
 
 	// FIXME: Crazy to do this per-frame. Memory-map a buffer?
 	int resolution = 90;

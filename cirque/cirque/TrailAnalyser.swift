@@ -9,24 +9,52 @@
 import Foundation
 import CoreGraphics.CGGeometry
 
+/* 
+	Insight: - for scoring, only radial displacement counts. Put that				 on an exponential curve and report it verbatim.
+					 - for hinting, if the radial peak is in the last 20%:
+						 - end caps separation if > X
+						 - end slope if > X
+					 - for hinting, if the radial peak is elsewhere, point
+						 it out with contract/expand info according to the time
+						 series of the historical error on a exponential decay
+						 window stretching back ~20-30 circles.
+
+	
+*/
+
 class TrailAnalyser: NSObject {
 	let points: PolarArray!
+	let radius: Double
 	var angleDeltas: Array<Double>?
 	
-	init(points polarPoints: PolarArray) {
-		super.init()
+	init(points polarPoints: PolarArray, fitRadius radius: Double) {
 		self.points = polarPoints
+		self.radius = radius
+		super.init()
 	}
 }
 
 extension TrailAnalyser {
+	/*	Grade the radial deviations on a reverse quadratic curve.
+			Approved radial fitnesses lie on 0.0...0.1, so scale that up
+			by a factor of 10 and clamp it to normalize. Reverse and square.
+	*/
+	func circularityScore() -> Double {
+		let errorInterval = 0.0...1.0
+		let errorScale = 10.0
+		let error = max(min(radialFitness() * errorScale, errorInterval.end), errorInterval.start)
+		let score = error - (errorInterval.end - errorInterval.start)
+		let gradedScore = score * score
+		return gradedScore
+	}
+	
 	/*	Measure the relative RMS of radial errors, i.e. how round the circle is.
 			Given a fitted circle, calculate each point's radial displacement from
 			the fit. Find the RMS relative to the size of the circle. */
-	func radialFitness(radius: Double) -> Double {
-		let errorThreshold = 0.05
+	func radialFitness() -> Double {
+		let errorThreshold = 0.02
 
-		let deviations = deviationsFromFit(radius)
+		let deviations = deviationsFromFit()
 		let rmsError = sqrt(deviations.reduce(0.0) {$0 + $1 * $1} / Double(deviations.count))
 		let relativeRMS = rmsError / radius
 		
@@ -38,7 +66,7 @@ extension TrailAnalyser {
 			around the circle. Report the largest absolute deviation from the mean.
 			Report the value and map its center to an angle.
 	*/
-	func radialDeviation(radius: Double) -> (peak: Double, angle: CGFloat) {
+	func radialDeviation() -> (peak: Double, angle: CGFloat) {
 		let errorThreshold = 1.0
 		
 		// Calculate moving average
@@ -99,8 +127,8 @@ extension TrailAnalyser {
 		return (abs(contraction) > errorThreshold) ? contraction : 0.0
 	}
 	
-	func deviationsFromFit(radius: Double) -> Array<Double> {
-		return points.map {Double($0.r) - radius}
+	func deviationsFromFit() -> Array<Double> {
+		return points.map {Double($0.r) - self.radius}
 	}
 }
 
@@ -239,7 +267,7 @@ extension TrailAnalyser {
 }
 
 extension TrailAnalyser {
-	func isCircle(radius: Double) -> Bool {
+	func isCircle() -> Bool {
 		// Circle must be closed
 		let endCapErrorThreshold = radius / 2.0	// Caps are off by half the radius
 		if (self.endCapsSeparation() > endCapErrorThreshold) {
@@ -248,8 +276,8 @@ extension TrailAnalyser {
 		}
 
 		// Circle must be round
-		let radialErrorThreshold = sqrt(0.01 * (radius * radius * M_PI))	// Error area is larger than 0.5% (p^2 > E  ==> p > √E)
-		let p = abs(self.radialDeviation(radius).peak)
+		let radialErrorThreshold = sqrt(0.005 * (radius * radius * M_PI))	// Error area is larger than 0.5% (p^2 > E  ==> p > √E)
+		let p = abs(self.radialDeviation().peak)
 		if (p > radialErrorThreshold) {
 			println("Rejected roundness: \(p) > \(radialErrorThreshold)")
 			return false

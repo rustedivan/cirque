@@ -40,7 +40,8 @@ class CircleController: NSObject {
 		}
 	}
 
-	func endCircle(p: CGPoint) -> Bool {
+	// FIXME: find a better return mechanism than dictionary. Tuple.
+	func endCircle(p: CGPoint) -> Dictionary<String, AnyObject> {
 		circle.addSegment(p)
 		circle.end()
 		
@@ -48,10 +49,12 @@ class CircleController: NSObject {
 		
 		if let fit = CircleFitter().fitCenterAndRadius(circle.segments.points) {
 			let polar = circle.polarizePoints(circle.segments.points, around: fit.center)
-			let analyser = TrailAnalyser(points: polar)
-			return analyser.isCircle(Double(fit.radius))
+			let analyser = TrailAnalyser(points: polar, fitRadius: Double(fit.radius))
+			
+			let score = analyser.circularityScore()
+			return ["valid" : analyser.isCircle(), "score" : score]
 		} else {
-			return false
+			return ["valid" : false]
 		}
 	}
 
