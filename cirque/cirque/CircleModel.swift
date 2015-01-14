@@ -13,6 +13,7 @@ typealias Point = CGPoint
 typealias PointArray = Array<Point>
 typealias Polar = (r: CGFloat, a: CGFloat)
 typealias PolarArray = Array<Polar>
+typealias AngleBucket = (points: PolarArray, angle: CGFloat)
 
 @objc
 public class Circle: NSObject {

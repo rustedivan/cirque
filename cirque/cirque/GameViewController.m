@@ -78,7 +78,7 @@
 		if ([result[@"valid"] boolValue] == YES) {
 			if (result[@"score"]) {
 				NSInteger score = ([result[@"score"] floatValue] * 100.0f);
-				[_errorLabel setText: [NSString stringWithFormat: @"Score: %ld", score]];
+				[_errorLabel setText: [NSString stringWithFormat: @"Score: %ld", (long)score]];
 			}
 		} else {
 			_swCircleController = nil;

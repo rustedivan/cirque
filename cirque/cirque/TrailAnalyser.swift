@@ -10,7 +10,7 @@ import Foundation
 import CoreGraphics.CGGeometry
 
 /* 
-	Insight: - for scoring, only radial displacement counts. Put that				 on an exponential curve and report it verbatim.
+	Insight: - for scoring, only radial displacement counts. Put that on an exponential curve and report it verbatim.
 					 - for hinting, if the radial peak is in the last 20%:
 						 - end caps separation if > X
 						 - end slope if > X
@@ -24,13 +24,35 @@ import CoreGraphics.CGGeometry
 
 class TrailAnalyser: NSObject {
 	let points: PolarArray!
+	let pointBuckets: [AngleBucket]!
 	let radius: Double
+	let analysisBuckets = 36
 	var angleDeltas: Array<Double>?
+	
 	
 	init(points polarPoints: PolarArray, fitRadius radius: Double) {
 		self.points = polarPoints
 		self.radius = radius
+
 		super.init()
+
+		self.pointBuckets = binPointsByAngle(buckets: analysisBuckets)
+	}
+	
+	func binPointsByAngle(#buckets: Int) -> [AngleBucket] {
+		var histogram = [AngleBucket](count: buckets, repeatedValue: ([], 0.0))
+		let nBuckets = CGFloat(buckets)
+		
+		for i in 0..<buckets {
+			histogram[i].angle = (CGFloat(2.0 * M_PI) / nBuckets) * CGFloat(i)
+		}
+		
+		let bucketWidth = CGFloat(2.0 * M_PI) / nBuckets
+		for p in points {
+			let i = Int(p.a / bucketWidth)
+			histogram[i].points.append(p)
+		}
+		return histogram
 	}
 }
 
@@ -70,39 +92,39 @@ extension TrailAnalyser {
 		let errorThreshold = 1.0
 		
 		// Calculate moving average
-		let n = points.count
-		let windowSize = n / 8
-		let mask = Array<Int>(0..<windowSize)
-		var smoothed = Array<Double>(count: n, repeatedValue: 0.0)
+		let n = analysisBuckets
+		var bucketErrors = Array<Double>(count: n, repeatedValue: 0.0)
 		for i in 0..<n {
-			var avg = 0.0
-			for j in mask {
-				avg += Double(points[(i + j) % n].r) - radius
+			let bucket = pointBuckets[i]
+			var bucketError = 0.0
+			for p in bucket.points {
+				let e = Double(p.r) - radius
+				bucketError += e * e
 			}
-			smoothed[i] = avg / Double(windowSize)
+			bucketErrors[i] = bucketError
 		}
 		
-		// Find largest/smallest value among the averages
+		// Find largest/smallest value among the buckets
 		var largestValue = -1.0
-		var smallestValue = 100000.0
 		var largestIndex = -1
-		var smallestIndex = n + 1
 		for i in 0..<n {
-			let v = smoothed[i]
+			let v = bucketErrors[i]
 			if v > largestValue {largestValue = v; largestIndex = i}
-			if v < smallestValue {smallestValue = v; smallestIndex = i}
 		}
 		
-		// Return the largest value and its associated angle (taken from center of window)
-		var outV = 0.0
-		var outI = 0
-		if (abs(largestValue) > abs(smallestValue)) {outV = largestValue; outI = largestIndex}
-		else {outV = smallestValue; outI = smallestIndex}
+		// Return the largest value in the "worst" bucket
+		let largestBucket = pointBuckets[largestIndex]
+		let bucketRadii = largestBucket.points.map({$0.r})
+		var peakError = 0.0
+		for r in bucketRadii {
+			let e = Double(r) - radius
+			if abs(e) > abs(peakError) {
+				peakError = e
+			}
+		}
 		
-		outI = (outI + windowSize / 2) % n	// Take index from center of window
-		
-		let a = Double(points[outI].a) * 180.0 / M_PI
-		return (abs(outV) > errorThreshold) ? (peak: outV, angle: points[outI].a) : (peak: 0.0, angle: 0.0)
+		return (abs(peakError) > errorThreshold) ? (peak: peakError, angle: pointBuckets[largestIndex].angle) :
+																											 (peak: 0.0, angle: 0.0)
 	}
 	
 	/*	Measure difference between radial RMS and beginnig and end of the circle.
@@ -276,7 +298,7 @@ extension TrailAnalyser {
 		}
 
 		// Circle must be round
-		let radialErrorThreshold = sqrt(0.005 * (radius * radius * M_PI))	// Error area is larger than 0.5% (p^2 > E  ==> p > √E)
+		let radialErrorThreshold = sqrt(0.01 * (radius * radius * M_PI))	// Error area is larger than 0.5% (p^2 > E  ==> p > √E)
 		let p = abs(self.radialDeviation().peak)
 		if (p > radialErrorThreshold) {
 			println("Rejected roundness: \(p) > \(radialErrorThreshold)")

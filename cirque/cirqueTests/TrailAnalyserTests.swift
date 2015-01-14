@@ -109,10 +109,10 @@ class CircleAnalyzer: XCTestCase {
 	/* Radial deviations: given a fit circle, calculate the residial vector of radial samples.
 	*/
 	func testCalculateRadialDeviations() {
-		var points: PolarArray = [	(a: 0.0, r: 100.0),
-																(a: 90.0, r: 95.0),
-																(a: 180.0, r: 105.0),
-																(a: 270.0, r: 150.0)]
+		var points: PolarArray = [	(a: CGFloat(0.0), r: 100.0),
+																(a: CGFloat(M_PI_2), r: 95.0),
+																(a: CGFloat(M_PI), r: 105.0),
+																(a: CGFloat(3.0 * M_PI_2), r: 150.0)]
 
 		let deviations = TrailAnalyser(points: points, fitRadius: 100).deviationsFromFit()
 		XCTAssertEqualWithAccuracy(deviations[0], 0.0, 0.0, "Deviation incorrect")
@@ -146,7 +146,7 @@ class CircleAnalyzer: XCTestCase {
 		XCTAssertEqualWithAccuracy(bumpInD.angle, CGFloat(6.0 * M_PI_4), 0.30, "Did not find deviation")
 
 		XCTAssertLessThan(flatRight.peak, 0.0, "Did not calculate deviation")
-		XCTAssertEqualWithAccuracy(flatRight.angle, CGFloat(0.0 * M_PI_4), 0.30, "Did not find deviation")
+		XCTAssertEqualWithAccuracy(flatRight.angle, CGFloat(8.0 * M_PI_4), 0.30, "Did not find deviation")
 
 		XCTAssertEqual(noBump.peak, 0.0, "Did not calculate deviation")
 	}
@@ -273,8 +273,24 @@ class CircleAnalyzer: XCTestCase {
 		var radius = 0.0
 		
 		let circleTrail = polariseTestPoints(properCircle, toRadius: &radius)
-		let reject = TrailAnalyser(points: circleTrail, fitRadius: radius).isCircle()
+		let accept = TrailAnalyser(points: circleTrail, fitRadius: radius).isCircle()
 		
-		XCTAssertTrue(reject, "Noncomplete circle should be rejected")
+		XCTAssertTrue(accept, "Complete circle should be accepted")
+	}
+	
+	func testCircleShouldBinAngles() {
+		var buckets = TrailAnalyser(points: binTestCircle, fitRadius: 1.0).binPointsByAngle(buckets: 4)
+		
+		XCTAssertEqual(buckets.count, 4, "Wrong number of buckets")
+		
+		XCTAssertEqual(buckets[0].points.count, 18, "Wrong number of points in bucket 0")
+		XCTAssertEqual(buckets[1].points.count, 10, "Wrong number of points in bucket 1")
+		XCTAssertEqual(buckets[2].points.count, 8, "Wrong number of points in bucket 2")
+		XCTAssertEqual(buckets[3].points.count, 9, "Wrong number of points in bucket 3")
+		
+		XCTAssertEqualWithAccuracy(buckets[0].angle, CGFloat(0.0), 0.01, "Bucket 0 in wrong direction")
+		XCTAssertEqualWithAccuracy(buckets[1].angle, CGFloat(M_PI_2), 0.01, "Bucket 1 in wrong direction")
+		XCTAssertEqualWithAccuracy(buckets[2].angle, CGFloat(M_PI), 0.01, "Bucket 2 in wrong direction")
+		XCTAssertEqualWithAccuracy(buckets[3].angle, CGFloat(3.0 * M_PI_2), 0.01, "Bucket 3 in wrong direction")
 	}
 }
