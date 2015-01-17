@@ -208,70 +208,34 @@ extension TrailAnalyser {
 		return (stddev > errorThreshold) ? stddev : 0.0
 	}
 	
-	/*	$ FIXME: Stroke evenness bias
-	This method is problematic: a dense stretch means that many samples
-	skew the mean toward the dense. Sparse stretches do not skew toward sparse.
-	This means that it is difficult to figure out whether sparse or dense stretches
-	are more deviant. The mean should be based on actual arc length, not number of samples.
-	
-	Find area of the stroke where the points are dense or sparse.
-	Given a list of the gaps between points, calculate a moving average
-	with a window size of 45º around the circle. Report the largest absolute
-	deviation from the mean. A low value means dense points; a high value
-	means sparse points. Report the value and map its center to an angle.
+	/*	Find area of the stroke where the points are dense or sparse.
+			Given a list of angle buckets, find the number of points that
+			fell into each. Find the bucket that deviates the most from the
+			mean. Return its relative error and direction.
 	*/
 	func strokeCongestion() -> (peak: Double, angle: CGFloat) {
-//		println("# Stroke congestion")
-		if angleDeltas == nil {
-			angleDeltas = angleDeltas(points)
-		}
-		
-		let ad = angleDeltas!
-		
-		// Calculate moving average
-		let n = ad.count
-		let windowSize = points.count / 8
-		let mask = Array<Int>(0..<windowSize)
-		var smoothed = Array<Double>(count: n, repeatedValue: 0.0)
-		for i in 0..<n {
-			var avg = 0.0
-			for j in mask {
-				avg += ad[(i + j) % n]
-			}
-			smoothed[i] = avg / Double(windowSize)
-		}
-		
+		let n = pointBuckets.count
+		let bucketSizes = pointBuckets.map{$0.points.count}
+		let avgBucketSize = bucketSizes.reduce(0.0) {$0 + Double($1)} / Double(n)
+
 		// Find largest/smallest value among the averages
-		var sparsestValue = -1.0
-		var densestValue = 100000.0
+		var sparsestValue = -1
+		var densestValue = 100000
 		var sparsestIndex = -1
 		var densestIndex = n + 1
 		for i in 0..<n {
-			let v = smoothed[i]
+			let v = bucketSizes[i]
 			if v > sparsestValue {sparsestValue = v; sparsestIndex = i}
 			if v < densestValue {densestValue = v; densestIndex = i}
 		}
-		
-		let median = (sparsestValue + densestValue) / 2.0
-//		println("\tOver median: \(median)")
-		
-		// Figure out if the error is sparse or dense
-		sparsestValue = abs(sparsestValue - median)
-		densestValue = abs(densestValue - median)
-//		println("\tSparsest congestion: \(sparsestValue) @ \(sparsestIndex)")
-//		println("\tDensest congestion:  \(densestValue) @ \(densestIndex)")
-		
-		// Return the largest value and its associated angle (taken from center of window)
-		var outV = 0.0
-		var outI = 0
-		if (sparsestValue > densestValue) {outV = sparsestValue; outI = sparsestIndex}
-		else {outV = densestValue; outI = densestIndex}
-		outI = (outI + windowSize / 2) % n	// Take index from center of window
-		
-//		println("\tMost deviant congestion: \(outV) @ \(outI)")
-		let a = Double(points[outI].a) * 180.0 / M_PI
-//		println("\tFound at angle: \(a)")
-		return (peak: outV, angle: points[outI].a)
+	
+		let sparsestDeviation = abs(Double(sparsestValue) - avgBucketSize)
+		let densestDeviation = abs(Double(densestValue) - avgBucketSize)
+	
+		let worstBucket = (sparsestDeviation > densestDeviation) ?
+			sparsestIndex : densestIndex
+
+		return (peak: Double(bucketSizes[worstBucket]) - avgBucketSize, angle: pointBuckets[worstBucket].angle)
 	}
 	
 	func angleDeltas(points: PolarArray) -> Array<Double> {

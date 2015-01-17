@@ -101,9 +101,9 @@ class CircleAnalyzer: XCTestCase {
 		let congestionUL = TrailAnalyser(points: congestionUpLeft, fitRadius: discard).strokeCongestion()
 		
 		XCTAssertGreaterThan(congestionD.peak, 0.0, "Did not calculate congestion")
-		XCTAssertEqualWithAccuracy(congestionD.angle, CGFloat(3.0 * M_PI_2), 0.03, "Did not direct congestion")
+		XCTAssertEqualWithAccuracy(congestionD.angle, CGFloat(3.0 * M_PI_2), CGFloat(M_PI_4), "Did not direct congestion")
 		XCTAssertGreaterThan(congestionUL.peak, 0.0, "Did not calculate congestion")
-		XCTAssertEqualWithAccuracy(congestionUL.angle, CGFloat(3.0 * M_PI_4), 0.03, "Did not direct congestion")
+		XCTAssertEqualWithAccuracy(congestionUL.angle, CGFloat(3.0 * M_PI_4), CGFloat(M_PI_4), "Did not direct congestion")
 	}
 	
 	/* Radial deviations: given a fit circle, calculate the residial vector of radial samples.
