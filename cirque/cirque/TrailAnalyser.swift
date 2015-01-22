@@ -22,12 +22,13 @@ import CoreGraphics.CGGeometry
 	
 */
 
-class TrailAnalyser: NSObject {
+class TrailAnalyser: NSObject, NSCoding {
 	let points: PolarArray!
 	let pointBuckets: [AngleBucket]!
 	let radius: Double
 	let analysisBuckets = 36
 	var angleDeltas: Array<Double>?
+	var bucketErrors: Array<Double>?
 	
 	
 	init(points polarPoints: PolarArray, fitRadius radius: Double) {
@@ -36,7 +37,28 @@ class TrailAnalyser: NSObject {
 
 		super.init()
 
-		self.pointBuckets = binPointsByAngle(buckets: analysisBuckets)
+		pointBuckets = binPointsByAngle(buckets: analysisBuckets)
+	}
+	
+	required init(coder aDecoder: NSCoder) {
+		radius = aDecoder.decodeDoubleForKey("radius")
+		let rArray = aDecoder.decodeObjectForKey("radii") as [Double]
+		let aArray = aDecoder.decodeObjectForKey("angles") as [Double]
+		let pairs = Array(Zip2(rArray, aArray))
+		points = pairs.map{ Polar(r: CGFloat($0.0), a: CGFloat($0.1)) }
+		
+		super.init()
+		
+		pointBuckets = binPointsByAngle(buckets: analysisBuckets)
+	}
+	
+	func encodeWithCoder(aCoder: NSCoder) {
+		let rList = NSArray(array: points.map{$0.r})
+		let aList = NSArray(array: points.map{$0.a})
+		
+		aCoder.encodeObject(rList, forKey: "radii")
+		aCoder.encodeObject(aList, forKey: "angles")
+		aCoder.encodeDouble(radius, forKey: "radius")
 	}
 	
 	func binPointsByAngle(#buckets: Int) -> [AngleBucket] {
@@ -70,6 +92,23 @@ extension TrailAnalyser {
 		return gradedScore
 	}
 	
+	// FIXME: computed property pls
+	func calcBucketErrors() -> [Double] {
+		// Calculate moving average
+		let n = analysisBuckets
+		var bucketErrors = Array<Double>(count: n, repeatedValue: 0.0)
+		for i in 0..<n {
+			let bucket = pointBuckets[i]
+			var bucketError = 0.0
+			for p in bucket.points {
+				let e = Double(p.r) - radius
+				bucketError += e * e
+			}
+			bucketErrors[i] = bucketError
+		}
+		return bucketErrors
+	}
+	
 	/*	Measure the relative RMS of radial errors, i.e. how round the circle is.
 			Given a fitted circle, calculate each point's radial displacement from
 			the fit. Find the RMS relative to the size of the circle. */
@@ -91,24 +130,16 @@ extension TrailAnalyser {
 	func radialDeviation() -> (peak: Double, angle: CGFloat) {
 		let errorThreshold = 1.0
 		
-		// Calculate moving average
-		let n = analysisBuckets
-		var bucketErrors = Array<Double>(count: n, repeatedValue: 0.0)
-		for i in 0..<n {
-			let bucket = pointBuckets[i]
-			var bucketError = 0.0
-			for p in bucket.points {
-				let e = Double(p.r) - radius
-				bucketError += e * e
-			}
-			bucketErrors[i] = bucketError
+		if bucketErrors == nil {
+			bucketErrors = calcBucketErrors()
 		}
 		
 		// Find largest/smallest value among the buckets
+		let n = bucketErrors!.count
 		var largestValue = -1.0
 		var largestIndex = -1
 		for i in 0..<n {
-			let v = bucketErrors[i]
+			let v = bucketErrors![i]
 			if v > largestValue {largestValue = v; largestIndex = i}
 		}
 		
@@ -283,5 +314,3 @@ extension TrailAnalyser {
 		return true
 	}
 }
-
-

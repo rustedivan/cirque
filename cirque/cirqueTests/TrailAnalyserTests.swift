@@ -293,4 +293,13 @@ class CircleAnalyzer: XCTestCase {
 		XCTAssertEqualWithAccuracy(buckets[2].angle, CGFloat(M_PI), 0.01, "Bucket 2 in wrong direction")
 		XCTAssertEqualWithAccuracy(buckets[3].angle, CGFloat(3.0 * M_PI_2), 0.01, "Bucket 3 in wrong direction")
 	}
+	
+	func testTrailAnalysisPerformance() {
+		var radius = 0.0
+		let testTrail = polariseTestPoints(eight, toRadius: &radius)
+		self.measureBlock() {
+			TrailAnalyser(points: testTrail, fitRadius: radius)
+			return ()
+		}
+	}
 }
