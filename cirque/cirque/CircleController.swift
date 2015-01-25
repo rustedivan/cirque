@@ -37,12 +37,6 @@ class CircleController: NSObject {
 		
 		circle.addSegment(p)
 		
-		if NSDate().timeIntervalSinceDate(analysisTimestamp) > 0.2 {
-			fitCircle(circle.segments) {(fit: CircleFit?) in
-				self.bestFit = fit
-				self.analysisTimestamp = NSDate()
-			}
-		}
 	}
 
 	// FIXME: find a better return mechanism than dictionary. Tuple.
@@ -52,12 +46,30 @@ class CircleController: NSObject {
 		
 //		circle.dumpAsSwiftArray()
 		
+		// FIXME: doing two analyses :(
+		fitCircle(circle.segments) {(fit: CircleFit?) in
+			self.bestFit = fit
+			self.analysisTimestamp = NSDate()
+		}
+		
 		if let fit = CircleFitter().fitCenterAndRadius(circle.segments.points) {
 			let polar = circle.polarizePoints(circle.segments.points, around: fit.center)
 			let analyser = TrailAnalyser(points: polar, fitRadius: Double(fit.radius))
 			
+			let isCircle = analyser.isCircle()
+			var trend = 0.0
+			if isCircle {
+				let historyWriter = TrailHistory(filename: "game-trail-history.trails")
+				historyWriter.addAnalysis(analyser)
+				trend = historyWriter.circularityScoreProgression()
+				historyWriter.save()
+				historyWriter.dumpScoreHistory()
+			}
+			
 			let score = analyser.circularityScore()
-			return ["valid" : analyser.isCircle(), "score" : score]
+			return ["valid" : isCircle,
+							"score" : score,
+							"trend" : trend]
 		} else {
 			return ["valid" : false]
 		}

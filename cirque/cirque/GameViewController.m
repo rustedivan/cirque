@@ -76,9 +76,10 @@
 		
 		NSDictionary* result = [_swCircleController endCircle: point];
 		if ([result[@"valid"] boolValue] == YES) {
-			if (result[@"score"]) {
+			if (result[@"score"] && [result[@"trend"] floatValue] != 0.0) {
 				NSInteger score = ([result[@"score"] floatValue] * 100.0f);
-				[_errorLabel setText: [NSString stringWithFormat: @"Score: %ld", (long)score]];
+				NSInteger trend = ([result[@"trend"] floatValue] * 10000.0f);
+				[_errorLabel setText: [NSString stringWithFormat: @"Score: %ld (trend: %ld)", (long)score, (long)trend]];
 			}
 		} else {
 			_swCircleController = nil;

@@ -61,11 +61,11 @@ class CircleControllerTests: XCTestCase {
 //		XCTAssertEqual(c.dispatchCount, 2, "The fit channel should be open now")
 //	}
 //	
-	func testShouldNotFitCircleThatIsOnlyASegment() {
-		XCTFail("Not implemented")
-	}
-	
-	func testShouldCopyTrailDataToThread() {
-		XCTFail("Not implemented")
-	}
+//	func testShouldNotFitCircleThatIsOnlyASegment() {
+//		XCTFail("Not implemented")
+//	}
+//	
+//	func testShouldCopyTrailDataToThread() {
+//		XCTFail("Not implemented")
+//	}
 }

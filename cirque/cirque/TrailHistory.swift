@@ -62,6 +62,7 @@ class TrailHistory {
 }
 
 extension TrailHistory {
+	
 	func circularityScoreProgression() -> Double {
 		var scores = [Double]()
 		for analysis in entries {
@@ -83,5 +84,14 @@ extension TrailHistory {
 		let regression = (sumST - (sumS * sumT)/n) / (sumTT - sumT*sumT/n)
 		
 		return regression
+	}
+	
+	func dumpScoreHistory() {
+		var scores = [Double]()
+		for analysis in entries {
+			scores.append(analysis.circularityScore())
+		}
+		
+		println(scores)
 	}
 }
