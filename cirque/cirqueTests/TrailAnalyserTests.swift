@@ -279,7 +279,7 @@ class CircleAnalyzer: XCTestCase {
 	}
 	
 	func testCircleShouldBinAngles() {
-		var buckets = TrailAnalyser(points: binTestCircle, fitRadius: 1.0).binPointsByAngle(buckets: 4)
+		let buckets = TrailAnalyser.binPointsByAngle(binTestCircle, intoBuckets: 4)
 		
 		XCTAssertEqual(buckets.count, 4, "Wrong number of buckets")
 		

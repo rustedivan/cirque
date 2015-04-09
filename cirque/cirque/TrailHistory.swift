@@ -13,7 +13,7 @@ class TrailHistory {
 	var filename: String?
 	class var historyDir: String {
 		get {
-			let appSupportDir = NSSearchPathForDirectoriesInDomains(.ApplicationSupportDirectory, .UserDomainMask, true)[0] as String
+			let appSupportDir = NSSearchPathForDirectoriesInDomains(.ApplicationSupportDirectory, .UserDomainMask, true)[0] as! String
 			let bundleId = NSBundle.mainBundle().bundleIdentifier
 			return appSupportDir + "/" + bundleId! + "/"
 		}
@@ -30,7 +30,7 @@ class TrailHistory {
 		let loadData = NSData(contentsOfFile: TrailHistory.historyDir + filename)
 		if let data = loadData {
 			var loader = NSKeyedUnarchiver(forReadingWithData: data)
-			entries = loader.decodeObjectForKey("trails") as [TrailAnalyser]
+			entries = loader.decodeObjectForKey("trails") as! [TrailAnalyser]
 		}
 	}
 	
@@ -73,7 +73,7 @@ extension TrailHistory {
 
 		let n = Double(scores.count)
 		let sumT = indices.reduce(0.0) {$0 + Double($1)}
-		let sumS = scores.reduce(0.0, +)
+		let sumS = scores.reduce(0.0, combine: +)
 
 		var sumST = 0.0
 		for i in 0..<scores.count {

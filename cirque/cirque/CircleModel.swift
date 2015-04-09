@@ -63,7 +63,7 @@ extension Circle {
 	func dumpAsSwiftArray() {
 		let l = 5
 		let a = segments.points
-		var o = Array<Slice<CGPoint>>()
+		var o = Array<ArraySlice<CGPoint>>()
 		var i = 0
 		while i+l < a.count {
 			let s = a[i..<i+l]

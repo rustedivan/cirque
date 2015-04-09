@@ -31,25 +31,22 @@ class TrailAnalyser: NSObject, NSCoding {
 	var bucketErrors: Array<Double>?
 	
 	
-	init(points polarPoints: PolarArray, fitRadius radius: Double) {
-		self.points = polarPoints
-		self.radius = radius
-
+	init(points polarPoints: PolarArray, fitRadius inRadius: Double) {
+		points = polarPoints
+		radius = inRadius
+		pointBuckets = TrailAnalyser.binPointsByAngle(polarPoints, intoBuckets: analysisBuckets)
 		super.init()
-
-		pointBuckets = binPointsByAngle(buckets: analysisBuckets)
 	}
 	
 	required init(coder aDecoder: NSCoder) {
 		radius = aDecoder.decodeDoubleForKey("radius")
-		let rArray = aDecoder.decodeObjectForKey("radii") as [Double]
-		let aArray = aDecoder.decodeObjectForKey("angles") as [Double]
+		let rArray = aDecoder.decodeObjectForKey("radii") as! [Double]
+		let aArray = aDecoder.decodeObjectForKey("angles") as! [Double]
 		let pairs = Array(Zip2(rArray, aArray))
 		points = pairs.map{ Polar(r: CGFloat($0.0), a: CGFloat($0.1)) }
+		pointBuckets = TrailAnalyser.binPointsByAngle(points, intoBuckets: analysisBuckets)
 		
 		super.init()
-		
-		pointBuckets = binPointsByAngle(buckets: analysisBuckets)
 	}
 	
 	func encodeWithCoder(aCoder: NSCoder) {
@@ -61,7 +58,7 @@ class TrailAnalyser: NSObject, NSCoding {
 		aCoder.encodeDouble(radius, forKey: "radius")
 	}
 	
-	func binPointsByAngle(#buckets: Int) -> [AngleBucket] {
+	class func binPointsByAngle(points: PolarArray, intoBuckets buckets: Int) -> [AngleBucket] {
 		var histogram = [AngleBucket](count: buckets, repeatedValue: ([], 0.0))
 		let nBuckets = CGFloat(buckets)
 		
@@ -86,7 +83,9 @@ extension TrailAnalyser {
 	func circularityScore() -> Double {
 		let errorInterval = 0.0...1.0
 		let errorScale = 10.0
-		let error = max(min(radialFitness() * errorScale, errorInterval.end), errorInterval.start)
+		let scaledError = radialFitness() * errorScale
+		let lowerBound = min(scaledError, errorInterval.end)
+		let error = max(lowerBound, errorInterval.start)		// $ THIS KILLS SWIFTC
 		let score = error - (errorInterval.end - errorInterval.start)
 		let gradedScore = score * score
 		return gradedScore
@@ -166,7 +165,7 @@ extension TrailAnalyser {
 		
 		let n = points.count
 		let windowSize = n / 20
-		let calcRMS = { (points: Slice<Polar>) -> Double in
+		let calcRMS = { (points: ArraySlice<Polar>) -> Double in
 			sqrt(points.reduce(0.0) {$0 + Double($1.r * $1.r)} / Double(n))
 		}
 		
@@ -181,7 +180,8 @@ extension TrailAnalyser {
 	}
 	
 	func deviationsFromFit() -> Array<Double> {
-		return points.map {Double($0.r) - self.radius}
+		return [0.0]
+//		return points.map {Double($0.r) - self.radius}
 	}
 }
 
@@ -234,7 +234,7 @@ extension TrailAnalyser {
 		
 		let ad = angleDeltas!
 		
-		let avg = ad.reduce(0.0, +) / Double(ad.count)
+		let avg = ad.reduce(0.0, combine: +) / Double(ad.count)
 		let stddev = sqrt(ad.reduce(0.0) {$0 + ($1 - avg) * ($1 - avg)} / Double(ad.count))
 		return (stddev > errorThreshold) ? stddev : 0.0
 	}
@@ -305,7 +305,7 @@ extension TrailAnalyser {
 		if angleDeltas == nil {
 			angleDeltas = angleDeltas(points)
 		}
-		let arcLength = angleDeltas!.reduce(0.0, +)
+		let arcLength = angleDeltas!.reduce(0.0, combine: +)
 		if (arcLength < circleLengthThreshold) {
 			println("Rejected arc length: \(arcLength) < \(circleLengthThreshold)")
 			return false
