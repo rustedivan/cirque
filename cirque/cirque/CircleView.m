@@ -65,7 +65,7 @@
 
 	int vertexIndex = 0;
 	int coordIndex = 0;
-	float thickness = 2.0f;
+	float thickness = 4.0f;
 
 	NSArray* angles = trail.angles;
 	NSArray* distances = trail.distances;
@@ -121,7 +121,7 @@
 	
 	int vertexIndex = 0;
 	int coordIndex = 0;
-	float thickness = 2.0f;
+	float thickness = 1.0f;
 	float a = 0.0f;
 	float dA = (2.0 * M_PI) / (float)resolution;
 	for (int i = 0; i < nSegments; i++) {

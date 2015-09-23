@@ -18,10 +18,11 @@ class CircleController: NSObject {
 	let analysisQueue = dispatch_queue_create("se.rusted.cirque.analysis", nil)
 	
 	func draw(view: CircleView) {
-		view.render(circle)
 		if let fit = bestFit {
-			view.renderFitWithRadius(fit.radius, at: fit.center)
+			view.renderFitWithRadius(fit.radius - 4.0, at: fit.center)
+			view.renderFitWithRadius(fit.radius + 4.0, at: fit.center)
 		}
+		view.render(circle)
 	}
 	
 	func beginNewCircle(p: CGPoint) {
