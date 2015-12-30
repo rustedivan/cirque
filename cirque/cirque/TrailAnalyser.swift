@@ -38,11 +38,11 @@ class TrailAnalyser: NSObject, NSCoding {
 		super.init()
 	}
 	
-	required init(coder aDecoder: NSCoder) {
+	required init?(coder aDecoder: NSCoder) {
 		radius = aDecoder.decodeDoubleForKey("radius")
 		let rArray = aDecoder.decodeObjectForKey("radii") as! [Double]
 		let aArray = aDecoder.decodeObjectForKey("angles") as! [Double]
-		let pairs = Array(Zip2(rArray, aArray))
+		let pairs = Array(Zip2Sequence(rArray, aArray))
 		points = pairs.map{ Polar(r: CGFloat($0.0), a: CGFloat($0.1)) }
 		pointBuckets = TrailAnalyser.binPointsByAngle(points, intoBuckets: analysisBuckets)
 		
@@ -180,8 +180,7 @@ extension TrailAnalyser {
 	}
 	
 	func deviationsFromFit() -> Array<Double> {
-		return [0.0]
-//		return points.map {Double($0.r) - self.radius}
+		return points.map {Double($0.r) - self.radius}
 	}
 }
 
@@ -225,7 +224,7 @@ extension TrailAnalyser {
 	of them. A stddev below the treshold is snapped to zero ("good enough")
 	*/
 	func strokeEvenness() -> Double {
-		let errorThreshold = 5.0 * M_PI / 180.0
+		let errorThreshold = 0.01 * (M_PI / 180.0)
 		
 		// FIXME: computed property pls
 		if angleDeltas == nil {
@@ -235,7 +234,13 @@ extension TrailAnalyser {
 		let ad = angleDeltas!
 		
 		let avg = ad.reduce(0.0, combine: +) / Double(ad.count)
-		let stddev = sqrt(ad.reduce(0.0) {$0 + ($1 - avg) * ($1 - avg)} / Double(ad.count))
+		let squaredErrors = ad.reduce(0.0) {$0 + ($1 - avg) * ($1 - avg)}
+		let stddev = sqrt(squaredErrors) / Double(ad.count)
+		
+		if (stddev <= errorThreshold) {
+			print("Snapping stroke evenness to perfect")
+		}
+		
 		return (stddev > errorThreshold) ? stddev : 0.0
 	}
 	
@@ -288,7 +293,7 @@ extension TrailAnalyser {
 		// Circle must be closed
 		let endCapErrorThreshold = radius / 2.0	// Caps are off by half the radius
 		if (self.endCapsSeparation() > endCapErrorThreshold) {
-			println("Rejected end caps: \(self.endCapsSeparation()) > \(endCapErrorThreshold)")
+			print("Rejected end caps: \(self.endCapsSeparation()) > \(endCapErrorThreshold)")
 			return false
 		}
 
@@ -296,7 +301,7 @@ extension TrailAnalyser {
 		let radialErrorThreshold = sqrt(0.01 * (radius * radius * M_PI))	// Error area is larger than 0.5% (p^2 > E  ==> p > √E)
 		let p = abs(self.radialDeviation().peak)
 		if (p > radialErrorThreshold) {
-			println("Rejected roundness: \(p) > \(radialErrorThreshold)")
+			print("Rejected roundness: \(p) > \(radialErrorThreshold)")
 			return false
 		}
 		
@@ -307,7 +312,7 @@ extension TrailAnalyser {
 		}
 		let arcLength = angleDeltas!.reduce(0.0, combine: +)
 		if (arcLength < circleLengthThreshold) {
-			println("Rejected arc length: \(arcLength) < \(circleLengthThreshold)")
+			print("Rejected arc length: \(arcLength) < \(circleLengthThreshold)")
 			return false
 		}
 		

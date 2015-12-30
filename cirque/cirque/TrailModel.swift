@@ -39,13 +39,13 @@ class Trail: NSObject {
 		if (angles.count == 0) {angles.append(0.0)}
 
 		// Add the new point
-		angles.append(angleBetween(points[n - 2], points[n - 1]))
+		angles.append(angleBetween(points[n - 2], p2: points[n - 1]))
 		
 		// Re-align the previous point
 		if n == 2 {
-			angles[n - 2] = angleBetween(points[n - 2], points[n - 1])
+			angles[n - 2] = angleBetween(points[n - 2], p2: points[n - 1])
 		} else {
-			angles[n - 2] = angleBetween(points[n - 3], points[n - 1])
+			angles[n - 2] = angleBetween(points[n - 3], p2: points[n - 1])
 		}
 	}
 	

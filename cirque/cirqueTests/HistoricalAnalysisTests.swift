@@ -48,7 +48,10 @@ import XCTest
 class HistoricalAnalysisTests: XCTestCase {
 	
 	override func tearDown() {
-		NSFileManager.defaultManager().removeItemAtPath(TrailHistory.historyDir, error: nil)
+		do {
+			try NSFileManager.defaultManager().removeItemAtPath(TrailHistory.historyDir)
+		} catch _ {
+		}
 	}
 	
 	func makeTrailAnalysis(points: Array<(Double, Double)>) -> TrailAnalyser {
@@ -107,7 +110,7 @@ class HistoricalAnalysisTests: XCTestCase {
 
 	func testCanDetectLinearWorsening() {
 		let history = TrailHistory()
-		for trail in linearImprovement.reverse() {
+		for trail in Array(linearImprovement.reverse()) {
 			let ta = makeTrailAnalysis(trail)
 			history.addAnalysis(ta)
 		}
@@ -120,13 +123,13 @@ class HistoricalAnalysisTests: XCTestCase {
 		let history = TrailHistory()
 		let ta1 = makeTrailAnalysis(linearImprovement[0])
 		let ta2 = makeTrailAnalysis(linearImprovement[1])
-		for i in 0..<5 {
+		for _ in 0..<5 {
 			history.addAnalysis(ta1)
 			history.addAnalysis(ta2)
 		}
 		
 		let fitnessProgression = history.circularityScoreProgression()
-		XCTAssertEqualWithAccuracy(fitnessProgression, 0.0, 0.05, "Fitness should be worsening")
+		XCTAssertEqualWithAccuracy(fitnessProgression, 0.0, accuracy: 0.05, "Fitness should be worsening")
 	}
 
 //	func testCanDiscernDominantErrorType() {

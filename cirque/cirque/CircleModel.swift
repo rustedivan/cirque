@@ -1,3 +1,18 @@
+/// Swift Migrator:
+///
+/// This file contains one or more places using either an index
+/// or a range with ArraySlice. While in Swift 1.2 ArraySlice
+/// indices were 0-based, in Swift 2.0 they changed to match the
+/// the indices of the original array.
+///
+/// The Migrator wrapped the places it found in a call to the
+/// following function, please review all call sites and fix
+/// incides if necessary.
+@available(*, deprecated=2.0, message="Swift 2.0 migration: Review possible 0-based index")
+private func __reviewIndex__<T>(value: T) -> T {
+	return value
+}
+
 //
 //  CircleModel.swift
 //  cirque
@@ -60,28 +75,38 @@ public class Circle: NSObject {
 }
 
 extension Circle {
-	func dumpAsSwiftArray() {
-		let l = 5
-		let a = segments.points
-		var o = Array<ArraySlice<CGPoint>>()
-		var i = 0
-		while i+l < a.count {
-			let s = a[i..<i+l]
-			o.append(s)
-			i += l
-		}
-		o.append(a[i..<a.count])
+	struct ArrayChunker: SequenceType {
+		typealias Element = Range<Int>
+		let stride: Int
+		let count: Int
 		
-		println("\n\n\n\nlet a = [");
-		for i in 0 ..< o.count {
-			print("\t")
-			for j in 0 ..< o[i].count {
-				let x = Float(o[i][j].x)
-				let y = Float(o[i][j].y)
-				print(String(format:"(%.2f, %.2f) as TestPoint, ", x, y))
-			}
-			println("")
+		init(count: Int, chunkSize stride: Int) {
+			self.count = count
+			self.stride = stride
 		}
-		println("] as [TestPoint]\n\n\n")
+		
+		func generate() -> AnyGenerator<Range<Int>> {
+			var i = 0
+			return anyGenerator { () -> Element? in
+				guard i < self.count else { return nil }
+				
+				let out = Range(i ..< min(i + self.stride, self.count))
+				i += self.stride
+				return out
+			}
+		}
+	}
+	
+	func dumpAsSwiftArray() {
+		print("\n\n\n\nlet a = [")
+		for line in ArrayChunker(count: segments.points.count, chunkSize: 5)
+		{
+			let pointsOnLine = segments.points[line]
+			for point in pointsOnLine {
+				print(String(format:"(%.2f, %.2f) as TestPoint, ", point.x, point.y), terminator: "")
+			}
+			print("")
+		}
+		print("] as [TestPoint]\n\n\n")
 	}
 }

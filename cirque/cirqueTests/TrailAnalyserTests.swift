@@ -86,6 +86,8 @@ class CircleAnalyzer: XCTestCase {
 		let good = TrailAnalyser(points: evenTrail, fitRadius: discard).strokeEvenness()
 		let perfect = TrailAnalyser(points: perfectTrail, fitRadius: discard).strokeEvenness()
 		
+		XCTAssertGreaterThan(bad, 0.0, "This stroke should not be perfect")
+		XCTAssertGreaterThan(good, 0.0, "This stroke should not be perfect")
 		XCTAssertLessThan(good, bad, "Uneven stroke should have higher error than even stroke")
 		XCTAssertEqual(perfect, 0.0, "Close-to-perfect stroke should snap error to zero")
 	}
@@ -101,24 +103,24 @@ class CircleAnalyzer: XCTestCase {
 		let congestionUL = TrailAnalyser(points: congestionUpLeft, fitRadius: discard).strokeCongestion()
 		
 		XCTAssertGreaterThan(congestionD.peak, 0.0, "Did not calculate congestion")
-		XCTAssertEqualWithAccuracy(congestionD.angle, CGFloat(3.0 * M_PI_2), CGFloat(M_PI_4), "Did not direct congestion")
+		XCTAssertEqualWithAccuracy(congestionD.angle, CGFloat(3.0 * M_PI_2), accuracy: CGFloat(M_PI_4), "Did not direct congestion")
 		XCTAssertGreaterThan(congestionUL.peak, 0.0, "Did not calculate congestion")
-		XCTAssertEqualWithAccuracy(congestionUL.angle, CGFloat(3.0 * M_PI_4), CGFloat(M_PI_4), "Did not direct congestion")
+		XCTAssertEqualWithAccuracy(congestionUL.angle, CGFloat(3.0 * M_PI_4), accuracy: CGFloat(M_PI_4), "Did not direct congestion")
 	}
 	
 	/* Radial deviations: given a fit circle, calculate the residial vector of radial samples.
 	*/
 	func testCalculateRadialDeviations() {
-		var points: PolarArray = [	(a: CGFloat(0.0), r: 100.0),
+		let points: PolarArray = [	(a: CGFloat(0.0), r: 100.0),
 																(a: CGFloat(M_PI_2), r: 95.0),
 																(a: CGFloat(M_PI), r: 105.0),
 																(a: CGFloat(3.0 * M_PI_2), r: 150.0)]
 
 		let deviations = TrailAnalyser(points: points, fitRadius: 100).deviationsFromFit()
-		XCTAssertEqualWithAccuracy(deviations[0], 0.0, 0.0, "Deviation incorrect")
-		XCTAssertEqualWithAccuracy(deviations[1], -5.0, 0.0, "Deviation incorrect")
-		XCTAssertEqualWithAccuracy(deviations[2], 5.0, 0.0, "Deviation incorrect")
-		XCTAssertEqualWithAccuracy(deviations[3], 50.0, 0.0, "Deviation incorrect")
+		XCTAssertEqualWithAccuracy(deviations[0], 0.0, accuracy: 0.0, "Deviation incorrect")
+		XCTAssertEqualWithAccuracy(deviations[1], -5.0, accuracy: 0.0, "Deviation incorrect")
+		XCTAssertEqualWithAccuracy(deviations[2], 5.0, accuracy: 0.0, "Deviation incorrect")
+		XCTAssertEqualWithAccuracy(deviations[3], 50.0, accuracy: 0.0, "Deviation incorrect")
 	}
 	
 	/* Radial deviations: given all relative radial displacements, find the largest deviation from circle
@@ -140,13 +142,13 @@ class CircleAnalyzer: XCTestCase {
 		let noBump = TrailAnalyser(points: noBumpTrail, fitRadius: noBumpRadius).radialDeviation()
 		
 		XCTAssertGreaterThan(bumpOutUL.peak, 0.0, "Did not calculate deviation")
-		XCTAssertEqualWithAccuracy(bumpOutUL.angle, CGFloat(3.0 * M_PI_4), 0.30, "Did not find deviation")
+		XCTAssertEqualWithAccuracy(bumpOutUL.angle, CGFloat(3.0 * M_PI_4), accuracy: 0.30, "Did not find deviation")
 
 		XCTAssertLessThan(bumpInD.peak, 0.0, "Did not calculate deviation")
-		XCTAssertEqualWithAccuracy(bumpInD.angle, CGFloat(6.0 * M_PI_4), 0.30, "Did not find deviation")
+		XCTAssertEqualWithAccuracy(bumpInD.angle, CGFloat(6.0 * M_PI_4), accuracy: 0.30, "Did not find deviation")
 
 		XCTAssertLessThan(flatRight.peak, 0.0, "Did not calculate deviation")
-		XCTAssertEqualWithAccuracy(flatRight.angle, CGFloat(8.0 * M_PI_4), 0.30, "Did not find deviation")
+		XCTAssertEqualWithAccuracy(flatRight.angle, CGFloat(8.0 * M_PI_4), accuracy: 0.30, "Did not find deviation")
 
 		XCTAssertEqual(noBump.peak, 0.0, "Did not calculate deviation")
 	}
@@ -173,7 +175,7 @@ class CircleAnalyzer: XCTestCase {
 		let largeBadTrailScaled = bumpyCircleTrail.map{TestPoint($0.0 * 100.0, $0.1 * 100.0)}
 		let largeBadTrail = polariseTestPoints(largeBadTrailScaled, toRadius: &largeBadRadius)
 		let largeBad = TrailAnalyser(points: largeBadTrail, fitRadius: largeBadRadius).radialFitness()
-		XCTAssertEqualWithAccuracy(largeBad, bad, 0.01, "Scaling the circle shouldn't cause larger error")
+		XCTAssertEqualWithAccuracy(largeBad, bad, accuracy: 0.01, "Scaling the circle shouldn't cause larger error")
 	}
 	
 	/* Report whether the RMS of the last 1/4 of the circle is significantly tighter
@@ -288,17 +290,17 @@ class CircleAnalyzer: XCTestCase {
 		XCTAssertEqual(buckets[2].points.count, 8, "Wrong number of points in bucket 2")
 		XCTAssertEqual(buckets[3].points.count, 9, "Wrong number of points in bucket 3")
 		
-		XCTAssertEqualWithAccuracy(buckets[0].angle, CGFloat(0.0), 0.01, "Bucket 0 in wrong direction")
-		XCTAssertEqualWithAccuracy(buckets[1].angle, CGFloat(M_PI_2), 0.01, "Bucket 1 in wrong direction")
-		XCTAssertEqualWithAccuracy(buckets[2].angle, CGFloat(M_PI), 0.01, "Bucket 2 in wrong direction")
-		XCTAssertEqualWithAccuracy(buckets[3].angle, CGFloat(3.0 * M_PI_2), 0.01, "Bucket 3 in wrong direction")
+		XCTAssertEqualWithAccuracy(buckets[0].angle, CGFloat(0.0), accuracy: 0.01, "Bucket 0 in wrong direction")
+		XCTAssertEqualWithAccuracy(buckets[1].angle, CGFloat(M_PI_2), accuracy: 0.01, "Bucket 1 in wrong direction")
+		XCTAssertEqualWithAccuracy(buckets[2].angle, CGFloat(M_PI), accuracy: 0.01, "Bucket 2 in wrong direction")
+		XCTAssertEqualWithAccuracy(buckets[3].angle, CGFloat(3.0 * M_PI_2), accuracy: 0.01, "Bucket 3 in wrong direction")
 	}
 	
 	func testTrailAnalysisPerformance() {
 		var radius = 0.0
 		let testTrail = polariseTestPoints(eight, toRadius: &radius)
 		self.measureBlock() {
-			TrailAnalyser(points: testTrail, fitRadius: radius)
+			let _ = TrailAnalyser(points: testTrail, fitRadius: radius)
 			return ()
 		}
 	}

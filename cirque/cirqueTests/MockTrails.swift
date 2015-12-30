@@ -2,16 +2,16 @@ typealias TestPoint = (Double, Double)
 
 // MARK: Stroke evenness
 let unevenStrokeTrail = [
-	(161.50, 428.00) as TestPoint,(163.50, 428.00) as TestPoint,(166.50, 428.00) as TestPoint,(168.00, 428.00) as TestPoint,(172.50, 428.00),
-	(175.50, 428.00) as TestPoint,(178.50, 428.00) as TestPoint,(181.50, 427.00) as TestPoint,(186.00, 427.00) as TestPoint,(190.00, 426.50),
-	(193.00, 425.50) as TestPoint,(196.00, 423.50) as TestPoint,(197.00, 421.50) as TestPoint,(198.50, 420.50) as TestPoint,(200.00, 420.50),
-	(200.50, 419.00) as TestPoint,(202.00, 417.50) as TestPoint,(203.00, 417.00) as TestPoint,(204.50, 414.50) as TestPoint,(204.50, 413.00),
-	(205.00, 412.50) as TestPoint,(206.00, 410.00) as TestPoint,(206.50, 408.00) as TestPoint,(206.50, 406.50) as TestPoint,(208.00, 406.50),
-	(208.00, 405.50) as TestPoint,(208.00, 405.00) as TestPoint,(208.00, 404.50) as TestPoint,(208.00, 397.00) as TestPoint,(208.00, 387.00),
-	(203.50, 366.50) as TestPoint,(194.00, 346.50) as TestPoint,(171.00, 306.50) as TestPoint,(157.50, 294.50) as TestPoint,(135.50, 290.00),
-	(122.00, 302.50) as TestPoint,(103.50, 340.00) as TestPoint,(99.00, 380.50) as TestPoint, (100.00, 407.00) as TestPoint,(107.00, 423.00),
-	(117.00, 431.00) as TestPoint,(130.00, 437.00) as TestPoint,(137.50, 440.50) as TestPoint,(142.00, 443.00) as TestPoint,(143.50, 443.00),
-	(153.00, 438.50) as TestPoint,(156.00, 435.50) as TestPoint,(161.50, 431.50) as TestPoint,(164.50, 428.50) as TestPoint,(164.50, 428.50),
+(207.33, 568.33) as TestPoint, (204.33, 568.33) as TestPoint, (200.00, 567.00) as TestPoint, (196.33, 567.00) as TestPoint, (193.33, 567.00) as TestPoint,
+(190.00, 567.00) as TestPoint, (186.33, 565.67) as TestPoint, (183.33, 563.67) as TestPoint, (179.33, 562.67) as TestPoint, (176.33, 559.67) as TestPoint,
+(169.33, 555.67) as TestPoint, (166.67, 551.67) as TestPoint, (162.67, 548.67) as TestPoint, (155.67, 545.00) as TestPoint, (151.67, 541.00) as TestPoint,
+(148.67, 537.00) as TestPoint, (141.00, 529.00) as TestPoint, (138.00, 522.00) as TestPoint, (133.00, 510.33) as TestPoint, (127.00, 498.33) as TestPoint,
+(123.00, 486.67) as TestPoint, (123.00, 468.67) as TestPoint, (133.00, 438.00) as TestPoint, (141.00, 430.33) as TestPoint, (161.67, 410.33) as TestPoint,
+(180.33, 402.67) as TestPoint, (194.33, 395.67) as TestPoint, (215.00, 391.67) as TestPoint, (239.67, 393.67) as TestPoint, (247.67, 399.67) as TestPoint,
+(252.67, 402.67) as TestPoint, (260.33, 410.33) as TestPoint, (273.33, 429.33) as TestPoint, (283.00, 451.00) as TestPoint, (286.00, 462.00) as TestPoint,
+(288.00, 481.67) as TestPoint, (288.00, 499.33) as TestPoint, (279.33, 516.33) as TestPoint, (268.33, 531.00) as TestPoint, (255.33, 542.00) as TestPoint,
+(244.67, 548.00) as TestPoint, (235.67, 552.67) as TestPoint, (227.67, 555.67) as TestPoint, (222.00, 556.67) as TestPoint, (213.00, 556.67) as TestPoint,
+(209.00, 556.67) as TestPoint, (204.00, 557.67) as TestPoint, (201.00, 559.67) as TestPoint, (201.00, 559.67) as TestPoint,
 ] as [TestPoint]
 
 let evenStrokeTrail = [
@@ -58,7 +58,11 @@ let evenStrokeTrail = [
 ] as [TestPoint]
 
 let perfectStrokeTrail = [
-		(-11.00, -10.00) as TestPoint,(10.00, -10.00) as TestPoint,(10.00, 10.00) as TestPoint,(-10.00, 10.00),
+		(-10.00, -10.00) as TestPoint,
+		(10.00, -10.00) as TestPoint,
+		(10.00, 10.00) as TestPoint,
+		(-10.00, 10.00) as TestPoint,
+		(-10.00, -10.00) as TestPoint
 ] as [TestPoint]
 
 let congestedDown = [

@@ -13,7 +13,7 @@ class TrailHistory {
 	var filename: String?
 	class var historyDir: String {
 		get {
-			let appSupportDir = NSSearchPathForDirectoriesInDomains(.ApplicationSupportDirectory, .UserDomainMask, true)[0] as! String
+			let appSupportDir = NSSearchPathForDirectoriesInDomains(.ApplicationSupportDirectory, .UserDomainMask, true)[0] 
 			let bundleId = NSBundle.mainBundle().bundleIdentifier
 			return appSupportDir + "/" + bundleId! + "/"
 		}
@@ -29,7 +29,7 @@ class TrailHistory {
 		
 		let loadData = NSData(contentsOfFile: TrailHistory.historyDir + filename)
 		if let data = loadData {
-			var loader = NSKeyedUnarchiver(forReadingWithData: data)
+			let loader = NSKeyedUnarchiver(forReadingWithData: data)
 			entries = loader.decodeObjectForKey("trails") as! [TrailAnalyser]
 		}
 	}
@@ -44,19 +44,21 @@ class TrailHistory {
 			let directory = TrailHistory.historyDir
 			let manager = NSFileManager.defaultManager()
 			if !manager.fileExistsAtPath(directory) {
-				var error: NSError?
-				manager.createDirectoryAtPath(directory, withIntermediateDirectories: true, attributes: nil, error: &error)
+				do {
+					try manager.createDirectoryAtPath(directory, withIntermediateDirectories: true, attributes: nil)
+				} catch let error as NSError {
+					debugPrint(error)
+				}
 			}
 			
-			var saveData = NSMutableData()
-			var saver = NSKeyedArchiver(forWritingWithMutableData: saveData)
+			let saveData = NSMutableData()
+			let saver = NSKeyedArchiver(forWritingWithMutableData: saveData)
 			saver.encodeObject(entries, forKey: "trails")
 			saver.finishEncoding()
 			saveData.writeToFile(directory + savefile, atomically: true)
 			
-			var error: NSError?
-			let attribs = NSFileManager.defaultManager().attributesOfItemAtPath(directory + savefile, error: &error)! as NSDictionary
-			println("History file has grown to \(attribs.fileSize() / 1024)kB.")
+			let attribs = (try! NSFileManager.defaultManager().attributesOfItemAtPath(directory + savefile)) as NSDictionary
+			print("History file has grown to \(attribs.fileSize() / 1024)kB.")
 		}
 	}
 }
@@ -92,6 +94,6 @@ extension TrailHistory {
 			scores.append(analysis.circularityScore())
 		}
 		
-		println(scores)
+		print(scores)
 	}
 }
