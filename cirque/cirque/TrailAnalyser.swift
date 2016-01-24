@@ -311,7 +311,7 @@ extension TrailAnalyser {
 			angleDeltas = angleDeltas(points)
 		}
 		let arcLength = angleDeltas!.reduce(0.0, combine: +)
-		if (arcLength < circleLengthThreshold) {
+		if (abs(arcLength) < circleLengthThreshold) {
 			print("Rejected arc length: \(arcLength) < \(circleLengthThreshold)")
 			return false
 		}

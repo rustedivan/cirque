@@ -9,6 +9,11 @@
 import Foundation
 import CoreGraphics.CGGeometry
 
+enum CircleResult {
+	case Rejected
+	case Accepted (score: Double, trend: Double)
+}
+
 class CircleController: NSObject {
 	var circle: Circle = Circle()
 	var bestFit: CircleFit?
@@ -40,8 +45,7 @@ class CircleController: NSObject {
 		
 	}
 
-	// FIXME: find a better return mechanism than dictionary. Tuple.
-	func endCircle(p: CGPoint) -> Dictionary<String, AnyObject> {
+	func endCircle(p: CGPoint) -> CircleResult {
 		circle.addSegment(p)
 		circle.end()
 		
@@ -68,11 +72,9 @@ class CircleController: NSObject {
 			}
 			
 			let score = analyser.circularityScore()
-			return ["valid" : isCircle,
-							"score" : score,
-							"trend" : trend]
+			return .Accepted(score: score, trend: trend)
 		} else {
-			return ["valid" : false]
+			return .Rejected
 		}
 	}
 
