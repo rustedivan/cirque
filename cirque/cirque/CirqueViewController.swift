@@ -9,24 +9,38 @@
 import UIKit
 
 class CirqueViewController: UIViewController {
+	var renderingLink: CADisplayLink!
+	var circleController: CircleController!
+	
 	@IBOutlet var errorLabel: UILabel!
-	@IBOutlet var circleController: CircleController!
 	
 	var cirqueView: CirqueView {
 		return view as! CirqueView
 	}
+	
+	override func viewDidLoad() {
+		circleController = CircleController()
+		
+		renderingLink = CADisplayLink(target: self, selector: Selector("render"))
+		renderingLink.addToRunLoop(NSRunLoop.mainRunLoop(), forMode: NSDefaultRunLoopMode)
+	}
 
 	override func touchesBegan(touches: Set<UITouch>, withEvent _: UIEvent?) {
 		guard let touch = touches.first else { return }
-		
 		errorLabel.text = ""
 		circleController = CircleController()
 		circleController.beginNewCircle(touch.locationInView(view))
 	}
 	
-	override func touchesMoved(touches: Set<UITouch>, withEvent _: UIEvent?) {
+	override func touchesMoved(touches: Set<UITouch>, withEvent event: UIEvent?) {
 		guard let touch = touches.first else { return }
-		circleController.addSegment(touch.locationInView(view))
+		if #available(iOS 9.0, *) {
+		    for extraTouch in event!.coalescedTouchesForTouch(touch)! {
+    			circleController.addSegment(extraTouch.locationInView(view))
+    		}
+		} else {
+		    // Fallback on earlier versions
+		}
 	}
 	
 	override func touchesEnded(touches: Set<UITouch>, withEvent _: UIEvent?) {
@@ -39,7 +53,9 @@ class CirqueViewController: UIViewController {
 		case .Rejected:
 			errorLabel.text = "Rejected"
 		}
-		
+	}
+	
+	func render() {
 		cirqueView.render(circleController.circle)
 	}
 }
