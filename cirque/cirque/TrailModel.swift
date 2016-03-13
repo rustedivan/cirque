@@ -60,9 +60,5 @@ class Trail: NSObject {
 		if points.count == 2 {
 			distances.append(d)
 		}
-	}
-	
-	// $ Bridging interface for CircleView
-	func nPoints() -> Int {return points.count}
-	func point(i:Int) -> CGPoint {return points[i]}
+}	
 }

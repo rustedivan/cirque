@@ -85,7 +85,7 @@ extension TrailAnalyser {
 		let errorScale = 10.0
 		let scaledError = radialFitness() * errorScale
 		let lowerBound = min(scaledError, errorInterval.end)
-		let error = max(lowerBound, errorInterval.start)		// $ THIS KILLS SWIFTC
+		let error = max(lowerBound, errorInterval.start)
 		let score = error - (errorInterval.end - errorInterval.start)
 		let gradedScore = score * score
 		return gradedScore
