@@ -72,7 +72,7 @@ extension Circle {
 		
 		func generate() -> AnyGenerator<Range<Int>> {
 			var i = 0
-			return anyGenerator { () -> Element? in
+			return AnyGenerator { () -> Element? in
 				guard i < self.count else { return nil }
 				
 				let out = Range(i ..< min(i + self.stride, self.count))

@@ -21,7 +21,7 @@ class CirqueViewController: UIViewController {
 	override func viewDidLoad() {
 		circleController = CircleController()
 		
-		renderingLink = CADisplayLink(target: self, selector: Selector("render"))
+		renderingLink = CADisplayLink(target: self, selector: #selector(CirqueViewController.render))
 		renderingLink.addToRunLoop(NSRunLoop.mainRunLoop(), forMode: NSDefaultRunLoopMode)
 	}
 
@@ -56,6 +56,6 @@ class CirqueViewController: UIViewController {
 	}
 	
 	func render() {
-		cirqueView.render(circleController.circle)
+		cirqueView.render(circleController.circle, withThickness: 4.0)
 	}
 }

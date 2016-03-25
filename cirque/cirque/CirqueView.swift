@@ -110,14 +110,8 @@ class CirqueView: UIView {
 		return device.newTextureWithDescriptor(targetDescriptor)
 	}
 
-	func render(model: Circle) {
-		// Inner and outer vertices for each segment
-		var vertices: [CirqueVertex] = []
-		vertices.reserveCapacity(3)
-		
-		for segment in model.segments.points {
-			vertices.append(CirqueVertex(position: vector_float4(Float(segment.x), Float(segment.y), 0.0, 1.0)))
-		}
+	func render(model: Circle, withThickness thickness: Double) {
+		let vertices = trailToInkVertices(model.segments, withTickness: thickness)
 		
 		// Fill out vertex buffer
 		let trailBuffer = device.newBufferWithBytes(vertices,
@@ -152,7 +146,7 @@ class CirqueView: UIView {
 		
 		commandEncoder.setVertexBuffer(trailBuffer, offset: 0, atIndex: 0)
 		if vertices.isEmpty == false {
-			commandEncoder.drawPrimitives(.LineStrip, vertexStart: 0, vertexCount: vertices.count)
+			commandEncoder.drawPrimitives(.TriangleStrip, vertexStart: 0, vertexCount: vertices.count)
 		}
 		commandEncoder.endEncoding()
 
@@ -162,5 +156,30 @@ class CirqueView: UIView {
 	}
 	
 	func renderFit(withRadius radius: Double, at: CGPoint) {
+	}
+	
+	func trailToInkVertices(trail: Trail, withTickness thickness: Double) -> [CirqueVertex] {
+		// Inner and outer vertices for each segment
+		// $ lazy generate pls
+		let segments = zip(trail.angles, trail.distances)
+		let stroke = zip(trail.points, segments)
+		
+		var vertices: [CirqueVertex] = []
+		
+		for segment in stroke {
+			let pC = segment.0
+			let angle = segment.1.0
+			let length = segment.1.1
+			let width = CGFloat(thickness) + log2(length)
+			let span = CGVector(dx: sin(angle) * width / 2.0, dy: -cos(angle) * width / 2.0)
+
+			let pL = CirqueVertex(position: vector_float4(Float(pC.x + span.dx), Float(pC.y + span.dy), 0.0, 1.0))
+			let pR = CirqueVertex(position: vector_float4(Float(pC.x - span.dx), Float(pC.y - span.dy), 0.0, 1.0))
+			
+			vertices.append(pL)
+			vertices.append(pR)
+		}
+		
+		return vertices
 	}
 }
