@@ -21,15 +21,7 @@ class CircleController: NSObject {
 	var analysisTimestamp = NSDate()
 	var analysisRunning = false
 	let analysisQueue = dispatch_queue_create("se.rusted.cirque.analysis", nil)
-	
-	func draw(view: CircleView) {
-		if let fit = bestFit {
-			view.renderFitWithRadius(fit.radius - 4.0, at: fit.center)
-			view.renderFitWithRadius(fit.radius + 4.0, at: fit.center)
-		}
-		view.render(circle)
-	}
-	
+		
 	func beginNewCircle(p: CGPoint) {
 		circle.begin()
 		circle.addSegment(p)

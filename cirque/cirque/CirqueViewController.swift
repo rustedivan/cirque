@@ -39,7 +39,7 @@ class CirqueViewController: UIViewController {
     			circleController.addSegment(extraTouch.locationInView(view))
     		}
 		} else {
-		    // Fallback on earlier versions
+		    circleController.addSegment(touch.locationInView(view))
 		}
 	}
 	

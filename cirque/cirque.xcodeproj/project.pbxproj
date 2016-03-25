@@ -9,7 +9,6 @@
 /* Begin PBXBuildFile section */
 		1402B4C51A34560400E335B3 /* CircleModelTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1402B4C41A34560400E335B3 /* CircleModelTests.swift */; };
 		1402B4C61A34561300E335B3 /* CircleModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 14D605A019FCEB530096E228 /* CircleModel.swift */; };
-		1402B4C91A34680B00E335B3 /* CircleViewTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 1402B4C81A34680B00E335B3 /* CircleViewTests.m */; };
 		1402B4CB1A3469CC00E335B3 /* TrailTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1402B4CA1A3469CC00E335B3 /* TrailTests.swift */; };
 		1402B4CD1A346C7D00E335B3 /* TrailModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1402B4CC1A346C7D00E335B3 /* TrailModel.swift */; };
 		1402B4CE1A346D6C00E335B3 /* TrailModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1402B4CC1A346C7D00E335B3 /* TrailModel.swift */; };
@@ -28,14 +27,11 @@
 		14D189441A52C51500CD0862 /* TrailAnalyser.swift in Sources */ = {isa = PBXBuildFile; fileRef = 14D189421A52C50E00CD0862 /* TrailAnalyser.swift */; };
 		14D197091A3C844600832ACA /* CircleFitter.swift in Sources */ = {isa = PBXBuildFile; fileRef = 141A8E171A3C6C36002ED07F /* CircleFitter.swift */; };
 		14D6057D19FCE63C0096E228 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 14D6057C19FCE63C0096E228 /* AppDelegate.swift */; };
-		14D6057F19FCE63C0096E228 /* Shader.fsh in Resources */ = {isa = PBXBuildFile; fileRef = 14D6057E19FCE63C0096E228 /* Shader.fsh */; };
-		14D6058119FCE63C0096E228 /* Shader.vsh in Resources */ = {isa = PBXBuildFile; fileRef = 14D6058019FCE63C0096E228 /* Shader.vsh */; };
 		14D6058619FCE63C0096E228 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 14D6058419FCE63C0096E228 /* Main.storyboard */; };
 		14D6058819FCE63C0096E228 /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 14D6058719FCE63C0096E228 /* Images.xcassets */; };
 		14D6058B19FCE63C0096E228 /* LaunchScreen.xib in Resources */ = {isa = PBXBuildFile; fileRef = 14D6058919FCE63C0096E228 /* LaunchScreen.xib */; };
 		14D605A119FCEB530096E228 /* CircleModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 14D605A019FCEB530096E228 /* CircleModel.swift */; };
 		14D605A319FCEC900096E228 /* CircleController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 14D605A219FCEC900096E228 /* CircleController.swift */; };
-		14E181A11A2F9FE4007AE3E5 /* CircleView.m in Sources */ = {isa = PBXBuildFile; fileRef = 14E181A01A2F9FE4007AE3E5 /* CircleView.m */; };
 		14E44FAE1C55053E006B594D /* CirqueViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 14E44FAD1C55053E006B594D /* CirqueViewController.swift */; };
 		14E44FB01C550F09006B594D /* CirqueView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 14E44FAF1C550F09006B594D /* CirqueView.swift */; };
 		14E44FB21C551D76006B594D /* QuartzCore.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 14E44FB11C551D76006B594D /* QuartzCore.framework */; };
@@ -53,8 +49,6 @@
 
 /* Begin PBXFileReference section */
 		1402B4C41A34560400E335B3 /* CircleModelTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CircleModelTests.swift; sourceTree = "<group>"; };
-		1402B4C71A34680B00E335B3 /* cirqueTests-Bridging-Header.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "cirqueTests-Bridging-Header.h"; sourceTree = "<group>"; };
-		1402B4C81A34680B00E335B3 /* CircleViewTests.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CircleViewTests.m; sourceTree = "<group>"; };
 		1402B4CA1A3469CC00E335B3 /* TrailTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TrailTests.swift; sourceTree = "<group>"; };
 		1402B4CC1A346C7D00E335B3 /* TrailModel.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TrailModel.swift; sourceTree = "<group>"; };
 		141A8E171A3C6C36002ED07F /* CircleFitter.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CircleFitter.swift; sourceTree = "<group>"; };
@@ -71,8 +65,6 @@
 		14D6057719FCE63C0096E228 /* cirque.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = cirque.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		14D6057B19FCE63C0096E228 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		14D6057C19FCE63C0096E228 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
-		14D6057E19FCE63C0096E228 /* Shader.fsh */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.glsl; name = Shader.fsh; path = Shaders/Shader.fsh; sourceTree = "<group>"; };
-		14D6058019FCE63C0096E228 /* Shader.vsh */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.glsl; name = Shader.vsh; path = Shaders/Shader.vsh; sourceTree = "<group>"; };
 		14D6058519FCE63C0096E228 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/Main.storyboard; sourceTree = "<group>"; };
 		14D6058719FCE63C0096E228 /* Images.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Images.xcassets; sourceTree = "<group>"; };
 		14D6058A19FCE63C0096E228 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = Base; path = Base.lproj/LaunchScreen.xib; sourceTree = "<group>"; };
@@ -80,9 +72,6 @@
 		14D6059519FCE63C0096E228 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		14D605A019FCEB530096E228 /* CircleModel.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CircleModel.swift; sourceTree = "<group>"; };
 		14D605A219FCEC900096E228 /* CircleController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CircleController.swift; sourceTree = "<group>"; };
-		14E181961A2E4E3A007AE3E5 /* cirque-Bridging-Header.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "cirque-Bridging-Header.h"; sourceTree = "<group>"; };
-		14E1819F1A2F9FE4007AE3E5 /* CircleView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CircleView.h; sourceTree = "<group>"; };
-		14E181A01A2F9FE4007AE3E5 /* CircleView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CircleView.m; sourceTree = "<group>"; };
 		14E44FAD1C55053E006B594D /* CirqueViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CirqueViewController.swift; sourceTree = "<group>"; };
 		14E44FAF1C550F09006B594D /* CirqueView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CirqueView.swift; sourceTree = "<group>"; };
 		14E44FB11C551D76006B594D /* QuartzCore.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = QuartzCore.framework; path = System/Library/Frameworks/QuartzCore.framework; sourceTree = SDKROOT; };
@@ -111,8 +100,6 @@
 			isa = PBXGroup;
 			children = (
 				1478A2911C8DFA8E0072290C /* Shaders.metal */,
-				14D6057E19FCE63C0096E228 /* Shader.fsh */,
-				14D6058019FCE63C0096E228 /* Shader.vsh */,
 			);
 			name = Shaders;
 			sourceTree = "<group>";
@@ -149,9 +136,7 @@
 				14D189421A52C50E00CD0862 /* TrailAnalyser.swift */,
 				145D01131A6C064700B6D5C9 /* TrailHistory.swift */,
 				14D6058719FCE63C0096E228 /* Images.xcassets */,
-				14E181A21A2FA31D007AE3E5 /* ObjC legacy */,
 				14D6057A19FCE63C0096E228 /* Supporting Files */,
-				14E181961A2E4E3A007AE3E5 /* cirque-Bridging-Header.h */,
 			);
 			path = cirque;
 			sourceTree = "<group>";
@@ -177,9 +162,7 @@
 				1402B4CA1A3469CC00E335B3 /* TrailTests.swift */,
 				145855C31A502BED00C44CB1 /* TrailAnalyserTests.swift */,
 				142A02201A66EECF00AC3942 /* HistoricalAnalysisTests.swift */,
-				1402B4C81A34680B00E335B3 /* CircleViewTests.m */,
 				14D6059419FCE63C0096E228 /* Supporting Files */,
-				1402B4C71A34680B00E335B3 /* cirqueTests-Bridging-Header.h */,
 			);
 			path = cirqueTests;
 			sourceTree = "<group>";
@@ -192,15 +175,6 @@
 				14D6059519FCE63C0096E228 /* Info.plist */,
 			);
 			name = "Supporting Files";
-			sourceTree = "<group>";
-		};
-		14E181A21A2FA31D007AE3E5 /* ObjC legacy */ = {
-			isa = PBXGroup;
-			children = (
-				14E1819F1A2F9FE4007AE3E5 /* CircleView.h */,
-				14E181A01A2F9FE4007AE3E5 /* CircleView.m */,
-			);
-			name = "ObjC legacy";
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -289,8 +263,6 @@
 				14D6058B19FCE63C0096E228 /* LaunchScreen.xib in Resources */,
 				14D6058619FCE63C0096E228 /* Main.storyboard in Resources */,
 				14D6058819FCE63C0096E228 /* Images.xcassets in Resources */,
-				14D6058119FCE63C0096E228 /* Shader.vsh in Resources */,
-				14D6057F19FCE63C0096E228 /* Shader.fsh in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -310,7 +282,6 @@
 			files = (
 				145D01141A6C064700B6D5C9 /* TrailHistory.swift in Sources */,
 				14D189431A52C50E00CD0862 /* TrailAnalyser.swift in Sources */,
-				14E181A11A2F9FE4007AE3E5 /* CircleView.m in Sources */,
 				14D605A119FCEB530096E228 /* CircleModel.swift in Sources */,
 				14E44FAE1C55053E006B594D /* CirqueViewController.swift in Sources */,
 				14D6057D19FCE63C0096E228 /* AppDelegate.swift in Sources */,
@@ -333,7 +304,6 @@
 				145A267F1A52BDD700B3FBAB /* MockTrails.swift in Sources */,
 				14AFB4811A59394D00EC7EA7 /* CircleController.swift in Sources */,
 				1402B4CE1A346D6C00E335B3 /* TrailModel.swift in Sources */,
-				1402B4C91A34680B00E335B3 /* CircleViewTests.m in Sources */,
 				1402B4C61A34561300E335B3 /* CircleModel.swift in Sources */,
 				14D197091A3C844600832ACA /* CircleFitter.swift in Sources */,
 				1402B4CB1A3469CC00E335B3 /* TrailTests.swift in Sources */,
@@ -469,7 +439,8 @@
 				PRODUCT_BUNDLE_IDENTIFIER = "se.rusted.$(PRODUCT_NAME:rfc1034identifier)";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE = "";
-				SWIFT_OBJC_BRIDGING_HEADER = "cirque/cirque-Bridging-Header.h";
+				SWIFT_INSTALL_OBJC_HEADER = NO;
+				SWIFT_OBJC_BRIDGING_HEADER = "";
 				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
 			};
 			name = Debug;
@@ -487,7 +458,8 @@
 				PRODUCT_BUNDLE_IDENTIFIER = "se.rusted.$(PRODUCT_NAME:rfc1034identifier)";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE = "";
-				SWIFT_OBJC_BRIDGING_HEADER = "cirque/cirque-Bridging-Header.h";
+				SWIFT_INSTALL_OBJC_HEADER = NO;
+				SWIFT_OBJC_BRIDGING_HEADER = "";
 			};
 			name = Release;
 		};
@@ -508,7 +480,8 @@
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = "se.rusted.$(PRODUCT_NAME:rfc1034identifier)";
 				PRODUCT_NAME = "$(TARGET_NAME)";
-				SWIFT_OBJC_BRIDGING_HEADER = "cirqueTests/cirqueTests-Bridging-Header.h";
+				SWIFT_INSTALL_OBJC_HEADER = NO;
+				SWIFT_OBJC_BRIDGING_HEADER = "";
 				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
 				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/cirque.app/cirque";
 			};
@@ -527,7 +500,8 @@
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = "se.rusted.$(PRODUCT_NAME:rfc1034identifier)";
 				PRODUCT_NAME = "$(TARGET_NAME)";
-				SWIFT_OBJC_BRIDGING_HEADER = "cirqueTests/cirqueTests-Bridging-Header.h";
+				SWIFT_INSTALL_OBJC_HEADER = NO;
+				SWIFT_OBJC_BRIDGING_HEADER = "";
 				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/cirque.app/cirque";
 			};
 			name = Release;
