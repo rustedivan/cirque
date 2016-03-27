@@ -6,8 +6,60 @@
 //  Copyright © 2016 Rusted. All rights reserved.
 //
 
-import Metal
 import UIKit
+
+#if arch(i386) || arch(x86_64)
+	
+class CirqueView: UIView {
+	var trailLayer: CAShapeLayer?
+	
+	override func layoutSublayersOfLayer(layer: CALayer) {
+		trailLayer?.removeFromSuperlayer()
+		trailLayer = CAShapeLayer(layer: self.layer)
+		self.layer.addSublayer(trailLayer!)
+		
+		self.layer.backgroundColor = UIColor.whiteColor().CGColor
+		trailLayer!.strokeColor = UIColor.blueColor().CGColor
+		trailLayer!.fillColor = UIColor.clearColor().CGColor
+		trailLayer!.lineWidth = 2.0
+	}
+	
+	func render(model: Circle, withThickness thickness: Double) {
+		guard let firstPoint = model.segments.points.first else { return }
+		
+		let trailPath = UIBezierPath()
+		let tail = model.segments.points[1..<model.segments.points.endIndex]
+		
+		trailPath.moveToPoint(firstPoint)
+		for p in tail {
+			trailPath.addLineToPoint(p)
+		}
+		
+		trailLayer?.path = trailPath.CGPath
+		
+//		if (self.mainView.subviews.count == 0) {
+//			UIBezierPath* trianglePath = [UIBezierPath bezierPath];
+//			[trianglePath moveToPoint:CGPointMake(0, 0)];
+//			[trianglePath addLineToPoint:CGPointMake(self.mainView.frame.size.width/2, self.mainView.frame.size.height/2)];
+//			[trianglePath addLineToPoint:CGPointMake(self.mainView.frame.size.width, 0)];
+//			[trianglePath closePath];
+//			
+//			CAShapeLayer *triangleMaskLayer = [CAShapeLayer layer];
+//			[triangleMaskLayer setPath:trianglePath.CGPath];
+//			
+//			UIView *firstView = [[UIView alloc] initWithFrame:CGRectMake(0,0, self.mainView.frame.size.width, self.mainView.frame.size.height)];
+//			
+//			firstView.backgroundColor = [UIColor colorWithWhite:.75 alpha:1];
+//			firstView.layer.mask = triangleMaskLayer;
+//			[self.mainView addSubview:firstView];
+//			
+//		}
+	}
+}
+	
+#else
+	
+import Metal
 import QuartzCore
 import simd
 
@@ -183,3 +235,4 @@ class CirqueView: UIView {
 		return vertices
 	}
 }
+#endif
