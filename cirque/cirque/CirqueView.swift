@@ -36,24 +36,6 @@ class CirqueView: UIView {
 		}
 		
 		trailLayer?.path = trailPath.CGPath
-		
-//		if (self.mainView.subviews.count == 0) {
-//			UIBezierPath* trianglePath = [UIBezierPath bezierPath];
-//			[trianglePath moveToPoint:CGPointMake(0, 0)];
-//			[trianglePath addLineToPoint:CGPointMake(self.mainView.frame.size.width/2, self.mainView.frame.size.height/2)];
-//			[trianglePath addLineToPoint:CGPointMake(self.mainView.frame.size.width, 0)];
-//			[trianglePath closePath];
-//			
-//			CAShapeLayer *triangleMaskLayer = [CAShapeLayer layer];
-//			[triangleMaskLayer setPath:trianglePath.CGPath];
-//			
-//			UIView *firstView = [[UIView alloc] initWithFrame:CGRectMake(0,0, self.mainView.frame.size.width, self.mainView.frame.size.height)];
-//			
-//			firstView.backgroundColor = [UIColor colorWithWhite:.75 alpha:1];
-//			firstView.layer.mask = triangleMaskLayer;
-//			[self.mainView addSubview:firstView];
-//			
-//		}
 	}
 }
 	
