@@ -61,13 +61,13 @@ class CircleController: NSObject {
 				trend = historyWriter.circularityScoreProgression()
 				historyWriter.save()
 				historyWriter.dumpScoreHistory()
-			}
 			
-			let score = analyser.circularityScore()
-			return .Accepted(score: score, trend: trend)
-		} else {
-			return .Rejected
+				let score = analyser.circularityScore()
+				return .Accepted(score: score, trend: trend)
+			}
 		}
+		
+		return .Rejected
 	}
 
 	func fitCircle(trail: Trail, cb: CircleFitCallback) {
