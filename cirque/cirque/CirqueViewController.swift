@@ -13,6 +13,7 @@ class CirqueViewController: UIViewController {
 	var circleController: CircleController!
 	
 	@IBOutlet var errorLabel: UILabel!
+	var scoreView: ScoreView?
 	
 	var cirqueView: CirqueView {
 		return view as! CirqueView
@@ -47,15 +48,26 @@ class CirqueViewController: UIViewController {
 		guard let touch = touches.first else { return }
 		
 		let result = circleController.endCircle(touch.locationInView(view))
+		
 		switch result {
-		case .Accepted(let score, let trend):
-			errorLabel.text = "Score \(score * 100.0) (trend: \(trend * 10000.0))"
+		case .Accepted(let score, _):
+			showScore(Int(score * 100))
 		case .Rejected:
 			errorLabel.text = "Rejected"
 		}
 	}
 	
 	func render() {
+		if scoreView != nil {
+			scoreView!.update()
+		}
+		
 		cirqueView.render(circleController.circle, withThickness: 4.0)
+	}
+	
+	func showScore(score: Int) {
+		scoreView = ScoreView(frame: CGRect(x: 10.0, y: 10.0, width: 100.0, height: 100.0), score: score)
+		scoreView!.update()
+		view.addSubview(scoreView!)
 	}
 }
