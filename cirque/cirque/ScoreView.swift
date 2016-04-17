@@ -43,7 +43,12 @@ class ScoreView: UIView {
 	}
 	
 	func update() {
-		viewModel.scoreString = "\(targetScore)%"
+		if targetScore > 0 {
+			viewModel.scoreString = "\(targetScore)%"
+		} else {
+			viewModel.scoreString = "X"
+		}
+		
 		if (NSDate().timeIntervalSinceDate(countUpStartTime) > 1.0) {
 			removeFromSuperview()
 		}

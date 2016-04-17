@@ -50,10 +50,10 @@ class CirqueViewController: UIViewController {
 		let result = circleController.endCircle(touch.locationInView(view))
 		
 		switch result {
-		case .Accepted(let score, _):
-			showScore(Int(score * 100))
-		case .Rejected:
-			errorLabel.text = "Rejected"
+		case .Accepted(let score, _, let fit):
+			showScore(Int(score * 100), at: fit.center)
+		case .Rejected(let centroid):
+			rejectScore(at: centroid)
 		}
 	}
 	
@@ -65,8 +65,14 @@ class CirqueViewController: UIViewController {
 		cirqueView.render(circleController.circle, withThickness: 4.0)
 	}
 	
-	func showScore(score: Int) {
-		scoreView = ScoreView(frame: CGRect(x: 10.0, y: 10.0, width: 100.0, height: 100.0), score: score)
+	func showScore(score: Int, at: CGPoint) {
+		scoreView = ScoreView(frame: CGRect(x: at.x - 50.0, y: at.y - 50.0, width: 100.0, height: 100.0), score: score)
+		scoreView!.update()
+		view.addSubview(scoreView!)
+	}
+	
+	func rejectScore(at at: CGPoint) {
+		scoreView = ScoreView(frame: CGRect(x: at.x - 50.0, y: at.y - 50.0, width: 100.0, height: 100.0), score: 0)
 		scoreView!.update()
 		view.addSubview(scoreView!)
 	}

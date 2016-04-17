@@ -10,8 +10,8 @@ import Foundation
 import CoreGraphics.CGGeometry
 
 enum CircleResult {
-	case Rejected
-	case Accepted (score: Double, trend: Double)
+	case Rejected (centroid: Point)
+	case Accepted (score: Double, trend: Double, fit: CircleFit)
 }
 
 class CircleController: NSObject {
@@ -63,11 +63,12 @@ class CircleController: NSObject {
 				historyWriter.dumpScoreHistory()
 			
 				let score = analyser.circularityScore()
-				return .Accepted(score: score, trend: trend)
+				return .Accepted(score: score, trend: trend, fit: fit)
 			}
 		}
 		
-		return .Rejected
+		let centroid = CircleFitter().calculateCentroid(circle.segments.points)
+		return .Rejected(centroid: centroid)
 	}
 
 	func fitCircle(trail: Trail, cb: CircleFitCallback) {
