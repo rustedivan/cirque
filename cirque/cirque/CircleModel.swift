@@ -30,33 +30,33 @@ public class Circle: NSObject {
 	func end() {
 	}
 	
-	func polarizePoints(points: PointArray, around c: CGPoint) -> PolarArray {
-		var polar: PolarArray = []
-		
-		for i in 0 ..< points.count {
-			var p = points[i]
-			p.x -= c.x
-			p.y -= c.y
-			
-			let a = CGFloat(atan2f(Float(p.y), Float(p.x)))
-			let r = sqrt(p.x * p.x + p.y * p.y)
-			
-			polar.append((r: r, a: a))
-		}
-
-		// Normalize angles
-		for i in 0 ..< polar.count {
-			if polar[i].a < 0.0 {polar[i].a += CGFloat(M_PI * 2.0)}
-			if polar[i].a > CGFloat(2.0 * M_PI) {polar[i].a -= CGFloat(M_PI * 2.0)}
-		}
-
-		return polar
-	}
-	
 	func distanceFromEnd(point: CGPoint) -> CGFloat {
 		let p = CGVector(dx: point.x - segments.points.last!.x, dy: point.y - segments.points.last!.y)
 		return sqrt(p.dx * p.dx + p.dy * p.dy)
 	}
+}
+
+func polarize(points: PointArray, around c: CGPoint) -> PolarArray {
+	var polar: PolarArray = []
+	
+	for i in 0 ..< points.count {
+		var p = points[i]
+		p.x -= c.x
+		p.y -= c.y
+		
+		let a = CGFloat(atan2f(Float(p.y), Float(p.x)))
+		let r = sqrt(p.x * p.x + p.y * p.y)
+		
+		polar.append((r: r, a: a))
+	}
+	
+	// Normalize angles
+	for i in 0 ..< polar.count {
+		if polar[i].a < 0.0 {polar[i].a += CGFloat(M_PI * 2.0)}
+		if polar[i].a > CGFloat(2.0 * M_PI) {polar[i].a -= CGFloat(M_PI * 2.0)}
+	}
+	
+	return polar
 }
 
 extension Circle {

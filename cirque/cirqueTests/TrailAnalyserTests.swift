@@ -23,10 +23,9 @@ class CircleAnalyzer: XCTestCase {
 	
 	func polariseTestPoints(points: Array<(Double, Double)>, inout toRadius radius: Double) -> PolarArray {
 		let t = Trail(tuples: points)
-		let cf = CircleFitter()
-		let fit = cf.fitCenterAndRadius(t.points)!
+		let fit = CircleFitter.fitCenterAndRadius(t.points)
 		radius = Double(fit.radius)
-		return Circle().polarizePoints(t.points, around: fit.center)
+		return polarize(t.points, around: fit.center)
 	}
 	
 	/* All in all: the error measure that contributed the most to the error (weighted somehow?)

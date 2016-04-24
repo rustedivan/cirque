@@ -47,13 +47,18 @@ class CirqueViewController: UIViewController {
 	override func touchesEnded(touches: Set<UITouch>, withEvent _: UIEvent?) {
 		guard let touch = touches.first else { return }
 		
-		let result = circleController.endCircle(touch.locationInView(view))
-		
-		switch result {
-		case .Accepted(let score, _, let fit):
-			showScore(Int(score * 100), at: fit.center)
-		case .Rejected(let centroid):
-			rejectScore(at: centroid)
+		circleController.endCircle(touch.locationInView(view)) { (result: CircleResult) in
+			// Ignore if the circle isn't even a triangle
+			guard self.circleController.circle.segments.points.count >= 3 else { return }
+			
+			dispatch_async(dispatch_get_main_queue(), { 
+				switch result {
+				case .Accepted(let score, _, let fit):
+					self.showScore(Int(score * 100), at: fit.center)
+				case .Rejected(let centroid):
+					self.rejectScore(at: centroid)
+				}
+			})
 		}
 	}
 	

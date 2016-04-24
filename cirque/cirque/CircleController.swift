@@ -37,20 +37,18 @@ class CircleController: NSObject {
 		
 	}
 
-	func endCircle(p: CGPoint) -> CircleResult {
+	func endCircle(p: CGPoint, after: (CircleResult) -> ()) {
 		circle.addSegment(p)
 		circle.end()
 		
 //		circle.dumpAsSwiftArray()
 		
 		// FIXME: doing two analyses :(
-		fitCircle(circle.segments) {(fit: CircleFit?) in
+		fitCircle(circle.segments) { (fit: CircleFit) in
 			self.bestFit = fit
 			self.analysisTimestamp = NSDate()
-		}
-		
-		if let fit = CircleFitter().fitCenterAndRadius(circle.segments.points) {
-			let polar = circle.polarizePoints(circle.segments.points, around: fit.center)
+			
+			let polar = polarize(self.circle.segments.points, around: fit.center)
 			let analyser = TrailAnalyser(points: polar, fitRadius: Double(fit.radius))
 			
 			let isCircle = analyser.isCircle()
@@ -61,14 +59,14 @@ class CircleController: NSObject {
 				trend = historyWriter.circularityScoreProgression()
 				historyWriter.save()
 				historyWriter.dumpScoreHistory()
-			
+				
 				let score = analyser.circularityScore()
-				return .Accepted(score: score, trend: trend, fit: fit)
+				after(.Accepted(score: score, trend: trend, fit: fit))
+			}
+			else {
+				after(.Rejected(centroid: fit.center))
 			}
 		}
-		
-		let centroid = CircleFitter().calculateCentroid(circle.segments.points)
-		return .Rejected(centroid: centroid)
 	}
 
 	func fitCircle(trail: Trail, cb: CircleFitCallback) {
@@ -77,7 +75,7 @@ class CircleController: NSObject {
 		analysisRunning = true
 
 		// Messy, so that unit tests can mock out the dispatch
-		dispatchFitJob(trail) { (fit: CircleFit?) in
+		dispatchFitJob(trail) { (fit: CircleFit) in
 			cb(fit)
 			self.analysisRunning = false
 		}
@@ -86,8 +84,7 @@ class CircleController: NSObject {
 	func dispatchFitJob(trail: Trail, cb: CircleFitCallback) {
 		let points = trail.points	// Make copy
 		dispatch_async(analysisQueue) {
-			let fit = CircleFitter().fitCenterAndRadius(points)
-			cb(fit)
+			cb(CircleFitter.fitCenterAndRadius(points))
 		}
 	}
 }

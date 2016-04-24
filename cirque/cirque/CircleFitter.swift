@@ -15,22 +15,21 @@ import CoreGraphics.CGGeometry
 // $ Move this code onto Surge library
 
 typealias CircleFit = (center: Point, radius: CGFloat)
-typealias CircleFitCallback = (CircleFit?) -> ()
+typealias CircleFitCallback = (CircleFit) -> ()
 
-class CircleFitter {
+struct CircleFitter {
 	
-	func fitCenterAndRadius(points: PointArray) -> CircleFit? {
+	static func fitCenterAndRadius(points: PointArray) -> CircleFit {
 		// Transform into
-		let centroid = calculateCentroid(points)
-		let p = centerPoints(points, on: centroid)
+		let p = centerPoints(points)
 		
-		let sUU = calcSumUU(p)
-		let sUV = calcSumUV(p)
-		let sVV = calcSumVV(p)
-		let sVVV = calcSumVVV(p)
-		let sUUU = calcSumUUU(p)
-		let sUUV = calcSumUUV(p)
-		let sUVV = calcSumUVV(p)
+		let sUU = sumUU(p)
+		let sUV = sumUV(p)
+		let sVV = sumVV(p)
+		let sVVV = sumVVV(p)
+		let sUUU = sumUUU(p)
+		let sUUV = sumUUV(p)
+		let sUVV = sumUVV(p)
 		
 		// Matrix A
 		let A11 = sUU
@@ -38,9 +37,13 @@ class CircleFitter {
 		let A21 = sUV
 		let A22 = sVV
 		
+		let c = centroid(points)
+		
 		// Determinant of A
 		let detA = A11*A22 - A12*A21
-		if (detA == 0.0) {return nil}
+		if (detA == 0.0) {
+			return CircleFit(center: c, radius: 0.0)
+		}
 		
 		// Vector b
 		let b1 = (sUUU + sUVV) / 2.0
@@ -59,45 +62,46 @@ class CircleFitter {
 		// Solve for radius
 		let alpha = x * x + y * y + (sUU + sVV) / CGFloat(p.count)
 		
-		return (CGPointMake(x + centroid.x, y + centroid.y), sqrt(alpha)) as CircleFit
+		return (CGPointMake(x + c.x, y + c.y), sqrt(alpha)) as CircleFit
 	}
 	
-	func calculateCentroid(points: PointArray) -> Point {
+	static func centroid(points: PointArray) -> Point {
 		var c = points.reduce(CGPointZero) {CGPointMake($0.x + $1.x, $0.y + $1.y)}
 		c.x /= CGFloat(points.count)
 		c.y /= CGFloat(points.count)
 		return c
 	}
 	
-	func centerPoints(points: PointArray, on: Point) -> PointArray {
+	static func centerPoints(points: PointArray) -> PointArray {
+		let on = centroid(points)
 		return points.map{CGPointMake($0.x - on.x, $0.y - on.y)}
 	}
 	
-	func calcSumUU(points: PointArray) -> CGFloat {
+	static func sumUU(points: PointArray) -> CGFloat {
 		return points.reduce(0.0) {$0 + ($1.x * $1.x)}
 	}
 
-	func calcSumUV(points: PointArray) -> CGFloat {
+	static func sumUV(points: PointArray) -> CGFloat {
 		return points.reduce(0.0) {$0 + ($1.x * $1.y)}
 	}
 
-	func calcSumVV(points: PointArray) -> CGFloat {
+	static func sumVV(points: PointArray) -> CGFloat {
 		return points.reduce(0.0) {$0 + ($1.y * $1.y)}
 	}
 
-	func calcSumUUU(points: PointArray) -> CGFloat {
+	static func sumUUU(points: PointArray) -> CGFloat {
 		return points.reduce(0.0) {$0 + ($1.x * $1.x * $1.x)}
 	}
 
-	func calcSumVVV(points: PointArray) -> CGFloat {
+	static func sumVVV(points: PointArray) -> CGFloat {
 		return points.reduce(0.0) {$0 + ($1.y * $1.y * $1.y)}
 	}
 
-	func calcSumUUV(points: PointArray) -> CGFloat {
+	static func sumUUV(points: PointArray) -> CGFloat {
 		return points.reduce(0.0) {$0 + ($1.x * $1.x * $1.y)}
 	}
 
-	func calcSumUVV(points: PointArray) -> CGFloat {
+	static func sumUVV(points: PointArray) -> CGFloat {
 		return points.reduce(0.0) {$0 + ($1.x * $1.y * $1.y)}
 	}
 }

@@ -25,8 +25,7 @@ class CircleModelTests: XCTestCase {
 									CGPoint(x: -95.0, y: 98.0),
 									CGPoint(x: -95.0, y: -102.0),
 									CGPoint(x: 105.0, y: -102.0)]
-		let c = Circle()
-		var polar = c.polarizePoints(points, around: CGPointMake(5.0, -2.0))
+		var polar = polarize(points, around: CGPointMake(5.0, -2.0))
 		
 		XCTAssertEqualWithAccuracy(polar[0].a, CGFloat(1.0 * M_PI_4), accuracy: 0.01, "Incorrectly polarized")
 		XCTAssertEqualWithAccuracy(polar[0].r, CGFloat(141.0), accuracy: 1.0, "Incorrectly polarized")
