@@ -43,7 +43,6 @@ class CircleController: NSObject {
 		
 //		circle.dumpAsSwiftArray()
 		
-		// FIXME: doing two analyses :(
 		fitCircle(circle.segments) { (fit: CircleFit) in
 			self.bestFit = fit
 			self.analysisTimestamp = NSDate()

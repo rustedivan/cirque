@@ -17,7 +17,7 @@ typealias AngleBucket = (points: PolarArray, angle: CGFloat)
 
 @objc
 public class Circle: NSObject {
-	var segmentFilterDistance: CGFloat {get {return 1.0}}
+	var segmentFilterDistance: CGFloat {get {return 2.0}}
 	var segments = Trail()
 	
 	func begin() {

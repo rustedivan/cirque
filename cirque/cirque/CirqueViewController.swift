@@ -67,7 +67,7 @@ class CirqueViewController: UIViewController {
 			scoreView!.update()
 		}
 		
-		cirqueView.render(circleController.circle, withThickness: 4.0)
+		cirqueView.render(circleController.circle)
 	}
 	
 	func showScore(score: Int, at: CGPoint) {
