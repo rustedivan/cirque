@@ -53,7 +53,7 @@ class CirqueViewController: UIViewController {
 			
 			dispatch_async(dispatch_get_main_queue(), { 
 				switch result {
-				case .Accepted(let score, _, let fit):
+				case .Accepted(let score, _, let fit, _):
 					self.showScore(Int(score * 100), at: fit.center)
 				case .Rejected(let centroid):
 					self.rejectScore(at: centroid)

@@ -11,12 +11,13 @@ import CoreGraphics.CGGeometry
 
 enum CircleResult {
 	case Rejected (centroid: Point)
-	case Accepted (score: Double, trend: Double, fit: CircleFit)
+	case Accepted (score: Double, trend: Double, fit: CircleFit, errorArea: ErrorArea)
 }
 
 class CircleController: NSObject {
 	var circle: Circle = Circle()
 	var bestFit: CircleFit?
+	var errorArea: ErrorArea?
 
 	var analysisTimestamp = NSDate()
 	var analysisRunning = false
@@ -48,6 +49,7 @@ class CircleController: NSObject {
 			self.analysisTimestamp = NSDate()
 			
 			let polar = polarize(self.circle.segments.points, around: fit.center)
+			
 			let analyser = TrailAnalyser(points: polar, fitRadius: Double(fit.radius))
 			
 			let isCircle = analyser.isCircle()
@@ -60,7 +62,8 @@ class CircleController: NSObject {
 				historyWriter.dumpScoreHistory()
 				
 				let score = analyser.circularityScore()
-				after(.Accepted(score: score, trend: trend, fit: fit))
+				self.errorArea = self.circle.generateErrorArea(polar, around: fit.center, radius: fit.radius, treshold: 4.0)
+				after(.Accepted(score: score, trend: trend, fit: fit, errorArea: self.errorArea))
 			}
 			else {
 				after(.Rejected(centroid: fit.center))

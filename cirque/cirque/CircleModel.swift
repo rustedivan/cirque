@@ -8,6 +8,7 @@
 
 import Foundation
 import CoreGraphics.CGGeometry
+import simd
 
 typealias Point = CGPoint
 typealias PointArray = Array<Point>
@@ -57,6 +58,45 @@ func polarize(points: PointArray, around c: CGPoint) -> PolarArray {
 	}
 	
 	return polar
+}
+
+struct ErrorArea: VertexSource {
+	var polarPoints: [Polar]
+	var center: CGPoint
+	
+	func toVertices() -> [CirqueVertex] {
+		var out = [CirqueVertex]()
+		for p in polarPoints {
+			let x = Float(cos(p.a) * p.r)
+			let y = Float(sin(p.a) * p.r)
+			out.append(CirqueVertex(position: vector_float4(x, y, 0.0, 1.0)))
+		}
+		return out
+	}
+}
+
+extension Circle {
+	func generateErrorArea(points: [Polar], around: CGPoint, radius: CGFloat, treshold: CGFloat) -> ErrorArea {
+		var errorArea = ErrorArea(polarPoints: [], center: around)
+		for (i, p) in points.enumerate() {
+			if fabs(p.r - radius) > treshold {
+				let o = p
+				let oNext = (i < points.endIndex) ? points[i + 1] : o
+				let oPrev = (i > points.startIndex) ? points[i - 1] : o
+				let r = Polar(a: o.a, r: radius)
+				let rNext = Polar(a: oNext.a, r: radius)
+				let rPrev = Polar(a: oPrev.a, r: radius)
+				
+				let prevPoint = (oPrev.r < rPrev.r) ? oPrev : rPrev
+				let nextPoint = (oNext.r > rNext.r) ? oNext : rNext
+				
+				errorArea.polarPoints.appendContentsOf([o, r, prevPoint])	// Backward triangle
+				errorArea.polarPoints.appendContentsOf([o, r, nextPoint])	// Forward triangle
+			}
+		}
+		
+		return errorArea
+	}
 }
 
 extension Circle {

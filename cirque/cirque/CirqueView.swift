@@ -63,7 +63,7 @@ extension Trail : VertexSource {
 // MARK: Base view
 
 class CirqueView: UIView {
-	var renderer: Renderer!
+	var renderers: [Renderer] = []
 	
 	required init?(coder aDecoder: NSCoder) {
 		super.init(coder: aDecoder)
@@ -71,39 +71,35 @@ class CirqueView: UIView {
 	
 	override func didMoveToWindow() {
 		contentScaleFactor = 2.0
-		renderer = setupRenderer()
+		renderers = setupRenderers()
 	}
 	
 	func render(model: Circle) {
-		renderer.render(model.segments)
+		renderers[0].render(model.segments)
+		renderers[1].render(model.segments)
 	}
 }
 
 // MARK: Simulator
 #if arch(i386) || arch(x86_64)
 extension CirqueView {
-	typealias LayerType = CAShapeLayer
-	override class func layerClass() -> AnyClass {
-		return LayerType.self
-	}
-	
-	var renderingLayer : LayerType {
-		return layer as! LayerType
-	}
-	
-	func setupRenderer() -> Renderer {
-		return SimulatorRenderer(layer: renderingLayer)
+	func setupRenderers() -> [Renderer] {
+		return [
+			SimulatorErrorRenderer(layer: layer),
+			SimulatorCircleRenderer(layer: layer)
+		]
 	}
 	
 	override func layoutSublayersOfLayer(layer: CALayer) {
-		renderingLayer.backgroundColor = UIColor.whiteColor().CGColor
-		renderingLayer.strokeColor = UIColor.blueColor().CGColor
-		renderingLayer.fillColor = UIColor.clearColor().CGColor
-		renderingLayer.lineWidth = 2.0
+		guard layer.sublayers != nil else { return }
+		
+		for subLayer in layer.sublayers! {
+			subLayer.frame = layer.frame
+		}
 	}
 }
 
-struct SimulatorRenderer: Renderer {
+struct SimulatorCircleRenderer: Renderer {
 	let shapeLayer: CAShapeLayer
 	
 	var renderTargetSize: CGSize {
@@ -111,8 +107,14 @@ struct SimulatorRenderer: Renderer {
 		set { shapeLayer.bounds.size = renderTargetSize }
 	}
 	
-	init(layer: CAShapeLayer) {
-		self.shapeLayer = layer
+	init(layer: CALayer) {
+		self.shapeLayer = CAShapeLayer()
+		layer.addSublayer(self.shapeLayer)
+		self.shapeLayer.frame = layer.frame
+		self.shapeLayer.strokeColor = UIColor.blueColor().CGColor
+		self.shapeLayer.lineWidth = 4.0
+		self.shapeLayer.backgroundColor = UIColor.clearColor().CGColor
+		self.shapeLayer.fillColor = UIColor.clearColor().CGColor
 	}
 	
 	func render(vertices: VertexSource) {
@@ -131,6 +133,43 @@ struct SimulatorRenderer: Renderer {
 	}
 }
 
+struct SimulatorErrorRenderer: Renderer {
+	let shapeLayer: CAShapeLayer
+	
+	var renderTargetSize: CGSize {
+		get { return shapeLayer.bounds.size }
+		set { shapeLayer.bounds.size = renderTargetSize }
+	}
+	
+	init(layer: CALayer) {
+		self.shapeLayer = CAShapeLayer()
+		layer.addSublayer(self.shapeLayer)
+		self.shapeLayer.bounds = layer.bounds
+		self.shapeLayer.strokeColor = UIColor.redColor().CGColor
+		self.shapeLayer.lineWidth = 2.0
+		self.shapeLayer.backgroundColor = UIColor.whiteColor().CGColor
+		self.shapeLayer.fillColor = UIColor.clearColor().CGColor
+	}
+	
+	func render(vertices: VertexSource) {
+		let vertexArray = vertices.toVertices()
+		guard let firstPoint = vertexArray.first else { return }
+		
+		let trailPath = UIBezierPath()
+		
+		var i = 1;
+		trailPath.moveToPoint(CGPoint(vertex: firstPoint))
+		repeat {
+			trailPath.moveToPoint(CGPoint(vertex: vertexArray[i])); i = i + 1
+			trailPath.addLineToPoint(CGPoint(vertex: vertexArray[i])); i = i + 1
+			trailPath.addLineToPoint(CGPoint(vertex: vertexArray[i])); i = i + 1
+			trailPath.closePath()
+		} while i + 3 < vertexArray.count
+		
+		shapeLayer.path = trailPath.CGPath
+	}
+}
+	
 #else
 // MARK: Metal
 extension CirqueView {

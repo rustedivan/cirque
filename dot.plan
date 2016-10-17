@@ -1,0 +1,15 @@
+# Renderer setup
+
+## Renderers:
+struct Chunk {
+	[Vertex]
+	PrimitiveType
+}
+
+## Circle View:
+- circle renderer
+- model renderer
+- error area renderer
+
+## Analysis View:
+- UIView hierarchy
