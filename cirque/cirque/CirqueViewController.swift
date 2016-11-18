@@ -23,39 +23,39 @@ class CirqueViewController: UIViewController {
 		circleController = CircleController()
 		
 		renderingLink = CADisplayLink(target: self, selector: #selector(CirqueViewController.render))
-		renderingLink.addToRunLoop(NSRunLoop.mainRunLoop(), forMode: NSDefaultRunLoopMode)
+		renderingLink.add(to: RunLoop.main, forMode: RunLoopMode.defaultRunLoopMode)
 	}
 
-	override func touchesBegan(touches: Set<UITouch>, withEvent _: UIEvent?) {
+	override func touchesBegan(_ touches: Set<UITouch>, with _: UIEvent?) {
 		guard let touch = touches.first else { return }
 		errorLabel.text = ""
 		circleController = CircleController()
-		circleController.beginNewCircle(touch.locationInView(view))
+		circleController.beginNewCircle(touch.location(in: view))
 	}
 	
-	override func touchesMoved(touches: Set<UITouch>, withEvent event: UIEvent?) {
+	override func touchesMoved(_ touches: Set<UITouch>, with event: UIEvent?) {
 		guard let touch = touches.first else { return }
 		if #available(iOS 9.0, *) {
-		    for extraTouch in event!.coalescedTouchesForTouch(touch)! {
-    			circleController.addSegment(extraTouch.locationInView(view))
+		    for extraTouch in event!.coalescedTouches(for: touch)! {
+    			circleController.addSegment(extraTouch.location(in: view))
     		}
 		} else {
-		    circleController.addSegment(touch.locationInView(view))
+		    circleController.addSegment(touch.location(in: view))
 		}
 	}
 	
-	override func touchesEnded(touches: Set<UITouch>, withEvent _: UIEvent?) {
+	override func touchesEnded(_ touches: Set<UITouch>, with _: UIEvent?) {
 		guard let touch = touches.first else { return }
 		
-		circleController.endCircle(touch.locationInView(view)) { (result: CircleResult) in
+		circleController.endCircle(touch.location(in: view)) { (result: CircleResult) in
 			// Ignore if the circle isn't even a triangle
 			guard self.circleController.circle.segments.points.count >= 3 else { return }
 			
-			dispatch_async(dispatch_get_main_queue(), { 
+			DispatchQueue.main.async(execute: { 
 				switch result {
-				case .Accepted(let score, _, let fit, _):
+				case .accepted(let score, _, let fit, _):
 					self.showScore(Int(score * 100), at: fit.center)
-				case .Rejected(let centroid):
+				case .rejected(let centroid):
 					self.rejectScore(at: centroid)
 				}
 			})
@@ -70,13 +70,13 @@ class CirqueViewController: UIViewController {
 		cirqueView.render(circleController.circle)
 	}
 	
-	func showScore(score: Int, at: CGPoint) {
+	func showScore(_ score: Int, at: CGPoint) {
 		scoreView = ScoreView(frame: CGRect(x: at.x - 50.0, y: at.y - 50.0, width: 100.0, height: 100.0), score: score)
 		scoreView!.update()
 		view.addSubview(scoreView!)
 	}
 	
-	func rejectScore(at at: CGPoint) {
+	func rejectScore(at: CGPoint) {
 		scoreView = ScoreView(frame: CGRect(x: at.x - 50.0, y: at.y - 50.0, width: 100.0, height: 100.0), score: 0)
 		scoreView!.update()
 		view.addSubview(scoreView!)

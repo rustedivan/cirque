@@ -13,7 +13,7 @@ class ScoreView: UIView {
 		var scoreString: String
 	}
 	
-	var countUpStartTime: NSDate!
+	var countUpStartTime: Date!
 	var viewModel = ViewModel(scoreString: "")
 	var targetScore: Int = 0
 	
@@ -27,19 +27,19 @@ class ScoreView: UIView {
 	
 	convenience init(frame: CGRect, score: Int) {
 		self.init(frame: frame)
-		self.countUpStartTime = NSDate()
+		self.countUpStartTime = Date()
 		self.targetScore = score
-		self.backgroundColor = UIColor.clearColor()
-		self.opaque = false
+		self.backgroundColor = UIColor.clear
+		self.isOpaque = false
 	}
 	
-	override func drawRect(rect: CGRect) {
+	override func draw(_ rect: CGRect) {
 		let scoreImage = percentageAsImage(viewModel.scoreString, imageWidth: rect.width)
-		let center = CGPoint(x: CGRectGetMidX(rect), y: CGRectGetMidY(rect))
+		let center = CGPoint(x: rect.midX, y: rect.midY)
 		let centered = CGPoint(x: center.x - scoreImage.size.width / 2.0, y: center.y - scoreImage.size.height / 2.0)
 		let scoreRect = CGRect(origin: centered, size: scoreImage.size)
 		
-		scoreImage.drawInRect(scoreRect)
+		scoreImage.draw(in: scoreRect)
 	}
 	
 	func update() {
@@ -49,7 +49,7 @@ class ScoreView: UIView {
 			viewModel.scoreString = "X"
 		}
 		
-		if (NSDate().timeIntervalSinceDate(countUpStartTime) > 1.0) {
+		if (Date().timeIntervalSince(countUpStartTime) > 1.0) {
 			removeFromSuperview()
 		}
 		else {
@@ -57,33 +57,33 @@ class ScoreView: UIView {
 		}
 	}
 	
-	func percentageAsImage(percentageString: String, imageWidth: CGFloat) -> UIImage {
+	func percentageAsImage(_ percentageString: String, imageWidth: CGFloat) -> UIImage {
 		// $ Add test for this
 		let fontSize = imageWidth / 2.35	// Linear estimate between image width and this particular font setup
 		
 		var fontAttributes: [String:AnyObject]
 		if #available(iOS 8.2, *) {
 			fontAttributes = [
-				NSFontAttributeName : UIFont.systemFontOfSize(fontSize, weight: UIFontWeightLight),
-				NSStrokeWidthAttributeName : 0.0,
-				NSForegroundColorAttributeName : UIColor.blueColor()
+				NSFontAttributeName : UIFont.systemFont(ofSize: fontSize, weight: UIFontWeightLight),
+				NSStrokeWidthAttributeName : 0.0 as AnyObject,
+				NSForegroundColorAttributeName : UIColor.blue
 			]
 		} else {
 			fontAttributes = [
-				NSFontAttributeName : UIFont.systemFontOfSize(fontSize),
-				NSStrokeWidthAttributeName : 0.0,
-				NSForegroundColorAttributeName : UIColor.blueColor()
+				NSFontAttributeName : UIFont.systemFont(ofSize: fontSize),
+				NSStrokeWidthAttributeName : 0.0 as AnyObject,
+				NSForegroundColorAttributeName : UIColor.blue
 			]
 		}
 		
 		let string = NSString(string: percentageString)
-		let size = string.sizeWithAttributes(fontAttributes)
+		let size = string.size(attributes: fontAttributes)
 		
 		UIGraphicsBeginImageContextWithOptions(size, false, 0.0)
 		defer { UIGraphicsEndImageContext() }
 		
-		string.drawAtPoint(CGPointZero, withAttributes: fontAttributes)
+		string.draw(at: CGPoint.zero, withAttributes: fontAttributes)
 		
-		return UIGraphicsGetImageFromCurrentImageContext()
+		return UIGraphicsGetImageFromCurrentImageContext()!
 	}
 }

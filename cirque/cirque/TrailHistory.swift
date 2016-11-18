@@ -13,8 +13,8 @@ class TrailHistory {
 	var filename: String?
 	class var historyDir: String {
 		get {
-			let appSupportDir = NSSearchPathForDirectoriesInDomains(.ApplicationSupportDirectory, .UserDomainMask, true)[0] 
-			let bundleId = NSBundle.mainBundle().bundleIdentifier
+			let appSupportDir = NSSearchPathForDirectoriesInDomains(.applicationSupportDirectory, .userDomainMask, true)[0] 
+			let bundleId = Bundle.main.bundleIdentifier
 			return appSupportDir + "/" + bundleId! + "/"
 		}
 	}
@@ -27,14 +27,14 @@ class TrailHistory {
 		
 		self.filename = filename
 		
-		let loadData = NSData(contentsOfFile: TrailHistory.historyDir + filename)
+		let loadData = try? Data(contentsOf: URL(fileURLWithPath: TrailHistory.historyDir + filename))
 		if let data = loadData {
-			let loader = NSKeyedUnarchiver(forReadingWithData: data)
-			entries = loader.decodeObjectForKey("trails") as! [TrailAnalyser]
+			let loader = NSKeyedUnarchiver(forReadingWith: data)
+			entries = loader.decodeObject(forKey: "trails") as! [TrailAnalyser]
 		}
 	}
 	
-	func addAnalysis(trail: TrailAnalyser) {
+	func addAnalysis(_ trail: TrailAnalyser) {
 		entries.append(trail)
 	}
 	
@@ -42,22 +42,22 @@ class TrailHistory {
 		if let savefile = filename {
 			// Create /Application Support if needed:
 			let directory = TrailHistory.historyDir
-			let manager = NSFileManager.defaultManager()
-			if !manager.fileExistsAtPath(directory) {
+			let manager = FileManager.default
+			if !manager.fileExists(atPath: directory) {
 				do {
-					try manager.createDirectoryAtPath(directory, withIntermediateDirectories: true, attributes: nil)
+					try manager.createDirectory(atPath: directory, withIntermediateDirectories: true, attributes: nil)
 				} catch let error as NSError {
 					debugPrint(error)
 				}
 			}
 			
 			let saveData = NSMutableData()
-			let saver = NSKeyedArchiver(forWritingWithMutableData: saveData)
-			saver.encodeObject(entries, forKey: "trails")
+			let saver = NSKeyedArchiver(forWritingWith: saveData)
+			saver.encode(entries, forKey: "trails")
 			saver.finishEncoding()
-			saveData.writeToFile(directory + savefile, atomically: true)
+			saveData.write(toFile: directory + savefile, atomically: true)
 			
-			let attribs = (try! NSFileManager.defaultManager().attributesOfItemAtPath(directory + savefile)) as NSDictionary
+			let attribs = (try! FileManager.default.attributesOfItem(atPath: directory + savefile)) as NSDictionary
 			print("History file has grown to \(attribs.fileSize() / 1024)kB.")
 		}
 	}
@@ -75,7 +75,7 @@ extension TrailHistory {
 
 		let n = Double(scores.count)
 		let sumT = indices.reduce(0.0) {$0 + Double($1)}
-		let sumS = scores.reduce(0.0, combine: +)
+		let sumS = scores.reduce(0.0, +)
 
 		var sumST = 0.0
 		for i in 0..<scores.count {

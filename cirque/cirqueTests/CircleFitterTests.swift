@@ -12,13 +12,13 @@ import CoreGraphics.CGGeometry
 class CircleFitterTests: XCTestCase {
 	let cf = CircleFitter()
 // Points taken from http://www.dtcenter.org/met/users/docs/write_ups/circle_fit.pdf
-	let examplePoints = [	CGPointMake(0.00, 0.00),
-												CGPointMake(0.50, 0.25),
-												CGPointMake(1.00, 1.00),
-												CGPointMake(1.50, 2.25),
-												CGPointMake(2.00, 4.00),
-												CGPointMake(2.50, 6.25),
-												CGPointMake(3.00, 9.00)]
+	let examplePoints = [	CGPoint(x: 0.00, y: 0.00),
+												CGPoint(x: 0.50, y: 0.25),
+												CGPoint(x: 1.00, y: 1.00),
+												CGPoint(x: 1.50, y: 2.25),
+												CGPoint(x: 2.00, y: 4.00),
+												CGPoint(x: 2.50, y: 6.25),
+												CGPoint(x: 3.00, y: 9.00)]
 	
 	
 	func testShouldCalculateCentroid() {
@@ -60,12 +60,12 @@ class CircleFitterTests: XCTestCase {
 	func testCircleFitSpeed() {
 		var p = Array<CGPoint>()
 		for i in 0...10000 {
-			let a = CGPointMake(CGFloat(i) * 2.0, CGFloat(i) * 3.0)
+			let a = CGPoint(x: CGFloat(i) * 2.0, y: CGFloat(i) * 3.0)
 			p.append(a)
 		}
 		
-		self.measureBlock() {
-			CircleFitter.fitCenterAndRadius(p)
+		self.measure() {
+			let _ = CircleFitter.fitCenterAndRadius(p)
 			return ()
 		}
 	}

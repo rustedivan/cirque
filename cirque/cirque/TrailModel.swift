@@ -23,14 +23,14 @@ class Trail: NSObject {
 		}
 	}
 	
-	func addPoint(p: CGPoint) {
+	func addPoint(_ p: CGPoint) {
 		points.append(p)
 		updateAngles()
 		updateDistances()
 	}
 	
-	private func updateAngles() {
-		func angleBetween(p1: CGPoint, p2: CGPoint) -> CGFloat {
+	fileprivate func updateAngles() {
+		func angleBetween(_ p1: CGPoint, p2: CGPoint) -> CGFloat {
 			return atan2(p2.y - p1.y, p2.x - p1.x)
 		}
 		
@@ -49,7 +49,7 @@ class Trail: NSObject {
 		}
 	}
 	
-	private func updateDistances() {
+	fileprivate func updateDistances() {
 		if points.count < 2 {return}
 		let p1 = points.last!
 		let p2 = points[points.count-2]

@@ -49,12 +49,12 @@ class HistoricalAnalysisTests: XCTestCase {
 	
 	override func tearDown() {
 		do {
-			try NSFileManager.defaultManager().removeItemAtPath(TrailHistory.historyDir)
+			try FileManager.default.removeItem(atPath: TrailHistory.historyDir)
 		} catch _ {
 		}
 	}
 	
-	func makeTrailAnalysis(points: Array<(Double, Double)>) -> TrailAnalyser {
+	func makeTrailAnalysis(_ points: Array<(Double, Double)>) -> TrailAnalyser {
 		let t = Trail(tuples: points)
 		let fit = CircleFitter.fitCenterAndRadius(t.points)
 		let polar = polarize(t.points, around: fit.center)
@@ -109,7 +109,7 @@ class HistoricalAnalysisTests: XCTestCase {
 
 	func testCanDetectLinearWorsening() {
 		let history = TrailHistory()
-		for trail in Array(linearImprovement.reverse()) {
+		for trail in Array(linearImprovement.reversed()) {
 			let ta = makeTrailAnalysis(trail)
 			history.addAnalysis(ta)
 		}

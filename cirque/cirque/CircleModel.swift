@@ -17,27 +17,27 @@ typealias PolarArray = Array<Polar>
 typealias AngleBucket = (points: PolarArray, angle: CGFloat)
 
 @objc
-public class Circle: NSObject {
+open class Circle: NSObject {
 	var segmentFilterDistance: CGFloat {get {return 2.0}}
 	var segments = Trail()
 	
 	func begin() {
 	}
 	
-	func addSegment(p: CGPoint) {
+	func addSegment(_ p: CGPoint) {
 		segments.addPoint(p)
 	}
 	
 	func end() {
 	}
 	
-	func distanceFromEnd(point: CGPoint) -> CGFloat {
+	func distanceFromEnd(_ point: CGPoint) -> CGFloat {
 		let p = CGVector(dx: point.x - segments.points.last!.x, dy: point.y - segments.points.last!.y)
 		return sqrt(p.dx * p.dx + p.dy * p.dy)
 	}
 }
 
-func polarize(points: PointArray, around c: CGPoint) -> PolarArray {
+func polarize(_ points: PointArray, around c: CGPoint) -> PolarArray {
 	var polar: PolarArray = []
 	
 	for i in 0 ..< points.count {
@@ -76,9 +76,9 @@ struct ErrorArea: VertexSource {
 }
 
 extension Circle {
-	func generateErrorArea(points: [Polar], around: CGPoint, radius: CGFloat, treshold: CGFloat) -> ErrorArea {
+	func generateErrorArea(_ points: [Polar], around: CGPoint, radius: CGFloat, treshold: CGFloat) -> ErrorArea {
 		var errorArea = ErrorArea(polarPoints: [], center: around)
-		for (i, p) in points.enumerate() {
+		for (i, p) in points.enumerated() {
 			if fabs(p.r - radius) > treshold {
 				let o = p
 				let oNext = (i < points.endIndex) ? points[i + 1] : o
@@ -90,8 +90,8 @@ extension Circle {
 				let prevPoint = (oPrev.r < rPrev.r) ? oPrev : rPrev
 				let nextPoint = (oNext.r > rNext.r) ? oNext : rNext
 				
-				errorArea.polarPoints.appendContentsOf([o, r, prevPoint])	// Backward triangle
-				errorArea.polarPoints.appendContentsOf([o, r, nextPoint])	// Forward triangle
+				errorArea.polarPoints.append(contentsOf: [o, r, prevPoint])	// Backward triangle
+				errorArea.polarPoints.append(contentsOf: [o, r, nextPoint])	// Forward triangle
 			}
 		}
 		
@@ -100,8 +100,8 @@ extension Circle {
 }
 
 extension Circle {
-	struct ArrayChunker: SequenceType {
-		typealias Element = Range<Int>
+	struct ArrayChunker: Sequence {
+		typealias Element = CountableRange<Int>
 		let stride: Int
 		let count: Int
 		
@@ -110,12 +110,11 @@ extension Circle {
 			self.stride = stride
 		}
 		
-		func generate() -> AnyGenerator<Range<Int>> {
+		func makeIterator() -> AnyIterator<CountableRange<Int>> {
 			var i = 0
-			return AnyGenerator { () -> Element? in
+			return AnyIterator { () -> Element? in
 				guard i < self.count else { return nil }
-				
-				let out = Range(i ..< min(i + self.stride, self.count))
+				let out = i ..< Swift.min(i + self.stride, self.count)
 				i += self.stride
 				return out
 			}

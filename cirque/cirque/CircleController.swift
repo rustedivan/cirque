@@ -10,8 +10,8 @@ import Foundation
 import CoreGraphics.CGGeometry
 
 enum CircleResult {
-	case Rejected (centroid: Point)
-	case Accepted (score: Double, trend: Double, fit: CircleFit, errorArea: ErrorArea)
+	case rejected (centroid: Point)
+	case accepted (score: Double, trend: Double, fit: CircleFit, errorArea: ErrorArea)
 }
 
 class CircleController: NSObject {
@@ -19,16 +19,16 @@ class CircleController: NSObject {
 	var bestFit: CircleFit?
 	var errorArea: ErrorArea?
 
-	var analysisTimestamp = NSDate()
+	var analysisTimestamp = Date()
 	var analysisRunning = false
-	let analysisQueue = dispatch_queue_create("se.rusted.cirque.analysis", nil)
+	let analysisQueue = DispatchQueue(label: "se.rusted.cirque.analysis", attributes: [])
 		
-	func beginNewCircle(p: CGPoint) {
+	func beginNewCircle(_ p: CGPoint) {
 		circle.begin()
 		circle.addSegment(p)
 	}
 	
-	func addSegment(p: CGPoint) {
+	func addSegment(_ p: CGPoint) {
 		let distanceFromLastSegment = circle.distanceFromEnd(p)
 		if distanceFromLastSegment < circle.segmentFilterDistance {
 			return
@@ -38,7 +38,7 @@ class CircleController: NSObject {
 		
 	}
 
-	func endCircle(p: CGPoint, after: (CircleResult) -> ()) {
+	func endCircle(_ p: CGPoint, after: @escaping (CircleResult) -> ()) {
 		circle.addSegment(p)
 		circle.end()
 		
@@ -46,7 +46,7 @@ class CircleController: NSObject {
 		
 		fitCircle(circle.segments) { (fit: CircleFit) in
 			self.bestFit = fit
-			self.analysisTimestamp = NSDate()
+			self.analysisTimestamp = Date()
 			
 			let polar = polarize(self.circle.segments.points, around: fit.center)
 			
@@ -63,15 +63,15 @@ class CircleController: NSObject {
 				
 				let score = analyser.circularityScore()
 				self.errorArea = self.circle.generateErrorArea(polar, around: fit.center, radius: fit.radius, treshold: 4.0)
-				after(.Accepted(score: score, trend: trend, fit: fit, errorArea: self.errorArea))
+				after(.accepted(score: score, trend: trend, fit: fit, errorArea: self.errorArea!))
 			}
 			else {
-				after(.Rejected(centroid: fit.center))
+				after(.rejected(centroid: fit.center))
 			}
 		}
 	}
 
-	func fitCircle(trail: Trail, cb: CircleFitCallback) {
+	func fitCircle(_ trail: Trail, cb: @escaping CircleFitCallback) {
 		if analysisRunning {return}
 
 		analysisRunning = true
@@ -83,9 +83,9 @@ class CircleController: NSObject {
 		}
 	}
 	
-	func dispatchFitJob(trail: Trail, cb: CircleFitCallback) {
+	func dispatchFitJob(_ trail: Trail, cb: @escaping CircleFitCallback) {
 		let points = trail.points	// Make copy
-		dispatch_async(analysisQueue) {
+		analysisQueue.async {
 			cb(CircleFitter.fitCenterAndRadius(points))
 		}
 	}

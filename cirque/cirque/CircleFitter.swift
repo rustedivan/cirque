@@ -19,7 +19,7 @@ typealias CircleFitCallback = (CircleFit) -> ()
 
 struct CircleFitter {
 	
-	static func fitCenterAndRadius(points: PointArray) -> CircleFit {
+	static func fitCenterAndRadius(_ points: PointArray) -> CircleFit {
 		// Transform into
 		let p = centerPoints(points)
 		
@@ -62,46 +62,46 @@ struct CircleFitter {
 		// Solve for radius
 		let alpha = x * x + y * y + (sUU + sVV) / CGFloat(p.count)
 		
-		return (CGPointMake(x + c.x, y + c.y), sqrt(alpha)) as CircleFit
+		return (CGPoint(x: x + c.x, y: y + c.y), sqrt(alpha)) as CircleFit
 	}
 	
-	static func centroid(points: PointArray) -> Point {
-		var c = points.reduce(CGPointZero) {CGPointMake($0.x + $1.x, $0.y + $1.y)}
+	static func centroid(_ points: PointArray) -> Point {
+		var c = points.reduce(CGPoint.zero) {CGPoint(x: $0.x + $1.x, y: $0.y + $1.y)}
 		c.x /= CGFloat(points.count)
 		c.y /= CGFloat(points.count)
 		return c
 	}
 	
-	static func centerPoints(points: PointArray) -> PointArray {
+	static func centerPoints(_ points: PointArray) -> PointArray {
 		let on = centroid(points)
-		return points.map{CGPointMake($0.x - on.x, $0.y - on.y)}
+		return points.map{CGPoint(x: $0.x - on.x, y: $0.y - on.y)}
 	}
 	
-	static func sumUU(points: PointArray) -> CGFloat {
+	static func sumUU(_ points: PointArray) -> CGFloat {
 		return points.reduce(0.0) {$0 + ($1.x * $1.x)}
 	}
 
-	static func sumUV(points: PointArray) -> CGFloat {
+	static func sumUV(_ points: PointArray) -> CGFloat {
 		return points.reduce(0.0) {$0 + ($1.x * $1.y)}
 	}
 
-	static func sumVV(points: PointArray) -> CGFloat {
+	static func sumVV(_ points: PointArray) -> CGFloat {
 		return points.reduce(0.0) {$0 + ($1.y * $1.y)}
 	}
 
-	static func sumUUU(points: PointArray) -> CGFloat {
+	static func sumUUU(_ points: PointArray) -> CGFloat {
 		return points.reduce(0.0) {$0 + ($1.x * $1.x * $1.x)}
 	}
 
-	static func sumVVV(points: PointArray) -> CGFloat {
+	static func sumVVV(_ points: PointArray) -> CGFloat {
 		return points.reduce(0.0) {$0 + ($1.y * $1.y * $1.y)}
 	}
 
-	static func sumUUV(points: PointArray) -> CGFloat {
+	static func sumUUV(_ points: PointArray) -> CGFloat {
 		return points.reduce(0.0) {$0 + ($1.x * $1.x * $1.y)}
 	}
 
-	static func sumUVV(points: PointArray) -> CGFloat {
+	static func sumUVV(_ points: PointArray) -> CGFloat {
 		return points.reduce(0.0) {$0 + ($1.x * $1.y * $1.y)}
 	}
 }

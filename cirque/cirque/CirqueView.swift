@@ -31,7 +31,7 @@ protocol VertexSource {
 
 protocol Renderer {
 	var renderTargetSize: CGSize { get set }
-	func render(vertices: VertexSource)
+	func render(_ vertices: VertexSource)
 }
 
 extension Trail : VertexSource {
@@ -74,7 +74,7 @@ class CirqueView: UIView {
 		renderers = setupRenderers()
 	}
 	
-	func render(model: Circle) {
+	func render(_ model: Circle) {
 		renderers[0].render(model.segments)
 		renderers[1].render(model.segments)
 	}
@@ -90,7 +90,7 @@ extension CirqueView {
 		]
 	}
 	
-	override func layoutSublayersOfLayer(layer: CALayer) {
+	override func layoutSublayers(of layer: CALayer) {
 		guard layer.sublayers != nil else { return }
 		
 		for subLayer in layer.sublayers! {
@@ -111,25 +111,25 @@ struct SimulatorCircleRenderer: Renderer {
 		self.shapeLayer = CAShapeLayer()
 		layer.addSublayer(self.shapeLayer)
 		self.shapeLayer.frame = layer.frame
-		self.shapeLayer.strokeColor = UIColor.blueColor().CGColor
+		self.shapeLayer.strokeColor = UIColor.blue.cgColor
 		self.shapeLayer.lineWidth = 4.0
-		self.shapeLayer.backgroundColor = UIColor.clearColor().CGColor
-		self.shapeLayer.fillColor = UIColor.clearColor().CGColor
+		self.shapeLayer.backgroundColor = UIColor.clear.cgColor
+		self.shapeLayer.fillColor = UIColor.clear.cgColor
 	}
 	
-	func render(vertices: VertexSource) {
+	func render(_ vertices: VertexSource) {
 		let vertexArray = vertices.toVertices()
 		guard let firstPoint = vertexArray.first else { return }
 		
 		let trailPath = UIBezierPath()
-		let tail = vertexArray[1..<vertexArray.endIndex]
+		let tail = vertexArray[vertexArray.indices.suffix(from: 1)]
 		
-		trailPath.moveToPoint(CGPoint(vertex: firstPoint))
+		trailPath.move(to: CGPoint(vertex: firstPoint))
 		for p in tail {
-			trailPath.addLineToPoint(CGPoint(vertex: p))
+			trailPath.addLine(to: CGPoint(vertex: p))
 		}
 		
-		shapeLayer.path = trailPath.CGPath
+		shapeLayer.path = trailPath.cgPath
 	}
 }
 
@@ -145,28 +145,28 @@ struct SimulatorErrorRenderer: Renderer {
 		self.shapeLayer = CAShapeLayer()
 		layer.addSublayer(self.shapeLayer)
 		self.shapeLayer.bounds = layer.bounds
-		self.shapeLayer.strokeColor = UIColor.redColor().CGColor
+		self.shapeLayer.strokeColor = UIColor.red.cgColor
 		self.shapeLayer.lineWidth = 2.0
-		self.shapeLayer.backgroundColor = UIColor.whiteColor().CGColor
-		self.shapeLayer.fillColor = UIColor.clearColor().CGColor
+		self.shapeLayer.backgroundColor = UIColor.white.cgColor
+		self.shapeLayer.fillColor = UIColor.clear.cgColor
 	}
 	
-	func render(vertices: VertexSource) {
+	func render(_ vertices: VertexSource) {
 		let vertexArray = vertices.toVertices()
 		guard let firstPoint = vertexArray.first else { return }
 		
 		let trailPath = UIBezierPath()
 		
 		var i = 1;
-		trailPath.moveToPoint(CGPoint(vertex: firstPoint))
+		trailPath.move(to: CGPoint(vertex: firstPoint))
 		repeat {
-			trailPath.moveToPoint(CGPoint(vertex: vertexArray[i])); i = i + 1
-			trailPath.addLineToPoint(CGPoint(vertex: vertexArray[i])); i = i + 1
-			trailPath.addLineToPoint(CGPoint(vertex: vertexArray[i])); i = i + 1
-			trailPath.closePath()
+			trailPath.move(to: CGPoint(vertex: vertexArray[i])); i = i + 1
+			trailPath.addLine(to: CGPoint(vertex: vertexArray[i])); i = i + 1
+			trailPath.addLine(to: CGPoint(vertex: vertexArray[i])); i = i + 1
+			trailPath.close()
 		} while i + 3 < vertexArray.count
 		
-		shapeLayer.path = trailPath.CGPath
+		shapeLayer.path = trailPath.cgPath
 	}
 }
 	
