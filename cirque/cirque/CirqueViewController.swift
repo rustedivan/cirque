@@ -53,7 +53,8 @@ class CirqueViewController: UIViewController {
 			
 			DispatchQueue.main.async(execute: { 
 				switch result {
-				case .accepted(let score, _, let fit, _):
+				case .accepted(let score, _, let fit, let errorArea):
+					self.circleController.errorArea = errorArea
 					self.showScore(Int(score * 100), at: fit.center)
 				case .rejected(let centroid):
 					self.rejectScore(at: centroid)
@@ -67,7 +68,7 @@ class CirqueViewController: UIViewController {
 			scoreView!.update()
 		}
 		
-		cirqueView.render(circleController.circle)
+		cirqueView.render(circleController.circle, errorArea: circleController.errorArea)
 	}
 	
 	func showScore(_ score: Int, at: CGPoint) {

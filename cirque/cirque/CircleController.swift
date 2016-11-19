@@ -62,7 +62,7 @@ class CircleController: NSObject {
 				historyWriter.dumpScoreHistory()
 				
 				let score = analyser.circularityScore()
-				self.errorArea = self.circle.generateErrorArea(polar, around: fit.center, radius: fit.radius, treshold: 4.0)
+				self.errorArea = self.circle.generateErrorArea(polar, around: fit.center, radius: fit.radius, treshold: 2.0)
 				after(.accepted(score: score, trend: trend, fit: fit, errorArea: self.errorArea!))
 			}
 			else {

@@ -46,7 +46,7 @@ extension Trail : VertexSource {
 			let pC = segment.0
 			let angle = segment.1.0
 			let length = segment.1.1
-			let width = CGFloat(4.0) + log2(length)
+			let width = CGFloat(2.0) + log2(length)
 			let span = CGVector(dx: sin(angle) * width / 2.0, dy: -cos(angle) * width / 2.0)
 			
 			let pL = CirqueVertex(position: vector_float4(Float(pC.x + span.dx), Float(pC.y + span.dy), 0.0, 1.0))
@@ -63,7 +63,8 @@ extension Trail : VertexSource {
 // MARK: Base view
 
 class CirqueView: UIView {
-	var renderers: [Renderer] = []
+	var circleRenderer: Renderer!
+	var errorRenderer: Renderer!
 	
 	required init?(coder aDecoder: NSCoder) {
 		super.init(coder: aDecoder)
@@ -71,23 +72,24 @@ class CirqueView: UIView {
 	
 	override func didMoveToWindow() {
 		contentScaleFactor = 2.0
-		renderers = setupRenderers()
+		layer.backgroundColor = UIColor.white.cgColor
+		setupRenderers()
 	}
 	
-	func render(_ model: Circle) {
-		renderers[0].render(model.segments)
-		renderers[1].render(model.segments)
+	func render(_ model: Circle, errorArea: ErrorArea?) {
+		if let error = errorArea {
+			errorRenderer.render(error)
+		}
+		circleRenderer.render(model.segments)
 	}
 }
 
 // MARK: Simulator
 #if arch(i386) || arch(x86_64)
 extension CirqueView {
-	func setupRenderers() -> [Renderer] {
-		return [
-			SimulatorErrorRenderer(layer: layer),
-			SimulatorCircleRenderer(layer: layer)
-		]
+	func setupRenderers() {
+		errorRenderer =	SimulatorErrorRenderer(layer: layer)
+		circleRenderer = SimulatorCircleRenderer(layer: layer)
 	}
 	
 	override func layoutSublayers(of layer: CALayer) {
@@ -111,22 +113,22 @@ struct SimulatorCircleRenderer: Renderer {
 		self.shapeLayer = CAShapeLayer()
 		layer.addSublayer(self.shapeLayer)
 		self.shapeLayer.frame = layer.frame
-		self.shapeLayer.strokeColor = UIColor.blue.cgColor
-		self.shapeLayer.lineWidth = 4.0
+		self.shapeLayer.strokeColor = UIColor.clear.cgColor
 		self.shapeLayer.backgroundColor = UIColor.clear.cgColor
-		self.shapeLayer.fillColor = UIColor.clear.cgColor
+		self.shapeLayer.fillColor = UIColor.blue.cgColor
 	}
 	
 	func render(_ vertices: VertexSource) {
 		let vertexArray = vertices.toVertices()
-		guard let firstPoint = vertexArray.first else { return }
-		
 		let trailPath = UIBezierPath()
-		let tail = vertexArray[vertexArray.indices.suffix(from: 1)]
-		
-		trailPath.move(to: CGPoint(vertex: firstPoint))
-		for p in tail {
-			trailPath.addLine(to: CGPoint(vertex: p))
+
+		guard vertexArray.count >= 3 else { return }
+		let triangleFanStream = vertexArray[0 ..< vertexArray.endIndex - 2]
+		for (i, p) in triangleFanStream.enumerated() {
+			trailPath.move(to: CGPoint(vertex: p))
+			trailPath.addLine(to: CGPoint(vertex: vertexArray[i + 1]))
+			trailPath.addLine(to: CGPoint(vertex: vertexArray[i + 2]))
+			trailPath.close()
 		}
 		
 		shapeLayer.path = trailPath.cgPath
@@ -145,25 +147,25 @@ struct SimulatorErrorRenderer: Renderer {
 		self.shapeLayer = CAShapeLayer()
 		layer.addSublayer(self.shapeLayer)
 		self.shapeLayer.bounds = layer.bounds
-		self.shapeLayer.strokeColor = UIColor.red.cgColor
-		self.shapeLayer.lineWidth = 2.0
-		self.shapeLayer.backgroundColor = UIColor.white.cgColor
-		self.shapeLayer.fillColor = UIColor.clear.cgColor
+		self.shapeLayer.strokeColor = UIColor.clear.cgColor
+		self.shapeLayer.lineWidth = 1.0
+		self.shapeLayer.backgroundColor = UIColor.clear.cgColor
+		self.shapeLayer.fillColor = UIColor.red.cgColor
 	}
 	
 	func render(_ vertices: VertexSource) {
 		let vertexArray = vertices.toVertices()
-		guard let firstPoint = vertexArray.first else { return }
+		guard vertexArray.count >= 3 else { return }
 		
 		let trailPath = UIBezierPath()
 		
-		var i = 1;
-		trailPath.move(to: CGPoint(vertex: firstPoint))
+		var i = 0;
 		repeat {
-			trailPath.move(to: CGPoint(vertex: vertexArray[i])); i = i + 1
-			trailPath.addLine(to: CGPoint(vertex: vertexArray[i])); i = i + 1
-			trailPath.addLine(to: CGPoint(vertex: vertexArray[i])); i = i + 1
+			trailPath.move(to:		CGPoint(vertex: vertexArray[i + 0]))
+			trailPath.addLine(to: CGPoint(vertex: vertexArray[i + 1]))
+			trailPath.addLine(to: CGPoint(vertex: vertexArray[i + 2]))
 			trailPath.close()
+			i = i + 3
 		} while i + 3 < vertexArray.count
 		
 		shapeLayer.path = trailPath.cgPath
@@ -324,4 +326,3 @@ func ortho2d(l: Float, r: Float, b: Float, t: Float, n: Float, f: Float) -> matr
 }
 	
 #endif
-
