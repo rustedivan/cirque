@@ -24,6 +24,8 @@ class Trail: NSObject {
 	}
 	
 	func addPoint(_ p: CGPoint) {
+		guard points.last != p else { return }
+		
 		points.append(p)
 		updateAngles()
 		updateDistances()

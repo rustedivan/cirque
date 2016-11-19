@@ -78,11 +78,12 @@ struct ErrorArea: VertexSource {
 extension Circle {
 	func generateErrorArea(_ points: [Polar], around: CGPoint, radius: CGFloat, treshold: CGFloat) -> ErrorArea {
 		var errorArea = ErrorArea(polarPoints: [], center: around)
+		
 		for (i, p) in points.enumerated() {
 			if fabs(p.r - radius) > treshold {
 				let o = p
-				let oNext = (i < points.endIndex) ? points[i + 1] : o
-				let oPrev = (i > points.startIndex) ? points[i - 1] : o
+				let oNext = (i + 1 < points.endIndex) ? points[i + 1] : o
+				let oPrev = (i - 1 > points.startIndex) ? points[i - 1] : o
 				let r = Polar(a: o.a, r: radius)
 				let rNext = Polar(a: oNext.a, r: radius)
 				let rPrev = Polar(a: oPrev.a, r: radius)
