@@ -8,7 +8,6 @@
 
 import Foundation
 import CoreGraphics.CGGeometry
-import simd
 
 typealias Point = CGPoint
 typealias PointArray = Array<Point>
@@ -60,19 +59,9 @@ func polarize(_ points: PointArray, around c: CGPoint) -> PolarArray {
 	return polar
 }
 
-struct ErrorArea: VertexSource {
+struct ErrorArea {
 	var polarPoints: [Polar]
 	var center: CGPoint
-	
-	func toVertices() -> [CirqueVertex] {
-		var out = [CirqueVertex]()
-		for p in polarPoints {
-			let x = Float(cos(p.a) * p.r + center.x)
-			let y = Float(sin(p.a) * p.r + center.y)
-			out.append(CirqueVertex(position: vector_float4(x, y, 0.0, 1.0)))
-		}
-		return out
-	}
 }
 
 extension Circle {

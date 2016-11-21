@@ -7,62 +7,15 @@
 //
 
 import UIKit
-import simd
-import Metal
-import QuartzCore
-
-struct CirqueUniforms {
-	var modelViewProjection: matrix_float4x4
-}
-
-struct CirqueVertex {
-	let position: vector_float4
-}
-
-extension CGPoint {
-	init(vertex: CirqueVertex) {
-		self.init(x: CGFloat(vertex.position.x), y: CGFloat(vertex.position.y))
-	}
-}
-
-protocol VertexSource {
-	func toVertices() -> [CirqueVertex]
-}
-
-protocol Renderer {
-	var renderTargetSize: CGSize { get set }
-	func render(_ vertices: VertexSource)
-}
-
-extension Trail : VertexSource {
-	func toVertices() -> [CirqueVertex] {
-		// Inner and outer vertices for each segment
-		let segments = zip(self.angles, self.distances)
-		let stroke = zip(self.points, segments)
-		
-		var vertices: [CirqueVertex] = []
-		
-		for segment in stroke {
-			let pC = segment.0
-			let angle = segment.1.0
-			let length = segment.1.1
-			let width = CGFloat(2.0) + log2(length)
-			let span = CGVector(dx: sin(angle) * width / 2.0, dy: -cos(angle) * width / 2.0)
-			
-			let pL = CirqueVertex(position: vector_float4(Float(pC.x + span.dx), Float(pC.y + span.dy), 0.0, 1.0))
-			let pR = CirqueVertex(position: vector_float4(Float(pC.x - span.dx), Float(pC.y - span.dy), 0.0, 1.0))
-			
-			vertices.append(pL)
-			vertices.append(pR)
-		}
-		
-		return vertices
-	}
-}
 
 // MARK: Base view
 
 class CirqueView: UIView {
+	enum Layer {
+		case trail
+		case error (progress: Double)
+	}
+	
 	var circleRenderer: Renderer!
 	var errorRenderer: Renderer!
 	
@@ -76,16 +29,20 @@ class CirqueView: UIView {
 		setupRenderers()
 	}
 	
-	func render(_ model: Circle, errorArea: ErrorArea?) {
-		if let error = errorArea {
-			errorRenderer.render(error)
+	func render(vertices: VertexSource, toLayer layer: Layer) {
+		switch layer {
+		case .trail:
+			circleRenderer.render(vertices)
+		case .error(let progress):
+			errorRenderer.uniforms.progress = progress
+			errorRenderer.render(vertices)
 		}
-		circleRenderer.render(model.segments)
 	}
 }
 
 // MARK: Simulator
 #if arch(i386) || arch(x86_64)
+
 extension CirqueView {
 	func setupRenderers() {
 		errorRenderer =	SimulatorErrorRenderer(layer: layer)
@@ -100,84 +57,16 @@ extension CirqueView {
 		}
 	}
 }
-
-struct SimulatorCircleRenderer: Renderer {
-	let shapeLayer: CAShapeLayer
-	
-	var renderTargetSize: CGSize {
-		get { return shapeLayer.bounds.size }
-		set { shapeLayer.bounds.size = renderTargetSize }
-	}
-	
-	init(layer: CALayer) {
-		self.shapeLayer = CAShapeLayer()
-		layer.addSublayer(self.shapeLayer)
-		self.shapeLayer.frame = layer.frame
-		self.shapeLayer.strokeColor = UIColor.clear.cgColor
-		self.shapeLayer.backgroundColor = UIColor.clear.cgColor
-		self.shapeLayer.fillColor = UIColor.blue.cgColor
-	}
-	
-	func render(_ vertices: VertexSource) {
-		let vertexArray = vertices.toVertices()
-		let trailPath = UIBezierPath()
-
-		guard vertexArray.count >= 3 else { return }
-		let triangleFanStream = vertexArray[0 ..< vertexArray.endIndex - 2]
-		for (i, p) in triangleFanStream.enumerated() {
-			trailPath.move(to: CGPoint(vertex: p))
-			trailPath.addLine(to: CGPoint(vertex: vertexArray[i + 1]))
-			trailPath.addLine(to: CGPoint(vertex: vertexArray[i + 2]))
-			trailPath.close()
-		}
-		
-		shapeLayer.path = trailPath.cgPath
-	}
-}
-
-struct SimulatorErrorRenderer: Renderer {
-	let shapeLayer: CAShapeLayer
-	
-	var renderTargetSize: CGSize {
-		get { return shapeLayer.bounds.size }
-		set { shapeLayer.bounds.size = renderTargetSize }
-	}
-	
-	init(layer: CALayer) {
-		self.shapeLayer = CAShapeLayer()
-		layer.addSublayer(self.shapeLayer)
-		self.shapeLayer.bounds = layer.bounds
-		self.shapeLayer.strokeColor = UIColor.clear.cgColor
-		self.shapeLayer.lineWidth = 1.0
-		self.shapeLayer.backgroundColor = UIColor.clear.cgColor
-		self.shapeLayer.fillColor = UIColor.red.cgColor
-	}
-	
-	func render(_ vertices: VertexSource) {
-		let vertexArray = vertices.toVertices()
-		guard vertexArray.count >= 3 else { return }
-		
-		let trailPath = UIBezierPath()
-		
-		var i = 0;
-		repeat {
-			trailPath.move(to:		CGPoint(vertex: vertexArray[i + 0]))
-			trailPath.addLine(to: CGPoint(vertex: vertexArray[i + 1]))
-			trailPath.addLine(to: CGPoint(vertex: vertexArray[i + 2]))
-			trailPath.close()
-			i = i + 3
-		} while i + 3 < vertexArray.count
-		
-		shapeLayer.path = trailPath.cgPath
-	}
-}
 	
 #else
 // MARK: Metal
+	
+import Metal
+	
 extension CirqueView {
 	typealias LayerType = CAMetalLayer
 	
-	override class func layerClass() -> AnyClass {
+	var layerClass: AnyClass {
 		return LayerType.self
 	}
 	
@@ -189,140 +78,11 @@ extension CirqueView {
 		return MetalRenderer(layer: renderingLayer)
 	}
 	
-	override func layoutSublayersOfLayer(layer: CALayer) {
+	override func layoutSublayers(of layer: CALayer) {
 		renderingLayer.frame = layer.bounds
 		renderingLayer.drawableSize = CGSize(width: layer.bounds.width * contentScaleFactor, height: layer.bounds.height * contentScaleFactor)
 		renderer.renderTargetSize = renderingLayer.drawableSize
 	}
-}
-
-struct MetalRenderer: Renderer {
-	let metalLayer: CAMetalLayer
-	
-	let device: MTLDevice
-	var commandQueue: MTLCommandQueue!
-	var commandBuffer: MTLCommandBuffer!
-
-	var multisampleRenderTarget: MTLTexture!
-	var pipeline: MTLRenderPipelineState!
-
-	var uniforms: CirqueUniforms!
-	
-	var renderTargetSize: CGSize {
-		get { return metalLayer.bounds.size }
-		set {
-			metalLayer.bounds.size = newValue
-			multisampleRenderTarget = buildRenderTarget(renderTargetSize: newValue)
-		}
-	}
-	
-	init(layer: CAMetalLayer) {
-		device = MTLCreateSystemDefaultDevice()!
-		metalLayer = layer
-		
-		// Setup Metal CALayer
-		metalLayer.device = device
-		metalLayer.pixelFormat = .BGRA8Unorm
-	
-		// Setup render pipeline
-		let metalLibrary = device.newDefaultLibrary()!
-		let vertexFunc = metalLibrary.newFunctionWithName("vertex_main")
-		let fragmentFunc = metalLibrary.newFunctionWithName("fragment_main")
-		let pipelineDescriptor = MTLRenderPipelineDescriptor()
-		pipelineDescriptor.vertexFunction = vertexFunc
-		pipelineDescriptor.fragmentFunction = fragmentFunc
-		pipelineDescriptor.colorAttachments[0].pixelFormat = metalLayer.pixelFormat
-		pipelineDescriptor.sampleCount = 4
-
-		pipeline = try! device.newRenderPipelineStateWithDescriptor(pipelineDescriptor)
-
-		// Setup command buffer
-		commandQueue = device.newCommandQueue()
-	}
-	
-	func render(vertices: VertexSource) {
-		let vertexArray = vertices.toVertices()
-	
-		// Fill out vertex buffer
-		let trailBuffer = device.newBufferWithBytes(vertexArray,
-			length: sizeof(CirqueVertex) * vertexArray.count,
-			options: MTLResourceOptions.CPUCacheModeDefaultCache)
-
-		// Setup ink render pass
-		let drawable = metalLayer.nextDrawable()!
-		let colorAttachmentDescriptor = MTLRenderPassColorAttachmentDescriptor()
-		colorAttachmentDescriptor.loadAction = .Clear
-		colorAttachmentDescriptor.storeAction = .MultisampleResolve
-		colorAttachmentDescriptor.texture = multisampleRenderTarget
-		colorAttachmentDescriptor.resolveTexture = drawable.texture
-		colorAttachmentDescriptor.clearColor = MTLClearColorMake(1.0, 1.0, 1.0, 1.0)
-
-		// Render buffer into ink render pass
-		var circlePassDescriptor: MTLRenderPassDescriptor
-		circlePassDescriptor = MTLRenderPassDescriptor()
-		circlePassDescriptor.colorAttachments[0] = colorAttachmentDescriptor
-
-		let commandBuffer = commandQueue.commandBuffer()
-		let commandEncoder = commandBuffer.renderCommandEncoderWithDescriptor(circlePassDescriptor)
-
-		commandEncoder.setRenderPipelineState(pipeline)
-
-		// Setup uniform buffer
-		var uniforms = buildUniforms(renderTargetSize: renderTargetSize)
-		withUnsafePointer(&uniforms) { uniformsPtr in
-			let uniformBuffer = device.newBufferWithBytes(uniformsPtr,
-				length: sizeof(CirqueUniforms),
-				options: MTLResourceOptions.CPUCacheModeDefaultCache)
-			commandEncoder.setVertexBuffer(uniformBuffer, offset: 0, atIndex: 1)
-		}
-
-		commandEncoder.setVertexBuffer(trailBuffer, offset: 0, atIndex: 0)
-		if vertexArray.isEmpty == false {
-			commandEncoder.drawPrimitives(.TriangleStrip, vertexStart: 0, vertexCount: vertexArray.count)
-		}
-		commandEncoder.endEncoding()
-
-		commandBuffer.presentDrawable(drawable)
-
-		commandBuffer.commit()
-	}
-	
-	private func buildRenderTarget(renderTargetSize size: CGSize) -> MTLTexture {
-		let targetDescriptor = MTLTextureDescriptor()
-		targetDescriptor.pixelFormat = metalLayer.pixelFormat
-		targetDescriptor.sampleCount = 4
-		targetDescriptor.textureType = .Type2DMultisample
-		targetDescriptor.width = Int(size.width)
-		targetDescriptor.height = Int(size.height)
-		return device.newTextureWithDescriptor(targetDescriptor)
-	}
-	
-	private func buildUniforms(renderTargetSize size: CGSize) -> CirqueUniforms {
-		var mvpMatrix = ortho2d(0.0, r: Float(renderTargetSize.width), b: Float(renderTargetSize.height), t: 0.0, n: 0.0, f: 1.0)
-		// Translate into Metal's NDC space (2x2x1 unit cube)
-		mvpMatrix.columns.3.x = -1.0
-		mvpMatrix.columns.3.y = +1.0
-		return CirqueUniforms(modelViewProjection: mvpMatrix)
-	}
-}
-	
-func ortho2d(l: Float, r: Float, b: Float, t: Float, n: Float, f: Float) -> matrix_float4x4 {
-	let width = 1.0 / (r - l)
-	let height = 1.0 / (t - b)
-	let depth = 1.0 / (f - n)
-	
-	var p = float4(0.0)
-	var q = float4(0.0)
-	var r = float4(0.0)
-	var s = float4(0.0)
-	
-	p.x = 2.0 * width
-	q.y = 2.0 * height
-	r.z = depth
-	s.z = -n * depth
-	s.w = 1.0
-	
-	return matrix_float4x4(columns: (p, q, r, s))
 }
 	
 #endif
