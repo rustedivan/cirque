@@ -11,13 +11,10 @@ import UIKit
 // MARK: Base view
 
 class CirqueView: UIView {
-	enum Layer {
+	enum RenderPass {
 		case trail
 		case error (progress: Double)
 	}
-	
-	var circleRenderer: Renderer!
-	var errorRenderer: Renderer!
 	
 	required init?(coder aDecoder: NSCoder) {
 		super.init(coder: aDecoder)
@@ -26,17 +23,29 @@ class CirqueView: UIView {
 	override func didMoveToWindow() {
 		contentScaleFactor = 2.0
 		layer.backgroundColor = UIColor.white.cgColor
-		setupRenderers()
 	}
 	
-	func render(vertices: VertexSource, toLayer layer: Layer) {
-		switch layer {
-		case .trail:
-			circleRenderer.render(vertices)
+	func render(vertices: VertexSource, inRenderPass renderPass: RenderPass) {
+		var renderer = setupRenderer(forRenderPass: renderPass)
+		
+		switch renderPass {
 		case .error(let progress):
-			errorRenderer.uniforms.progress = progress
-			errorRenderer.render(vertices)
+			renderer.uniforms.progress = progress
 		}
+		
+		// Setup projection matrix
+		var mvpMatrix = ortho2d(l: 0.0, r: Float(renderTargetSize.width),
+		                        b: Float(renderTargetSize.height), t: 0.0,
+		                        n: 0.0, f: 1.0)
+		
+		// Translate into Metal's NDC space (2x2x1 unit cube)
+		mvpMatrix.columns.3.x = -1.0
+		mvpMatrix.columns.3.y = +1.0
+		
+		// Setup common uniforms
+		renderer.uniforms.modelViewProjection = mvpMatrix
+		
+		renderer.render(vertices)
 	}
 }
 
@@ -44,9 +53,13 @@ class CirqueView: UIView {
 #if arch(i386) || arch(x86_64)
 
 extension CirqueView {
-	func setupRenderers() {
-		errorRenderer =	SimulatorErrorRenderer(layer: layer)
-		circleRenderer = SimulatorCircleRenderer(layer: layer)
+	func setupRenderer(forRenderPass renderPass: Layer) {
+		switch renderPass {
+		case .trail:
+			return SimulatorCircleRenderer(layer: layer)
+		case .errorArea:
+			return SimulatorErrorRenderer(layer: layer)
+		}
 	}
 	
 	override func layoutSublayers(of layer: CALayer) {
@@ -74,7 +87,7 @@ extension CirqueView {
 		return layer as! LayerType
 	}
 	
-	func setupRenderer() -> Renderer {
+	func setupRenderer(forRenderPass renderPass: RenderPass) -> Renderer {
 		return MetalRenderer(layer: renderingLayer)
 	}
 	

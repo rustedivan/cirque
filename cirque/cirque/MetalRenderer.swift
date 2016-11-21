@@ -26,8 +26,6 @@ struct MetalRenderer: Renderer {
 	
 	var uniforms: CirqueUniforms
 	
-	let progress: Double
-	
 	var renderTargetSize: CGSize {
 		get { return metalLayer.bounds.size }
 		set {
@@ -39,6 +37,7 @@ struct MetalRenderer: Renderer {
 	init(layer: CAMetalLayer) {
 		device = MTLCreateSystemDefaultDevice()!
 		metalLayer = layer
+		uniforms = CirqueUniforms()
 		
 		// Setup Metal CALayer
 		metalLayer.device = device
@@ -87,18 +86,12 @@ struct MetalRenderer: Renderer {
 		
 		commandEncoder.setRenderPipelineState(pipeline)
 		
-		// Setup uniform buffer
-		var mvpMatrix = ortho2d(l: 0.0, r: Float(renderTargetSize.width), b: Float(renderTargetSize.height), t: 0.0, n: 0.0, f: 1.0)
-		// Translate into Metal's NDC space (2x2x1 unit cube)
-		mvpMatrix.columns.3.x = -1.0
-		mvpMatrix.columns.3.y = +1.0
-		
-		uniforms.modelViewProjection = mvpMatrix
-
-		withUnsafePointer(to: &uniforms) { uniformsPtr in
-			let uniformBuffer = device.makeBuffer(bytes: uniformsPtr,
-			                                              length: MemoryLayout<CirqueUniforms>.size,
-			                                              options: [])
+		var localUniforms = uniforms
+		withUnsafeMutablePointer(to: &localUniforms) { uniformsPtr in
+			let uniformBuffer = device.makeBuffer(bytesNoCopy: uniformsPtr,
+																						length: MemoryLayout<CirqueUniforms>.size,
+																						options: [],
+																						deallocator: nil)
 			commandEncoder.setVertexBuffer(uniformBuffer, offset: 0, at: 1)
 		}
 		

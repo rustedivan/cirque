@@ -69,10 +69,12 @@ class CirqueViewController: UIViewController {
 		}
 		
 		if let errorArea = circleController.errorArea {
-			cirqueView.render(vertices: errorArea, toLayer: .error(progress: 1.0))
+			cirqueView.render(vertices: errorArea,
+			                  inRenderPass: .error(progress: 1.0))
 		}
 		
-		cirqueView.render(vertices: circleController.circle.segments, toLayer: .trail)
+		cirqueView.render(vertices: circleController.circle.segments,
+		                  inRenderPass: .trail)
 	}
 	
 	func showScore(_ score: Int, at: CGPoint) {
