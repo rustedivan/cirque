@@ -20,7 +20,6 @@ extension CGPoint {
 
 struct SimulatorCircleRenderer: Renderer {
 	let shapeLayer: CAShapeLayer
-	var uniforms: CirqueUniforms
 	
 	var renderTargetSize: CGSize {
 		get { return shapeLayer.bounds.size }
@@ -34,10 +33,9 @@ struct SimulatorCircleRenderer: Renderer {
 		self.shapeLayer.strokeColor = UIColor.clear.cgColor
 		self.shapeLayer.backgroundColor = UIColor.clear.cgColor
 		self.shapeLayer.fillColor = UIColor.blue.cgColor
-		self.uniforms = CirqueUniforms()
 	}
 	
-	func render(_ vertices: VertexSource) {
+	func render(_ vertices: VertexSource, withUniforms uniforms: CirqueUniforms) {
 		let vertexArray = vertices.toVertices()
 		let trailPath = UIBezierPath()
 		
@@ -56,7 +54,6 @@ struct SimulatorCircleRenderer: Renderer {
 
 struct SimulatorErrorRenderer: Renderer {
 	let shapeLayer: CAShapeLayer
-	var uniforms: CirqueUniforms
 	
 	var renderTargetSize: CGSize {
 		get { return shapeLayer.bounds.size }
@@ -71,10 +68,9 @@ struct SimulatorErrorRenderer: Renderer {
 		self.shapeLayer.lineWidth = 1.0
 		self.shapeLayer.backgroundColor = UIColor.clear.cgColor
 		self.shapeLayer.fillColor = UIColor.red.cgColor
-		self.uniforms = CirqueUniforms()
 	}
 	
-	func render(_ vertices: VertexSource) {
+	func render(_ vertices: VertexSource, withUniforms uniforms: CirqueUniforms) {
 		let vertexArray = vertices.toVertices()
 		guard vertexArray.count >= 3 else { return }
 		

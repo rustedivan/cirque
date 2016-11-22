@@ -11,13 +11,32 @@ import UIKit
 // MARK: Base view
 
 class CirqueView: UIView {
-	enum RenderPass {
+	enum RenderPass: Hashable {
+		typealias Identifier = String
 		case trail
 		case error (progress: Double)
+
+		var passIdentifier: Identifier {
+			switch self {
+				case .trail: return "Trail pass"
+				case .error: return "Error area pass"
+			}
+		}
+
+		var hashValue: Int {
+			return passIdentifier.hashValue
+		}
+
+		public static func ==(lhs: CirqueView.RenderPass, rhs: CirqueView.RenderPass) -> Bool {
+			return lhs.passIdentifier == rhs.passIdentifier
+		}
 	}
+	
+	var activeRenderers: [RenderPass : Renderer] = [:]
 	
 	required init?(coder aDecoder: NSCoder) {
 		super.init(coder: aDecoder)
+		setupRenderers(toLayer: renderingLayer)
 	}
 	
 	override func didMoveToWindow() {
@@ -26,16 +45,22 @@ class CirqueView: UIView {
 	}
 	
 	func render(vertices: VertexSource, inRenderPass renderPass: RenderPass) {
-		var renderer = setupRenderer(forRenderPass: renderPass)
+		guard var renderer = activeRenderers[renderPass] else {
+			print("Ignoring unregistered render pass \(renderPass.passIdentifier)")
+			return
+		}
+		
+		var uniforms = CirqueUniforms()
 		
 		switch renderPass {
 		case .error(let progress):
-			renderer.uniforms.progress = progress
+			uniforms.progress = progress
+		default: break
 		}
 		
 		// Setup projection matrix
-		var mvpMatrix = ortho2d(l: 0.0, r: Float(renderTargetSize.width),
-		                        b: Float(renderTargetSize.height), t: 0.0,
+		var mvpMatrix = ortho2d(l: 0.0, r: Float(renderer.renderTargetSize.width),
+		                        b: Float(renderer.renderTargetSize.height), t: 0.0,
 		                        n: 0.0, f: 1.0)
 		
 		// Translate into Metal's NDC space (2x2x1 unit cube)
@@ -43,9 +68,22 @@ class CirqueView: UIView {
 		mvpMatrix.columns.3.y = +1.0
 		
 		// Setup common uniforms
-		renderer.uniforms.modelViewProjection = mvpMatrix
+		uniforms.modelViewProjection = mvpMatrix
 		
-		renderer.render(vertices)
+		renderer.render(vertices, withUniforms: uniforms)
+	}
+	
+	override func layoutSublayers(of layer: CALayer) {
+		guard layer.sublayers != nil else { return }
+		
+		layer.frame = layer.bounds
+		for subLayer in layer.sublayers! {
+			subLayer.frame = layer.frame
+		}
+		
+		for var renderer in activeRenderers {
+			renderer.value.renderTargetSize = layer.bounds.size
+		}
 	}
 }
 
@@ -53,21 +91,15 @@ class CirqueView: UIView {
 #if arch(i386) || arch(x86_64)
 
 extension CirqueView {
-	func setupRenderer(forRenderPass renderPass: Layer) {
-		switch renderPass {
-		case .trail:
-			return SimulatorCircleRenderer(layer: layer)
-		case .errorArea:
-			return SimulatorErrorRenderer(layer: layer)
-		}
+	typealias LayerType = CALayer
+	
+	var renderingLayer : LayerType {
+		return layer
 	}
 	
-	override func layoutSublayers(of layer: CALayer) {
-		guard layer.sublayers != nil else { return }
-		
-		for subLayer in layer.sublayers! {
-			subLayer.frame = layer.frame
-		}
+	func setupRenderers(toLayer targetLayer: LayerType) {
+		activeRenderers = [.trail								 : SimulatorCircleRenderer(layer: targetLayer),
+		                   .error(progress: 0.0) : SimulatorErrorRenderer(layer: targetLayer)]
 	}
 }
 	
@@ -79,7 +111,7 @@ import Metal
 extension CirqueView {
 	typealias LayerType = CAMetalLayer
 	
-	var layerClass: AnyClass {
+	override class var layerClass: Swift.AnyClass {
 		return LayerType.self
 	}
 	
@@ -87,14 +119,8 @@ extension CirqueView {
 		return layer as! LayerType
 	}
 	
-	func setupRenderer(forRenderPass renderPass: RenderPass) -> Renderer {
-		return MetalRenderer(layer: renderingLayer)
-	}
-	
-	override func layoutSublayers(of layer: CALayer) {
-		renderingLayer.frame = layer.bounds
-		renderingLayer.drawableSize = CGSize(width: layer.bounds.width * contentScaleFactor, height: layer.bounds.height * contentScaleFactor)
-		renderer.renderTargetSize = renderingLayer.drawableSize
+	func setupRenderers(toLayer targetLayer: LayerType) {
+		activeRenderers = [.trail : MetalRenderer(layer: renderingLayer)]
 	}
 }
 	

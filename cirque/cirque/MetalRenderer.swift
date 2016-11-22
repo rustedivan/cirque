@@ -24,20 +24,20 @@ struct MetalRenderer: Renderer {
 	var multisampleRenderTarget: MTLTexture!
 	var pipeline: MTLRenderPipelineState!
 	
-	var uniforms: CirqueUniforms
-	
 	var renderTargetSize: CGSize {
 		get { return metalLayer.bounds.size }
 		set {
-			metalLayer.bounds.size = newValue
-			multisampleRenderTarget = buildRenderTarget(renderTargetSize: newValue)
+			let scaledSize = CGSize(width: newValue.width * metalLayer.contentsScale,
+			                        height: newValue.height * metalLayer.contentsScale)
+			metalLayer.bounds.size = scaledSize
+			metalLayer.drawableSize = scaledSize
+			multisampleRenderTarget = buildRenderTarget(renderTargetSize: scaledSize)
 		}
 	}
 	
 	init(layer: CAMetalLayer) {
 		device = MTLCreateSystemDefaultDevice()!
 		metalLayer = layer
-		uniforms = CirqueUniforms()
 		
 		// Setup Metal CALayer
 		metalLayer.device = device
@@ -59,7 +59,7 @@ struct MetalRenderer: Renderer {
 		commandQueue = device.makeCommandQueue()
 	}
 	
-	func render(_ vertices: VertexSource) {
+	func render(_ vertices: VertexSource, withUniforms uniforms: CirqueUniforms) {
 		let vertexArray = vertices.toVertices()
 		
 		// Fill out vertex buffer
@@ -115,25 +115,6 @@ struct MetalRenderer: Renderer {
 		targetDescriptor.height = Int(size.height)
 		return device.makeTexture(descriptor: targetDescriptor)
 	}
-}
-
-func ortho2d(l: Float, r: Float, b: Float, t: Float, n: Float, f: Float) -> matrix_float4x4 {
-	let width = 1.0 / (r - l)
-	let height = 1.0 / (t - b)
-	let depth = 1.0 / (f - n)
-	
-	var p = float4(0.0)
-	var q = float4(0.0)
-	var r = float4(0.0)
-	var s = float4(0.0)
-	
-	p.x = 2.0 * width
-	q.y = 2.0 * height
-	r.z = depth
-	s.z = -n * depth
-	s.w = 1.0
-	
-	return matrix_float4x4(columns: (p, q, r, s))
 }
 
 #endif
