@@ -24,12 +24,43 @@ struct CirqueVertex {
 	let position: vector_float4
 }
 
+enum RenderPass: Hashable {
+	typealias Identifier = String
+	case trail
+	case error (progress: Double)
+	
+	var passIdentifier: Identifier {
+		switch self {
+		case .trail: return "Trail pass"
+		case .error: return "Error area pass"
+		}
+	}
+	
+	var hashValue: Int {
+		return passIdentifier.hashValue
+	}
+	
+	public static func ==(lhs: RenderPass, rhs: RenderPass) -> Bool {
+		return lhs.passIdentifier == rhs.passIdentifier
+	}
+}
+
 protocol VertexSource {
 	func toVertices() -> [CirqueVertex]
 }
 
+protocol RenderPath {
+	
+	init(renderers: [RenderPass : Renderer])
+	
+	func runPasses(renderAllPasses : () -> () )
+	func renderPass(vertices: VertexSource, inRenderPass renderPass: RenderPass)
+	
+	func renderTargetSizeDidChange(to size: CGSize)
+}
+
 protocol Renderer {
-	var renderTargetSize: CGSize { get set }
+	func setRenderTargetSize(size: CGSize)
 	func render(_ vertices: VertexSource, withUniforms unifors: CirqueUniforms)
 }
 

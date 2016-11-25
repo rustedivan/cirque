@@ -95,6 +95,15 @@ struct MetalRenderer: Renderer {
 			commandEncoder.setVertexBuffer(uniformBuffer, offset: 0, at: 1)
 		}
 		
+//		// Setup constant block
+//		mvpMatrix = ortho2d(l: 0.0, r: Float(targetLayer.bounds.width),
+//		                    b: Float(targetLayer.bounds.height), t: 0.0,
+//		                    n: 0.0, f: 1.0)
+//		
+//		// Translate into Metal's NDC space (2x2x1 unit cube)
+//		mvpMatrix.columns.3.x = -1.0
+//		mvpMatrix.columns.3.y = +1.0
+		
 		commandEncoder.setVertexBuffer(trailBuffer, offset: 0, at: 0)
 		if vertexArray.isEmpty == false {
 			commandEncoder.drawPrimitives(type: .triangleStrip, vertexStart: 0, vertexCount: vertexArray.count)

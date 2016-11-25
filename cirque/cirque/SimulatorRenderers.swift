@@ -18,13 +18,20 @@ extension CGPoint {
 	}
 }
 
-struct SimulatorCircleRenderer: Renderer {
-	let shapeLayer: CAShapeLayer
+// MARK: Shape renderer
+protocol ShapeRenderer : Renderer {
+	var shapeLayer: CAShapeLayer { get }
+}
 	
-	var renderTargetSize: CGSize {
-		get { return shapeLayer.bounds.size }
-		set { shapeLayer.bounds.size = renderTargetSize }
+extension ShapeRenderer {
+	func setRenderTargetSize(size: CGSize) {
+		shapeLayer.bounds.size = size
 	}
+}
+
+// MARK: Specific shape renderers
+struct SimulatorCircleRenderer: ShapeRenderer {
+	let shapeLayer: CAShapeLayer
 	
 	init(layer: CALayer) {
 		self.shapeLayer = CAShapeLayer()
@@ -52,13 +59,8 @@ struct SimulatorCircleRenderer: Renderer {
 	}
 }
 
-struct SimulatorErrorRenderer: Renderer {
+struct SimulatorErrorRenderer: ShapeRenderer {
 	let shapeLayer: CAShapeLayer
-	
-	var renderTargetSize: CGSize {
-		get { return shapeLayer.bounds.size }
-		set { shapeLayer.bounds.size = renderTargetSize }
-	}
 	
 	init(layer: CALayer) {
 		self.shapeLayer = CAShapeLayer()

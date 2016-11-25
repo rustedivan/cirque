@@ -36,6 +36,7 @@
 		14D6058B19FCE63C0096E228 /* LaunchScreen.xib in Resources */ = {isa = PBXBuildFile; fileRef = 14D6058919FCE63C0096E228 /* LaunchScreen.xib */; };
 		14D605A119FCEB530096E228 /* CircleModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 14D605A019FCEB530096E228 /* CircleModel.swift */; };
 		14D605A319FCEC900096E228 /* CircleController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 14D605A219FCEC900096E228 /* CircleController.swift */; };
+		14DAF49D1DE8ED0000DD92B5 /* SimulatorRenderPath.swift in Sources */ = {isa = PBXBuildFile; fileRef = 14F0EDC01DE8D354003120BA /* SimulatorRenderPath.swift */; };
 		14E44FAE1C55053E006B594D /* CirqueViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 14E44FAD1C55053E006B594D /* CirqueViewController.swift */; };
 		14E44FB01C550F09006B594D /* CirqueView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 14E44FAF1C550F09006B594D /* CirqueView.swift */; };
 		14E44FB21C551D76006B594D /* QuartzCore.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 14E44FB11C551D76006B594D /* QuartzCore.framework */; };
@@ -46,6 +47,7 @@
 		14EDEA0B1DE27EE000AF2F25 /* MetalRenderers.swift in Sources */ = {isa = PBXBuildFile; fileRef = 14EDEA071DE27E2000AF2F25 /* MetalRenderers.swift */; };
 		14EDEA0C1DE27EE000AF2F25 /* SimulatorRenderers.swift in Sources */ = {isa = PBXBuildFile; fileRef = 14EDEA091DE27E3300AF2F25 /* SimulatorRenderers.swift */; };
 		14EDEA0E1DE286EF00AF2F25 /* VertexConversion.swift in Sources */ = {isa = PBXBuildFile; fileRef = 14EDEA0D1DE286EF00AF2F25 /* VertexConversion.swift */; };
+		14F0EDC11DE8D354003120BA /* SimulatorRenderPath.swift in Sources */ = {isa = PBXBuildFile; fileRef = 14F0EDC01DE8D354003120BA /* SimulatorRenderPath.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -92,6 +94,7 @@
 		14EDEA071DE27E2000AF2F25 /* MetalRenderers.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MetalRenderers.swift; sourceTree = "<group>"; };
 		14EDEA091DE27E3300AF2F25 /* SimulatorRenderers.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SimulatorRenderers.swift; sourceTree = "<group>"; };
 		14EDEA0D1DE286EF00AF2F25 /* VertexConversion.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = VertexConversion.swift; sourceTree = "<group>"; };
+		14F0EDC01DE8D354003120BA /* SimulatorRenderPath.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SimulatorRenderPath.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -201,6 +204,7 @@
 			isa = PBXGroup;
 			children = (
 				14EDEA031DE27CE200AF2F25 /* Renderer.swift */,
+				14F0EDC01DE8D354003120BA /* SimulatorRenderPath.swift */,
 				14EDEA071DE27E2000AF2F25 /* MetalRenderers.swift */,
 				14EDEA091DE27E3300AF2F25 /* SimulatorRenderers.swift */,
 				14EDEA0D1DE286EF00AF2F25 /* VertexConversion.swift */,
@@ -315,6 +319,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				145D01141A6C064700B6D5C9 /* TrailHistory.swift in Sources */,
+				14F0EDC11DE8D354003120BA /* SimulatorRenderPath.swift in Sources */,
 				14D189431A52C50E00CD0862 /* TrailAnalyser.swift in Sources */,
 				14D605A119FCEB530096E228 /* CircleModel.swift in Sources */,
 				14E44FAE1C55053E006B594D /* CirqueViewController.swift in Sources */,
@@ -341,6 +346,7 @@
 				145D01121A6C05DE00B6D5C9 /* HistoryMockTrails.swift in Sources */,
 				141A8E1A1A3C6C6B002ED07F /* CircleFitterTests.swift in Sources */,
 				145855C41A502BED00C44CB1 /* TrailAnalyserTests.swift in Sources */,
+				14DAF49D1DE8ED0000DD92B5 /* SimulatorRenderPath.swift in Sources */,
 				145A267F1A52BDD700B3FBAB /* MockTrails.swift in Sources */,
 				14AFB4811A59394D00EC7EA7 /* CircleController.swift in Sources */,
 				1402B4CE1A346D6C00E335B3 /* TrailModel.swift in Sources */,
