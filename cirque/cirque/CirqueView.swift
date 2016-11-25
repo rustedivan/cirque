@@ -24,6 +24,18 @@ class CirqueView: UIView {
 		                                 renderPasses: renderPasses)
 	}
 	
+	func render(circle: Circle, errorArea: ErrorArea?) {
+		renderPath.runPasses {
+			if let errorArea = errorArea {
+				renderPath.renderPass(vertices: errorArea,
+				                      inRenderPass: .error(progress: 1.0))
+			}
+			
+			renderPath.renderPass(vertices: circle.segments,
+			                      inRenderPass: .trail)
+		}
+	}
+	
 	override func didMoveToWindow() {
 		contentScaleFactor = 2.0
 		layer.backgroundColor = UIColor.white.cgColor

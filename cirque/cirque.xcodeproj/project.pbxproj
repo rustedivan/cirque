@@ -37,6 +37,7 @@
 		14D605A119FCEB530096E228 /* CircleModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 14D605A019FCEB530096E228 /* CircleModel.swift */; };
 		14D605A319FCEC900096E228 /* CircleController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 14D605A219FCEC900096E228 /* CircleController.swift */; };
 		14DAF49D1DE8ED0000DD92B5 /* SimulatorRenderPath.swift in Sources */ = {isa = PBXBuildFile; fileRef = 14F0EDC01DE8D354003120BA /* SimulatorRenderPath.swift */; };
+		14DAF49E1DE8F03F00DD92B5 /* VertexConversion.swift in Sources */ = {isa = PBXBuildFile; fileRef = 14EDEA0D1DE286EF00AF2F25 /* VertexConversion.swift */; };
 		14E44FAE1C55053E006B594D /* CirqueViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 14E44FAD1C55053E006B594D /* CirqueViewController.swift */; };
 		14E44FB01C550F09006B594D /* CirqueView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 14E44FAF1C550F09006B594D /* CirqueView.swift */; };
 		14E44FB21C551D76006B594D /* QuartzCore.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 14E44FB11C551D76006B594D /* QuartzCore.framework */; };
@@ -347,6 +348,7 @@
 				141A8E1A1A3C6C6B002ED07F /* CircleFitterTests.swift in Sources */,
 				145855C41A502BED00C44CB1 /* TrailAnalyserTests.swift in Sources */,
 				14DAF49D1DE8ED0000DD92B5 /* SimulatorRenderPath.swift in Sources */,
+				14DAF49E1DE8F03F00DD92B5 /* VertexConversion.swift in Sources */,
 				145A267F1A52BDD700B3FBAB /* MockTrails.swift in Sources */,
 				14AFB4811A59394D00EC7EA7 /* CircleController.swift in Sources */,
 				1402B4CE1A346D6C00E335B3 /* TrailModel.swift in Sources */,
