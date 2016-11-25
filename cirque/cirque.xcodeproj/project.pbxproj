@@ -41,10 +41,10 @@
 		14E44FB21C551D76006B594D /* QuartzCore.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 14E44FB11C551D76006B594D /* QuartzCore.framework */; };
 		14EDEA041DE27CE200AF2F25 /* Renderer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 14EDEA031DE27CE200AF2F25 /* Renderer.swift */; };
 		14EDEA051DE27D2E00AF2F25 /* Renderer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 14EDEA031DE27CE200AF2F25 /* Renderer.swift */; };
-		14EDEA081DE27E2000AF2F25 /* MetalRenderer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 14EDEA071DE27E2000AF2F25 /* MetalRenderer.swift */; };
-		14EDEA0A1DE27E3300AF2F25 /* SimulatorRenderer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 14EDEA091DE27E3300AF2F25 /* SimulatorRenderer.swift */; };
-		14EDEA0B1DE27EE000AF2F25 /* MetalRenderer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 14EDEA071DE27E2000AF2F25 /* MetalRenderer.swift */; };
-		14EDEA0C1DE27EE000AF2F25 /* SimulatorRenderer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 14EDEA091DE27E3300AF2F25 /* SimulatorRenderer.swift */; };
+		14EDEA081DE27E2000AF2F25 /* MetalRenderers.swift in Sources */ = {isa = PBXBuildFile; fileRef = 14EDEA071DE27E2000AF2F25 /* MetalRenderers.swift */; };
+		14EDEA0A1DE27E3300AF2F25 /* SimulatorRenderers.swift in Sources */ = {isa = PBXBuildFile; fileRef = 14EDEA091DE27E3300AF2F25 /* SimulatorRenderers.swift */; };
+		14EDEA0B1DE27EE000AF2F25 /* MetalRenderers.swift in Sources */ = {isa = PBXBuildFile; fileRef = 14EDEA071DE27E2000AF2F25 /* MetalRenderers.swift */; };
+		14EDEA0C1DE27EE000AF2F25 /* SimulatorRenderers.swift in Sources */ = {isa = PBXBuildFile; fileRef = 14EDEA091DE27E3300AF2F25 /* SimulatorRenderers.swift */; };
 		14EDEA0E1DE286EF00AF2F25 /* VertexConversion.swift in Sources */ = {isa = PBXBuildFile; fileRef = 14EDEA0D1DE286EF00AF2F25 /* VertexConversion.swift */; };
 /* End PBXBuildFile section */
 
@@ -89,8 +89,8 @@
 		14E44FAF1C550F09006B594D /* CirqueView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CirqueView.swift; sourceTree = "<group>"; };
 		14E44FB11C551D76006B594D /* QuartzCore.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = QuartzCore.framework; path = System/Library/Frameworks/QuartzCore.framework; sourceTree = SDKROOT; };
 		14EDEA031DE27CE200AF2F25 /* Renderer.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Renderer.swift; sourceTree = "<group>"; };
-		14EDEA071DE27E2000AF2F25 /* MetalRenderer.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MetalRenderer.swift; sourceTree = "<group>"; };
-		14EDEA091DE27E3300AF2F25 /* SimulatorRenderer.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SimulatorRenderer.swift; sourceTree = "<group>"; };
+		14EDEA071DE27E2000AF2F25 /* MetalRenderers.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MetalRenderers.swift; sourceTree = "<group>"; };
+		14EDEA091DE27E3300AF2F25 /* SimulatorRenderers.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SimulatorRenderers.swift; sourceTree = "<group>"; };
 		14EDEA0D1DE286EF00AF2F25 /* VertexConversion.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = VertexConversion.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
@@ -201,8 +201,8 @@
 			isa = PBXGroup;
 			children = (
 				14EDEA031DE27CE200AF2F25 /* Renderer.swift */,
-				14EDEA071DE27E2000AF2F25 /* MetalRenderer.swift */,
-				14EDEA091DE27E3300AF2F25 /* SimulatorRenderer.swift */,
+				14EDEA071DE27E2000AF2F25 /* MetalRenderers.swift */,
+				14EDEA091DE27E3300AF2F25 /* SimulatorRenderers.swift */,
 				14EDEA0D1DE286EF00AF2F25 /* VertexConversion.swift */,
 			);
 			name = Rendering;
@@ -323,12 +323,12 @@
 				141A8E181A3C6C36002ED07F /* CircleFitter.swift in Sources */,
 				14E44FB01C550F09006B594D /* CirqueView.swift in Sources */,
 				14B5247A1CA7E88500D38DE2 /* ScoreView.swift in Sources */,
-				14EDEA0A1DE27E3300AF2F25 /* SimulatorRenderer.swift in Sources */,
+				14EDEA0A1DE27E3300AF2F25 /* SimulatorRenderers.swift in Sources */,
 				1478A2921C8DFA8E0072290C /* Shaders.metal in Sources */,
 				14D605A319FCEC900096E228 /* CircleController.swift in Sources */,
 				14EDEA0E1DE286EF00AF2F25 /* VertexConversion.swift in Sources */,
 				1402B4CD1A346C7D00E335B3 /* TrailModel.swift in Sources */,
-				14EDEA081DE27E2000AF2F25 /* MetalRenderer.swift in Sources */,
+				14EDEA081DE27E2000AF2F25 /* MetalRenderers.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -346,12 +346,12 @@
 				1402B4CE1A346D6C00E335B3 /* TrailModel.swift in Sources */,
 				144170151CFB693E00A1BF03 /* CircleErrorAreaTests.swift in Sources */,
 				14D197091A3C844600832ACA /* CircleFitter.swift in Sources */,
-				14EDEA0C1DE27EE000AF2F25 /* SimulatorRenderer.swift in Sources */,
+				14EDEA0C1DE27EE000AF2F25 /* SimulatorRenderers.swift in Sources */,
 				1402B4CB1A3469CC00E335B3 /* TrailTests.swift in Sources */,
 				145D01151A6C06BF00B6D5C9 /* TrailHistory.swift in Sources */,
 				14AFB4801A5936BF00EC7EA7 /* CircleControllerTests.swift in Sources */,
 				14D189441A52C51500CD0862 /* TrailAnalyser.swift in Sources */,
-				14EDEA0B1DE27EE000AF2F25 /* MetalRenderer.swift in Sources */,
+				14EDEA0B1DE27EE000AF2F25 /* MetalRenderers.swift in Sources */,
 				14EDEA051DE27D2E00AF2F25 /* Renderer.swift in Sources */,
 				1402B4C51A34560400E335B3 /* CircleModelTests.swift in Sources */,
 				144170171CFE396500A1BF03 /* CirqueView.swift in Sources */,
