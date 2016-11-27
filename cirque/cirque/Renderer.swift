@@ -9,6 +9,7 @@
 import Foundation
 import simd
 import CoreGraphics.CGGeometry
+import QuartzCore
 
 struct CirqueUniforms {
 	var modelViewProjection: matrix_float4x4
@@ -50,6 +51,11 @@ protocol VertexSource {
 }
 
 protocol RenderPath {
+#if arch(i386) || arch(x86_64)
+	typealias Queue = [CALayer]
+#else
+	typealias Queue = MTLCommandQueue
+#endif
 	
 	init(renderers: [RenderPass : Renderer])
 	
@@ -61,7 +67,7 @@ protocol RenderPath {
 
 protocol Renderer {
 	func setRenderTargetSize(size: CGSize)
-	func render(_ vertices: VertexSource, withUniforms unifors: CirqueUniforms)
+	func render(_ vertices: VertexSource, withUniforms unifors: CirqueUniforms, withQueue queue: RenderPath.Queue)
 }
 
 func ortho2d(l: Float, r: Float, b: Float, t: Float, n: Float, f: Float) -> matrix_float4x4 {
