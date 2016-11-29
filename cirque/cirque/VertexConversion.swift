@@ -10,12 +10,12 @@ import CoreGraphics.CGGeometry
 import simd
 
 extension Trail : VertexSource {
-	func toVertices() -> [CirqueVertex] {
+	func toVertices() -> VertexSource.Buffer {
 		// Inner and outer vertices for each segment
 		let segments = zip(self.angles, self.distances)
 		let stroke = zip(self.points, segments)
-		
-		var vertices: [CirqueVertex] = []
+
+		var vertices: VertexSource.Buffer = []
 		
 		for segment in stroke {
 			let pC = segment.0
@@ -36,8 +36,8 @@ extension Trail : VertexSource {
 }
 
 extension ErrorArea : VertexSource {
-	func toVertices() -> [CirqueVertex] {
-		var out = [CirqueVertex]()
+	func toVertices() -> VertexSource.Buffer {
+		var out: VertexSource.Buffer = []
 		for p in polarPoints {
 			let x = Float(cos(p.a) * p.r + center.x)
 			let y = Float(sin(p.a) * p.r + center.y)

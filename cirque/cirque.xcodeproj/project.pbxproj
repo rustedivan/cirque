@@ -27,6 +27,12 @@
 		14AFB4801A5936BF00EC7EA7 /* CircleControllerTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 14AFB47F1A5936BF00EC7EA7 /* CircleControllerTests.swift */; };
 		14AFB4811A59394D00EC7EA7 /* CircleController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 14D605A219FCEC900096E228 /* CircleController.swift */; };
 		14B5247A1CA7E88500D38DE2 /* ScoreView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 14B524791CA7E88500D38DE2 /* ScoreView.swift */; };
+		14C8E6521DED9DE800F2FD80 /* Renderer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 14EDEA031DE27CE200AF2F25 /* Renderer.swift */; };
+		14C8E6531DED9DE800F2FD80 /* SimulatorRenderPath.swift in Sources */ = {isa = PBXBuildFile; fileRef = 14F0EDC01DE8D354003120BA /* SimulatorRenderPath.swift */; };
+		14C8E6541DED9DE800F2FD80 /* MetalRenderPath.swift in Sources */ = {isa = PBXBuildFile; fileRef = 14DAF49F1DE9ABBE00DD92B5 /* MetalRenderPath.swift */; };
+		14C8E6551DED9DE800F2FD80 /* MetalRenderers.swift in Sources */ = {isa = PBXBuildFile; fileRef = 14EDEA071DE27E2000AF2F25 /* MetalRenderers.swift */; };
+		14C8E6561DED9DE800F2FD80 /* SimulatorRenderers.swift in Sources */ = {isa = PBXBuildFile; fileRef = 14EDEA091DE27E3300AF2F25 /* SimulatorRenderers.swift */; };
+		14C8E6571DED9DE800F2FD80 /* VertexConversion.swift in Sources */ = {isa = PBXBuildFile; fileRef = 14EDEA0D1DE286EF00AF2F25 /* VertexConversion.swift */; };
 		14D189431A52C50E00CD0862 /* TrailAnalyser.swift in Sources */ = {isa = PBXBuildFile; fileRef = 14D189421A52C50E00CD0862 /* TrailAnalyser.swift */; };
 		14D189441A52C51500CD0862 /* TrailAnalyser.swift in Sources */ = {isa = PBXBuildFile; fileRef = 14D189421A52C50E00CD0862 /* TrailAnalyser.swift */; };
 		14D197091A3C844600832ACA /* CircleFitter.swift in Sources */ = {isa = PBXBuildFile; fileRef = 141A8E171A3C6C36002ED07F /* CircleFitter.swift */; };
@@ -36,17 +42,13 @@
 		14D6058B19FCE63C0096E228 /* LaunchScreen.xib in Resources */ = {isa = PBXBuildFile; fileRef = 14D6058919FCE63C0096E228 /* LaunchScreen.xib */; };
 		14D605A119FCEB530096E228 /* CircleModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 14D605A019FCEB530096E228 /* CircleModel.swift */; };
 		14D605A319FCEC900096E228 /* CircleController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 14D605A219FCEC900096E228 /* CircleController.swift */; };
-		14DAF49D1DE8ED0000DD92B5 /* SimulatorRenderPath.swift in Sources */ = {isa = PBXBuildFile; fileRef = 14F0EDC01DE8D354003120BA /* SimulatorRenderPath.swift */; };
-		14DAF49E1DE8F03F00DD92B5 /* VertexConversion.swift in Sources */ = {isa = PBXBuildFile; fileRef = 14EDEA0D1DE286EF00AF2F25 /* VertexConversion.swift */; };
+		14DAF4A01DE9ABBE00DD92B5 /* MetalRenderPath.swift in Sources */ = {isa = PBXBuildFile; fileRef = 14DAF49F1DE9ABBE00DD92B5 /* MetalRenderPath.swift */; };
 		14E44FAE1C55053E006B594D /* CirqueViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 14E44FAD1C55053E006B594D /* CirqueViewController.swift */; };
 		14E44FB01C550F09006B594D /* CirqueView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 14E44FAF1C550F09006B594D /* CirqueView.swift */; };
 		14E44FB21C551D76006B594D /* QuartzCore.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 14E44FB11C551D76006B594D /* QuartzCore.framework */; };
 		14EDEA041DE27CE200AF2F25 /* Renderer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 14EDEA031DE27CE200AF2F25 /* Renderer.swift */; };
-		14EDEA051DE27D2E00AF2F25 /* Renderer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 14EDEA031DE27CE200AF2F25 /* Renderer.swift */; };
 		14EDEA081DE27E2000AF2F25 /* MetalRenderers.swift in Sources */ = {isa = PBXBuildFile; fileRef = 14EDEA071DE27E2000AF2F25 /* MetalRenderers.swift */; };
 		14EDEA0A1DE27E3300AF2F25 /* SimulatorRenderers.swift in Sources */ = {isa = PBXBuildFile; fileRef = 14EDEA091DE27E3300AF2F25 /* SimulatorRenderers.swift */; };
-		14EDEA0B1DE27EE000AF2F25 /* MetalRenderers.swift in Sources */ = {isa = PBXBuildFile; fileRef = 14EDEA071DE27E2000AF2F25 /* MetalRenderers.swift */; };
-		14EDEA0C1DE27EE000AF2F25 /* SimulatorRenderers.swift in Sources */ = {isa = PBXBuildFile; fileRef = 14EDEA091DE27E3300AF2F25 /* SimulatorRenderers.swift */; };
 		14EDEA0E1DE286EF00AF2F25 /* VertexConversion.swift in Sources */ = {isa = PBXBuildFile; fileRef = 14EDEA0D1DE286EF00AF2F25 /* VertexConversion.swift */; };
 		14F0EDC11DE8D354003120BA /* SimulatorRenderPath.swift in Sources */ = {isa = PBXBuildFile; fileRef = 14F0EDC01DE8D354003120BA /* SimulatorRenderPath.swift */; };
 /* End PBXBuildFile section */
@@ -88,6 +90,7 @@
 		14D6059519FCE63C0096E228 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		14D605A019FCEB530096E228 /* CircleModel.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CircleModel.swift; sourceTree = "<group>"; };
 		14D605A219FCEC900096E228 /* CircleController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CircleController.swift; sourceTree = "<group>"; };
+		14DAF49F1DE9ABBE00DD92B5 /* MetalRenderPath.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MetalRenderPath.swift; sourceTree = "<group>"; };
 		14E44FAD1C55053E006B594D /* CirqueViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CirqueViewController.swift; sourceTree = "<group>"; };
 		14E44FAF1C550F09006B594D /* CirqueView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CirqueView.swift; sourceTree = "<group>"; };
 		14E44FB11C551D76006B594D /* QuartzCore.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = QuartzCore.framework; path = System/Library/Frameworks/QuartzCore.framework; sourceTree = SDKROOT; };
@@ -206,6 +209,7 @@
 			children = (
 				14EDEA031DE27CE200AF2F25 /* Renderer.swift */,
 				14F0EDC01DE8D354003120BA /* SimulatorRenderPath.swift */,
+				14DAF49F1DE9ABBE00DD92B5 /* MetalRenderPath.swift */,
 				14EDEA071DE27E2000AF2F25 /* MetalRenderers.swift */,
 				14EDEA091DE27E3300AF2F25 /* SimulatorRenderers.swift */,
 				14EDEA0D1DE286EF00AF2F25 /* VertexConversion.swift */,
@@ -319,6 +323,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				14DAF4A01DE9ABBE00DD92B5 /* MetalRenderPath.swift in Sources */,
 				145D01141A6C064700B6D5C9 /* TrailHistory.swift in Sources */,
 				14F0EDC11DE8D354003120BA /* SimulatorRenderPath.swift in Sources */,
 				14D189431A52C50E00CD0862 /* TrailAnalyser.swift in Sources */,
@@ -342,27 +347,28 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				14C8E6551DED9DE800F2FD80 /* MetalRenderers.swift in Sources */,
 				144170161CFE395500A1BF03 /* CircleModel.swift in Sources */,
 				142A02211A66EECF00AC3942 /* HistoricalAnalysisTests.swift in Sources */,
 				145D01121A6C05DE00B6D5C9 /* HistoryMockTrails.swift in Sources */,
 				141A8E1A1A3C6C6B002ED07F /* CircleFitterTests.swift in Sources */,
 				145855C41A502BED00C44CB1 /* TrailAnalyserTests.swift in Sources */,
-				14DAF49D1DE8ED0000DD92B5 /* SimulatorRenderPath.swift in Sources */,
-				14DAF49E1DE8F03F00DD92B5 /* VertexConversion.swift in Sources */,
 				145A267F1A52BDD700B3FBAB /* MockTrails.swift in Sources */,
 				14AFB4811A59394D00EC7EA7 /* CircleController.swift in Sources */,
 				1402B4CE1A346D6C00E335B3 /* TrailModel.swift in Sources */,
 				144170151CFB693E00A1BF03 /* CircleErrorAreaTests.swift in Sources */,
+				14C8E6541DED9DE800F2FD80 /* MetalRenderPath.swift in Sources */,
 				14D197091A3C844600832ACA /* CircleFitter.swift in Sources */,
-				14EDEA0C1DE27EE000AF2F25 /* SimulatorRenderers.swift in Sources */,
 				1402B4CB1A3469CC00E335B3 /* TrailTests.swift in Sources */,
 				145D01151A6C06BF00B6D5C9 /* TrailHistory.swift in Sources */,
 				14AFB4801A5936BF00EC7EA7 /* CircleControllerTests.swift in Sources */,
+				14C8E6561DED9DE800F2FD80 /* SimulatorRenderers.swift in Sources */,
 				14D189441A52C51500CD0862 /* TrailAnalyser.swift in Sources */,
-				14EDEA0B1DE27EE000AF2F25 /* MetalRenderers.swift in Sources */,
-				14EDEA051DE27D2E00AF2F25 /* Renderer.swift in Sources */,
+				14C8E6521DED9DE800F2FD80 /* Renderer.swift in Sources */,
 				1402B4C51A34560400E335B3 /* CircleModelTests.swift in Sources */,
 				144170171CFE396500A1BF03 /* CirqueView.swift in Sources */,
+				14C8E6531DED9DE800F2FD80 /* SimulatorRenderPath.swift in Sources */,
+				14C8E6571DED9DE800F2FD80 /* VertexConversion.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

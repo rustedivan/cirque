@@ -16,23 +16,20 @@ class CirqueView: UIView {
 	required init?(coder aDecoder: NSCoder) {
 		super.init(coder: aDecoder)
 		
-		let renderPasses: [RenderPass : Renderer] =
-			[.error(progress: 0.0) :	SimulatorErrorRenderer(layer: renderingLayer),
-			 .trail :									SimulatorCircleRenderer(layer: renderingLayer)]
-		
-		renderPath = SimulatorRenderPath(layer: renderingLayer,
-		                                 renderPasses: renderPasses)
+		renderPath = AppRenderPath(layer: renderingLayer)
 	}
 	
 	func render(circle: Circle, errorArea: ErrorArea?) {
-		renderPath.runPasses {
+		renderPath.runPasses { (commandEncoder) in
 			if let errorArea = errorArea {
 				renderPath.renderPass(vertices: errorArea,
-				                      inRenderPass: .error(progress: 1.0))
+				                      inRenderPass: .error(progress: 1.0),
+				                      intoCommandEncoder: commandEncoder)
 			}
 			
 			renderPath.renderPass(vertices: circle.segments,
-			                      inRenderPass: .trail)
+			                      inRenderPass: .trail,
+			                      intoCommandEncoder: commandEncoder)
 		}
 	}
 	
@@ -78,10 +75,6 @@ extension CirqueView {
 	
 	var renderingLayer : LayerType {
 		return layer as! LayerType
-	}
-	
-	func setupRenderers(toLayer targetLayer: LayerType) {
-		activeRenderers = [.trail : MetalRenderer(layer: renderingLayer)]
 	}
 }
 	

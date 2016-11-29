@@ -7,7 +7,6 @@
 //
 
 // If building for simulator (Metal not available)
-
 #if arch(i386) || arch(x86_64)
 
 import UIKit
@@ -20,18 +19,19 @@ extension CGPoint {
 
 // MARK: Shape renderer
 protocol ShapeRenderer : Renderer {
-	var shapeLayer: CAShapeLayer { get }
+	var shapeLayer: CAShapeLayer { get set }
 }
 	
 extension ShapeRenderer {
-	func setRenderTargetSize(size: CGSize) {
-		shapeLayer.bounds.size = size
+	var renderTarget: RenderPath.Target {
+		get { return shapeLayer }
+		set { shapeLayer = newValue }
 	}
 }
 
 // MARK: Specific shape renderers
 struct SimulatorCircleRenderer: ShapeRenderer {
-	let shapeLayer: CAShapeLayer
+	var shapeLayer: CAShapeLayer
 	
 	init(layer: CALayer) {
 		self.shapeLayer = CAShapeLayer()
@@ -42,7 +42,10 @@ struct SimulatorCircleRenderer: ShapeRenderer {
 		self.shapeLayer.fillColor = UIColor.blue.cgColor
 	}
 	
-	func render(_ vertices: VertexSource, withUniforms uniforms: CirqueUniforms) {
+	func render(vertices: VertexSource,
+	            uniforms: CirqueUniforms,
+	            intoCommandBuffer: RenderPath.CommandBuffer,
+	            intoDrawable: RenderPath.Target) {
 		let vertexArray = vertices.toVertices()
 		let trailPath = UIBezierPath()
 		
@@ -60,7 +63,7 @@ struct SimulatorCircleRenderer: ShapeRenderer {
 }
 
 struct SimulatorErrorRenderer: ShapeRenderer {
-	let shapeLayer: CAShapeLayer
+	var shapeLayer: CAShapeLayer
 	
 	init(layer: CALayer) {
 		self.shapeLayer = CAShapeLayer()
@@ -72,7 +75,10 @@ struct SimulatorErrorRenderer: ShapeRenderer {
 		self.shapeLayer.fillColor = UIColor.red.cgColor
 	}
 	
-	func render(_ vertices: VertexSource, withUniforms uniforms: CirqueUniforms) {
+	func render(vertices: VertexSource,
+	            uniforms: CirqueUniforms,
+	            intoCommandBuffer: RenderPath.CommandBuffer,
+	            intoDrawable: RenderPath.Target) {
 		let vertexArray = vertices.toVertices()
 		guard vertexArray.count >= 3 else { return }
 		
@@ -87,7 +93,7 @@ struct SimulatorErrorRenderer: ShapeRenderer {
 			i = i + 3
 		} while i + 3 < vertexArray.count
 		
-		shapeLayer.path = trailPath.cgPath
+		intoDrawable.path = trailPath.cgPath
 	}
 }
 

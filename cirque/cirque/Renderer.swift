@@ -21,6 +21,7 @@ struct CirqueUniforms {
 	}
 }
 
+// $ This can be imported into the shaders 
 struct CirqueVertex {
 	let position: vector_float4
 }
@@ -47,27 +48,29 @@ enum RenderPass: Hashable {
 }
 
 protocol VertexSource {
-	func toVertices() -> [CirqueVertex]
+	typealias Buffer = ContiguousArray<CirqueVertex>
+	func toVertices() -> Buffer
 }
 
 protocol RenderPath {
 #if arch(i386) || arch(x86_64)
-	typealias Queue = [CALayer]
+	typealias Encoder = Void
 #else
-	typealias Queue = MTLCommandQueue
+	typealias Encoder = MTLRenderCommandEncoder
 #endif
 	
-	init(renderers: [RenderPass : Renderer])
+	func runPasses(renderAllPasses : (RenderPath.Encoder) -> () )
+	func renderPass(vertices: VertexSource,
+	                inRenderPass renderPass: RenderPass,
+	                intoCommandEncoder commandEncoder: RenderPath.Encoder)
 	
-	func runPasses(renderAllPasses : () -> () )
-	func renderPass(vertices: VertexSource, inRenderPass renderPass: RenderPass)
-	
-	func renderTargetSizeDidChange(to size: CGSize)
+	mutating func renderTargetSizeDidChange(to size: CGSize)
 }
 
 protocol Renderer {
-	func setRenderTargetSize(size: CGSize)
-	func render(_ vertices: VertexSource, withUniforms unifors: CirqueUniforms, withQueue queue: RenderPath.Queue)
+	func render(vertices: VertexSource,
+	            inRenderPass: RenderPass,
+	            intoCommandEncoder: RenderPath.Encoder)
 }
 
 func ortho2d(l: Float, r: Float, b: Float, t: Float, n: Float, f: Float) -> matrix_float4x4 {
