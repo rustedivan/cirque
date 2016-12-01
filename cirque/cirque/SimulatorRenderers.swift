@@ -19,18 +19,13 @@ extension CGPoint {
 
 // MARK: Shape renderer
 protocol ShapeRenderer : Renderer {
-	var shapeLayer: CAShapeLayer { get set }
 }
 	
 extension ShapeRenderer {
-	var renderTarget: RenderPath.Target {
-		get { return shapeLayer }
-		set { shapeLayer = newValue }
-	}
 }
 
 // MARK: Specific shape renderers
-struct SimulatorCircleRenderer: ShapeRenderer {
+class SimulatorCircleRenderer: ShapeRenderer {
 	var shapeLayer: CAShapeLayer
 	
 	init(layer: CALayer) {
@@ -42,10 +37,13 @@ struct SimulatorCircleRenderer: ShapeRenderer {
 		self.shapeLayer.fillColor = UIColor.blue.cgColor
 	}
 	
+	deinit {
+		shapeLayer.removeFromSuperlayer()
+	}
+	
 	func render(vertices: VertexSource,
-	            uniforms: CirqueUniforms,
-	            intoCommandBuffer: RenderPath.CommandBuffer,
-	            intoDrawable: RenderPath.Target) {
+	            inRenderPass renderPass: RenderPass,
+	            intoCommandEncoder: RenderPath.Encoder) {
 		let vertexArray = vertices.toVertices()
 		let trailPath = UIBezierPath()
 		
@@ -62,25 +60,31 @@ struct SimulatorCircleRenderer: ShapeRenderer {
 	}
 }
 
-struct SimulatorErrorRenderer: ShapeRenderer {
+class SimulatorErrorRenderer: ShapeRenderer {
 	var shapeLayer: CAShapeLayer
 	
 	init(layer: CALayer) {
 		self.shapeLayer = CAShapeLayer()
 		layer.addSublayer(self.shapeLayer)
-		self.shapeLayer.bounds = layer.bounds
+		self.shapeLayer.frame = layer.frame
 		self.shapeLayer.strokeColor = UIColor.clear.cgColor
 		self.shapeLayer.lineWidth = 1.0
 		self.shapeLayer.backgroundColor = UIColor.clear.cgColor
 		self.shapeLayer.fillColor = UIColor.red.cgColor
 	}
 	
+	deinit {
+		shapeLayer.removeFromSuperlayer()
+	}
+	
 	func render(vertices: VertexSource,
-	            uniforms: CirqueUniforms,
-	            intoCommandBuffer: RenderPath.CommandBuffer,
-	            intoDrawable: RenderPath.Target) {
+	            inRenderPass renderPass: RenderPass,
+	            intoCommandEncoder commandEncoder: RenderPath.Encoder) {
 		let vertexArray = vertices.toVertices()
-		guard vertexArray.count >= 3 else { return }
+		guard vertexArray.count >= 3 else {
+			shapeLayer.path = nil
+			return
+		}
 		
 		let trailPath = UIBezierPath()
 		
@@ -93,7 +97,7 @@ struct SimulatorErrorRenderer: ShapeRenderer {
 			i = i + 3
 		} while i + 3 < vertexArray.count
 		
-		intoDrawable.path = trailPath.cgPath
+		shapeLayer.path = trailPath.cgPath
 	}
 }
 

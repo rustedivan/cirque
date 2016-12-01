@@ -19,14 +19,12 @@ class CirqueView: UIView {
 		renderPath = AppRenderPath(layer: renderingLayer)
 	}
 	
-	func render(circle: Circle, errorArea: ErrorArea?) {
+	func render(circle: Circle, errorArea: ErrorArea) {
 		renderPath.runPasses { (commandEncoder) in
-			if let errorArea = errorArea {
-				renderPath.renderPass(vertices: errorArea,
-				                      inRenderPass: .error(progress: 1.0),
-				                      intoCommandEncoder: commandEncoder)
-			}
-			
+			renderPath.renderPass(vertices: errorArea,
+														inRenderPass: .error(progress: 1.0),
+														intoCommandEncoder: commandEncoder)
+		
 			renderPath.renderPass(vertices: circle.segments,
 			                      inRenderPass: .trail,
 			                      intoCommandEncoder: commandEncoder)

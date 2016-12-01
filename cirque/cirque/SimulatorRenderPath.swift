@@ -21,27 +21,17 @@ struct SimulatorRenderPath : RenderPath {
 	
 	init(layer: CALayer) {
 		self.targetLayer = layer
-		let circleRenderer = SimulatorCircleRenderer(layer: layer)
-		let errorRenderer = SimulatorErrorRenderer(layer: layer)
 		
-		// Register renderers with their passes
-		let renderPasses: [RenderPass : Renderer] =
-			[.error(progress: 0.0) :	errorRenderer,
-			 .trail :									circleRenderer]
-		activeRenderers = renderPasses
+		activeRenderers = SimulatorRenderPath.setupRenderers(targetLayer: targetLayer)
 	}
 
-	func renderTargetSizeDidChange(to size: CGSize) {
+	mutating func renderTargetSizeDidChange(to size: CGSize) {
 		if size != targetLayer.bounds.size {
 			print ("Render target size does not match target layer size")
 			return
 		}
 		
-		for renderer in activeRenderers.values {
-			var targetLayer = renderer.renderTarget
-			targetLayer.bounds.size = size
-			renderer.setRenderTarget(target: targetLayer)
-		}
+		activeRenderers = SimulatorRenderPath.setupRenderers(targetLayer: targetLayer)
 	}
 	
 	func runPasses(renderAllPasses: () -> ()) {
@@ -49,7 +39,9 @@ struct SimulatorRenderPath : RenderPath {
 		renderAllPasses()
 	}
 	
-	func renderPass(vertices: VertexSource, inRenderPass renderPass: RenderPass) {
+	func renderPass(vertices: VertexSource,
+	                inRenderPass renderPass: RenderPass,
+	                intoCommandEncoder commandEncoder: RenderPath.Encoder) {
 		guard let renderer = activeRenderers[renderPass] else {
 			print("Unregistered render pass: \(renderPass.passIdentifier)")
 			return
@@ -63,12 +55,23 @@ struct SimulatorRenderPath : RenderPath {
 		default: break
 		}
 		
-		// Setup common uniforms
-		// Not used on the simulator path
-		// uniforms.modelViewProjection = matrix_identity_float4x4
-		
-		renderer.render(vertices, withUniforms: uniforms, withQueue: targetLayer.sublayers!)
+		renderer.render(vertices: vertices,
+		                inRenderPass: renderPass,
+		                intoCommandEncoder: ())
 	}
 }
 
+private extension SimulatorRenderPath {
+	static func setupRenderers(targetLayer layer: CALayer) -> [RenderPass : Renderer] {
+		let circleRenderer = SimulatorCircleRenderer(layer: layer)
+		let errorRenderer = SimulatorErrorRenderer(layer: layer)
+		
+		// Register renderers with their passes
+		let renderPasses: [RenderPass : Renderer] =
+			[.error(progress: 0.0) :	errorRenderer,
+			 .trail :									circleRenderer]
+		return renderPasses
+	}
+}
+	
 #endif
