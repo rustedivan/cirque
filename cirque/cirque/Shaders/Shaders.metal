@@ -14,21 +14,27 @@ struct Vertex
 	float4 position [[position]];
 };
 
-struct Uniforms
+struct Uniforms {
+	float progress;
+};
+
+struct Constants
 {
 	float4x4 modelViewProjectionMatrix;
 };
 
 vertex Vertex vertex_main(device Vertex* vertices [[buffer(0)]],
 													constant Uniforms* uniforms [[buffer(1)]],
+													constant Constants* constants [[buffer(2)]],
 													uint vid [[vertex_id]])
 {
 	Vertex vertexOut;
-	vertexOut.position = uniforms->modelViewProjectionMatrix * vertices[vid].position;
+	vertexOut.position = constants->modelViewProjectionMatrix * vertices[vid].position;
 	return vertexOut;
 }
 
-fragment float4 fragment_main(Vertex inVertex [[stage_in]])
+fragment float4 fragment_main(Vertex inVertex [[stage_in]],
+															constant Uniforms* uniforms [[buffer(1)]])
 {
 	return float4(0.0, 0.2, 0.8, 1.0);
 }

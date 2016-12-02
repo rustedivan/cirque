@@ -11,17 +11,26 @@ import simd
 import CoreGraphics.CGGeometry
 import QuartzCore
 
-struct CirqueUniforms {
+struct CirqueConstants {
 	var modelViewProjection: matrix_float4x4
-//	var progress: Double
 	
-	init() {
-		modelViewProjection = matrix_identity_float4x4
-//		progress = 0.0
+	init(projectionSize: CGSize) {
+		var mvpMatrix: matrix_float4x4
+		mvpMatrix = ortho2d(l: 0.0, r: Float(projectionSize.width),
+		                    b: Float(projectionSize.height), t: 0.0,
+		                    n: 0.0, f: 1.0)
+		
+		// Translate into Metal's NDC space (2x2x1 unit cube)
+		mvpMatrix.columns.3.x = -1.0
+		mvpMatrix.columns.3.y = +1.0
+		modelViewProjection = mvpMatrix
 	}
 }
 
-// $ This can be imported into the shaders 
+struct CirqueUniforms {
+	var progress: Float = 0.0
+}
+
 struct CirqueVertex {
 	let position: vector_float4
 }

@@ -76,6 +76,12 @@ struct MetalRenderPath : RenderPath {
 		let commandBuffer = commandQueue.makeCommandBuffer()
 		let commandEncoder = commandBuffer.makeRenderCommandEncoder(descriptor: renderPassDescriptor)
 		
+		// Setup constants for the entire frame
+		var frameConstants = CirqueConstants(projectionSize: targetLayer.bounds.size)
+		commandEncoder.setVertexBytes(&frameConstants,
+		                              length: MemoryLayout<CirqueConstants>.stride,
+		                              at: VertexLocations.constants.rawValue)
+		
 		// Render all passes into this command encoder
 		renderAllPasses(commandEncoder)
 		
@@ -91,10 +97,6 @@ struct MetalRenderPath : RenderPath {
 			print("Unregistered render pass: \(renderPass.passIdentifier)")
 			return
 		}
-		
-		// Setup common uniforms
-		// Not used on the simulator path
-		// uniforms.modelViewProjection = matrix_identity_float4x4
 		
 		renderer.render(vertices: vertices,
 		                inRenderPass: renderPass,

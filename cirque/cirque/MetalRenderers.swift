@@ -51,7 +51,7 @@ struct MetalCircleRenderer: MetalRenderer {
 	}
 	
 	func render(vertices: VertexSource,
-	            inRenderPass: RenderPass,
+	            inRenderPass renderPass: RenderPass,
 	            intoCommandEncoder commandEncoder: RenderPath.Encoder) {
 		
 		// Copy vertices to vertex buffer 0
@@ -69,24 +69,15 @@ struct MetalCircleRenderer: MetalRenderer {
 		
 		// Copy uniforms to vertex buffer 1
 		var uniforms = CirqueUniforms()
-		// TODO: Move out
-		// Setup constant block
-		var mvpMatrix: matrix_float4x4
-		mvpMatrix = ortho2d(l: 0.0, r: Float(375),
-												b: Float(667), t: 0.0,
-												n: 0.0, f: 1.0)
-
-		// Translate into Metal's NDC space (2x2x1 unit cube)
-		mvpMatrix.columns.3.x = -1.0
-		mvpMatrix.columns.3.y = +1.0
-		uniforms.modelViewProjection = mvpMatrix
-
+		
 		let uniformsDst = uniformBuffer.contents()
 		uniformsDst.copyBytes(from: &uniforms, count: MemoryLayout<CirqueUniforms>.stride)
 		
 		commandEncoder.setRenderPipelineState(pipeline)
 		commandEncoder.setVertexBuffer(vertexBuffer, offset: 0, at: MetalRenderPath.VertexLocations.position.rawValue)
 		commandEncoder.setVertexBuffer(uniformBuffer, offset: 0, at: MetalRenderPath.VertexLocations.uniforms.rawValue)
+		commandEncoder.setFragmentBuffer(uniformBuffer, offset: 0, at: MetalRenderPath.VertexLocations.uniforms.rawValue)
+		
 		if vertexArray.isEmpty == false {
 			commandEncoder.drawPrimitives(type: .triangleStrip, vertexStart: 0, vertexCount: vertexArray.count)
 		}
