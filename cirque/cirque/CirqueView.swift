@@ -15,8 +15,6 @@ class CirqueView: UIView {
 	
 	required init?(coder aDecoder: NSCoder) {
 		super.init(coder: aDecoder)
-		
-		renderPath = AppRenderPath(layer: renderingLayer)
 	}
 	
 	func render(circle: Circle, errorArea: ErrorArea) {
@@ -42,6 +40,10 @@ class CirqueView: UIView {
 		layer.frame = layer.bounds
 		for subLayer in layer.sublayers! {
 			subLayer.frame = layer.frame
+		}
+		
+		if renderPath == nil {
+			renderPath = AppRenderPath(layer: renderingLayer)
 		}
 		
 		renderPath.renderTargetSizeDidChange(to: layer.bounds.size)

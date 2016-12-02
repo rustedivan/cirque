@@ -45,7 +45,9 @@ struct MetalCircleRenderer: MetalRenderer {
 		let uniformBufLen = MemoryLayout<CirqueUniforms>.size
 		let vertexBufLen = MemoryLayout<CirqueVertex>.size * MetalCircleRenderer.MaxRenderableSegments * 2
 		uniformBuffer = device.makeBuffer(length: uniformBufLen, options: [])
+		uniformBuffer.label = "Trail uniforms"
 		vertexBuffer = device.makeBuffer(length: vertexBufLen, options: [])
+		vertexBuffer.label = "Trail vertices"
 	}
 	
 	func render(vertices: VertexSource,
@@ -67,6 +69,18 @@ struct MetalCircleRenderer: MetalRenderer {
 		
 		// Copy uniforms to vertex buffer 1
 		var uniforms = CirqueUniforms()
+		// TODO: Move out
+		// Setup constant block
+		var mvpMatrix: matrix_float4x4
+		mvpMatrix = ortho2d(l: 0.0, r: Float(375),
+												b: Float(667), t: 0.0,
+												n: 0.0, f: 1.0)
+
+		// Translate into Metal's NDC space (2x2x1 unit cube)
+		mvpMatrix.columns.3.x = -1.0
+		mvpMatrix.columns.3.y = +1.0
+		uniforms.modelViewProjection = mvpMatrix
+
 		let uniformsDst = uniformBuffer.contents()
 		uniformsDst.copyBytes(from: &uniforms, count: MemoryLayout<CirqueUniforms>.stride)
 		
@@ -76,16 +90,7 @@ struct MetalCircleRenderer: MetalRenderer {
 		if vertexArray.isEmpty == false {
 			commandEncoder.drawPrimitives(type: .triangleStrip, vertexStart: 0, vertexCount: vertexArray.count)
 		}
-		commandEncoder.endEncoding()
 		
-//		// Setup constant block
-//		mvpMatrix = ortho2d(l: 0.0, r: Float(targetLayer.bounds.width),
-//		                    b: Float(targetLayer.bounds.height), t: 0.0,
-//		                    n: 0.0, f: 1.0)
-//		
-//		// Translate into Metal's NDC space (2x2x1 unit cube)
-//		mvpMatrix.columns.3.x = -1.0
-//		mvpMatrix.columns.3.y = +1.0
 	}
 }
 

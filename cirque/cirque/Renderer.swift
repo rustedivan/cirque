@@ -13,11 +13,11 @@ import QuartzCore
 
 struct CirqueUniforms {
 	var modelViewProjection: matrix_float4x4
-	var progress: Double
+//	var progress: Double
 	
 	init() {
 		modelViewProjection = matrix_identity_float4x4
-		progress = 0.0
+//		progress = 0.0
 	}
 }
 
@@ -63,7 +63,6 @@ protocol RenderPath {
 	func renderPass(vertices: VertexSource,
 	                inRenderPass renderPass: RenderPass,
 	                intoCommandEncoder commandEncoder: RenderPath.Encoder)
-	
 	mutating func renderTargetSizeDidChange(to size: CGSize)
 }
 

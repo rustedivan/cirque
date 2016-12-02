@@ -38,8 +38,8 @@ struct MetalRenderPath : RenderPath {
 		self.targetLayer.device = device
 		self.targetLayer.pixelFormat = .bgra8Unorm
 		
-		let scaledSize = CGSize(width: layer.drawableSize.width * layer.contentsScale,
-		                        height: layer.drawableSize.height * layer.contentsScale)
+		let scaledSize = CGSize(width: layer.bounds.size.width * layer.contentsScale,
+		                        height: layer.bounds.size.height * layer.contentsScale)
 		multiSampleTarget = MetalRenderPath.buildRenderTarget(onDevice: device,
 																													pixelFormat: layer.pixelFormat,
 																													renderTargetSize: scaledSize)
@@ -79,8 +79,9 @@ struct MetalRenderPath : RenderPath {
 		// Render all passes into this command encoder
 		renderAllPasses(commandEncoder)
 		
-		commandBuffer.commit()
+		commandEncoder.endEncoding()
 		commandBuffer.present(drawable)
+		commandBuffer.commit()
 	}
 	
 	func renderPass(vertices: VertexSource,
