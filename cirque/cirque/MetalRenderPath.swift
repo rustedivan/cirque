@@ -124,11 +124,12 @@ private extension MetalRenderPath {
 
 		let circleRenderer = MetalCircleRenderer(device: device,
 		                                         pixelFormat: layer.pixelFormat)
-		let errorRenderer = MetalErrorRenderer()
+		let errorRenderer = MetalErrorRenderer(device: device,
+		                                       pixelFormat: layer.pixelFormat)
 		
 		// Register renderers with their passes
 		let renderPasses: [RenderPass : Renderer] =
-			[.error(progress: 0.0) :	errorRenderer,
+			[.error(progress: 0.0) :	errorRenderer,		// FIXME: passing parameters in the render pass is wrong
 			 .trail :									circleRenderer]
 		return renderPasses
 	}
