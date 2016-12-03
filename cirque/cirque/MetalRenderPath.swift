@@ -115,6 +115,9 @@ private extension MetalRenderPath {
 		targetDescriptor.textureType = .type2DMultisample
 		targetDescriptor.width = Int(size.width)
 		targetDescriptor.height = Int(size.height)
+		if #available(iOS 10.0, *) {
+			targetDescriptor.storageMode = .memoryless
+		}
 		return device.makeTexture(descriptor: targetDescriptor)
 	}
 	
