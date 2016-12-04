@@ -35,7 +35,7 @@ class TrailTests: XCTestCase {
 		t.addPoint(CGPoint(x: 100.0, y: 0.0))
 		XCTAssertEqual(t.angles.count, 2, "Trail should have one angle per point")
 		
-		t.addPoint(CGPoint(x: 100.0, y: 0.0))
+		t.addPoint(CGPoint(x: 150.0, y: 0.0))
 		XCTAssertEqual(t.angles.count, 3, "Trail should have one angle per point")
 	}
 
