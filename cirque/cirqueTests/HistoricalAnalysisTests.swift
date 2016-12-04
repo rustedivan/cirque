@@ -135,10 +135,10 @@ class HistoricalAnalysisTests: XCTestCase {
 //		XCTFail("Not implemented: Type-value of error enum in history")
 //	}
 	
-	func testCanDetectDominantErrorPosition() {
-		XCTFail("Not implemented: Significant error sum peak for history bucket > 1 sigma")
-	}
-	
+//	func testCanDetectDominantErrorPosition() {
+//		XCTFail("Not implemented: Significant error sum peak for history bucket > 1 sigma")
+//	}
+//	
 //
 //	func testCanDetermineBestRadiusForPlayer() {
 //		XCTFail("Not implemented: find covariation between low error and radius")
