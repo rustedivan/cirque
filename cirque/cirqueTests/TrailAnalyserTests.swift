@@ -219,25 +219,6 @@ class CircleAnalyzer: XCTestCase {
 		XCTAssertEqual(perfect, 0.0, "Close-to-perfect end caps should snap error to zero")
 	}
 	
-	/* Calculate a linear fit for the slope of the last 10% of the circle's radial measuremets.
-		 Any slope that significantly deviates form zero is reported as positive or negative.
-	*/
-	func testFindAngleOfAttackOfStrokeEnd() {
-		var discard = 0.0
-		
-		let outwardTrail = polariseTestPoints(points: outwardEnd, toRadius: &discard)
-		let inwardTrail = polariseTestPoints(points: inwardEnd, toRadius: &discard)
-		let perfectTrail = polariseTestPoints(points: stableEnd, toRadius: &discard)
-		
-		let outward = TrailAnalyser(points: outwardTrail, fitRadius: discard).endAngleOfAttack()
-		let inward = TrailAnalyser(points: inwardTrail, fitRadius: discard).endAngleOfAttack()
-		let perfect = TrailAnalyser(points: perfectTrail, fitRadius: discard).endAngleOfAttack()
-		
-		XCTAssertLessThan(inward, 0.0, "Contracting circle should be negative")
-		XCTAssertGreaterThan(outward, 0.0, "Expanding circle should be positive")
-		XCTAssertEqual(perfect, 0.0, "Close-to-perfect circle should snap error to zero")
-	}
-	
 	func testShouldRejectNonClosedCircle() {
 		var radius = 0.0
 		
