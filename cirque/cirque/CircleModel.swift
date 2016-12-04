@@ -124,4 +124,12 @@ extension Circle {
 		}
 		print("] as [TestPoint]\n\n\n")
 	}
+	
+	func dumpAsCSV() {
+		print("\n\n\n\n")
+		for point in segments.points	{
+			print(String(format:"%f;\t%f", point.x, point.y))
+		}
+		print("\n\n\n")
+	}
 }
