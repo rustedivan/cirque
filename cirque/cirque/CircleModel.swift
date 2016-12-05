@@ -60,29 +60,32 @@ func polarize(_ points: PointArray, around c: CGPoint) -> PolarArray {
 }
 
 struct ErrorArea {
-	var polarPoints: [Polar]
+	typealias ErrorBar = (a: CGFloat, r: CGFloat, isCap: Bool)
+	var errorBars: [ErrorBar]
+	var fitRadius: CGFloat
 	var center: CGPoint
 }
 
 extension Circle {
-	func generateErrorArea(_ points: [Polar], around: CGPoint, radius: CGFloat, treshold: CGFloat) -> ErrorArea {
-		var errorArea = ErrorArea(polarPoints: [], center: around)
+	static func generateErrorArea(_ points: [Polar], around: CGPoint, radius: CGFloat, treshold: CGFloat) -> ErrorArea {
+		var errorArea = ErrorArea(errorBars: [], fitRadius: radius, center: around)
 		
+		var insideErrorArea = false
 		for (i, p) in points.enumerated() {
 			if fabs(p.r - radius) > treshold {
-				let o = p
-				let oNext = (i + 1 < points.endIndex) ? points[i + 1] : o
-				let r = Polar(a: o.a, r: radius)
-				let rNext = Polar(a: oNext.a, r: radius)
-		
-				let oPrev = (i - 1 > points.startIndex) ? points[i - 1] : o
-				let rPrev = Polar(a: oPrev.a, r: radius)
+				let prev = (i - 1 > points.startIndex) ? points[i - 1] : p
 				
-				let prevPoint = (oPrev.r > rPrev.r) ? oPrev : rPrev
-				let nextPoint = (oNext.r < rNext.r) ? oNext : rNext
+				// Cap the start of the error area
+				if !insideErrorArea {
+					errorArea.errorBars.append((a: prev.a, r: radius, isCap: true))
+					insideErrorArea = true
+				}
 				
-				errorArea.polarPoints.append(contentsOf: [o, r, prevPoint])	// Backward triangle
-				errorArea.polarPoints.append(contentsOf: [o, r, nextPoint])	// Forward triangle
+				errorArea.errorBars.append((a: p.a, r: p.r, isCap: false))
+			} else if insideErrorArea {
+				// Cap the end of the error area
+				errorArea.errorBars.append((a: p.a, r: radius, isCap: true))
+				insideErrorArea = false
 			}
 		}
 		

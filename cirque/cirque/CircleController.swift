@@ -17,7 +17,7 @@ enum CircleResult {
 class CircleController: NSObject {
 	var circle: Circle = Circle()
 	var bestFit: CircleFit?
-	var errorArea: ErrorArea = ErrorArea(polarPoints: [], center: .zero)
+	var errorArea: ErrorArea = ErrorArea(errorBars: [], fitRadius: 0.0, center: .zero)
 
 	var analysisTimestamp = Date()
 	var analysisRunning = false
@@ -62,7 +62,7 @@ class CircleController: NSObject {
 				historyWriter.dumpScoreHistory()
 				
 				let score = analyser.circularityScore()
-				self.errorArea = self.circle.generateErrorArea(polar, around: fit.center, radius: fit.radius, treshold: 2.0)
+				self.errorArea = Circle.generateErrorArea(polar, around: fit.center, radius: fit.radius, treshold: 2.0)
 				after(.accepted(score: score, trend: trend, fit: fit, errorArea: self.errorArea))
 			}
 			else {

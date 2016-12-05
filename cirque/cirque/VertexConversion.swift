@@ -37,12 +37,59 @@ extension Trail : VertexSource {
 
 extension ErrorArea : VertexSource {
 	func toVertices() -> VertexSource.Buffer {
+		var polarPoints: [Polar] = []
+		for (i, bar) in errorBars.enumerated() {
+			if bar.isCap { continue }
+			
+			// For every error bar, look back and ahead (if possible)
+			let prevBar = (i - 1 > errorBars.startIndex) ? errorBars[i - 1] : bar
+			let thisBar = errorBars[i]
+			let nextBar = (i + 1 < errorBars.endIndex) ? errorBars[i + 1] : bar
+			
+			// For the three error bars,
+			// set points at the root(R) and tip(P)
+			// so we can build two triangles.
+			// One backward and down, one forward and up.
+			var prevP = Polar(a: prevBar.a, r: prevBar.r)
+			var prevR = Polar(a: prevBar.a, r: fitRadius)
+			
+			var thisP = Polar(a: thisBar.a, r: thisBar.r)
+			var thisR = Polar(a: thisBar.a, r: fitRadius)
+			
+			var nextP = Polar(a: nextBar.a, r: nextBar.r)
+			var nextR = Polar(a: nextBar.a, r: fitRadius)
+			
+			// Avoid twisted rectangles by flipping
+			// the bars so they all point "outward" -
+			// R has the smallest radius and P has the largest
+			
+			if prevR.r > prevP.r { swap (&prevR, &prevP) }
+			if thisR.r > thisP.r { swap (&thisR, &thisP) }
+			if nextR.r > nextP.r { swap (&nextR, &nextP) }
+		
+			// Constructing the back(B) and forward(F)
+			// triangles from the six-point lattice
+			//
+			//				pP  tP__nP
+			//				|  /|  /|
+			//				| /B|F/ |
+			//				|/__|/  |
+			//				pR  tR  nR
+			
+			polarPoints.append(contentsOf: [prevR, thisP, thisR])	// Backward triangle
+			polarPoints.append(contentsOf: [thisP, nextP, thisR])	// Forward triangle
+		}
+	
+		// Finally, convert the polar points to vertices
 		var out: VertexSource.Buffer = []
 		for p in polarPoints {
-			let x = Float(cos(p.a) * p.r + center.x)
-			let y = Float(sin(p.a) * p.r + center.y)
-			out.append(CirqueVertex(position: vector_float4(x, y, 0.0, 1.0)))
+			let v = CirqueVertex(position: [	Float(cos(p.a) * p.r + center.x),
+																				Float(sin(p.a) * p.r + center.y),
+																				0.0,
+																				1.0 ])
+			out.append(v)
 		}
+		
 		return out
 	}
 }

@@ -47,14 +47,6 @@ struct SimulatorRenderPath : RenderPath {
 			return
 		}
 		
-		var uniforms = CirqueUniforms()
-		
-		switch renderPass {
-		case .error(let progress):
-			uniforms.progress = progress
-		default: break
-		}
-		
 		renderer.render(vertices: vertices,
 		                inRenderPass: renderPass,
 		                intoCommandEncoder: ())
@@ -63,8 +55,8 @@ struct SimulatorRenderPath : RenderPath {
 
 private extension SimulatorRenderPath {
 	static func setupRenderers(targetLayer layer: CALayer) -> [RenderPass : Renderer] {
-		let circleRenderer = SimulatorCircleRenderer(layer: layer)
 		let errorRenderer = SimulatorErrorRenderer(layer: layer)
+		let circleRenderer = SimulatorCircleRenderer(layer: layer)
 		
 		// Register renderers with their passes
 		let renderPasses: [RenderPass : Renderer] =

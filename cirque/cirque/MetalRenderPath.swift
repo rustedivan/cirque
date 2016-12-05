@@ -124,11 +124,10 @@ private extension MetalRenderPath {
 	static func setupRenderers(onDevice device: MTLDevice,
 	                           targetLayer layer: CAMetalLayer) -> [RenderPass : Renderer] {
 		// Prepare Metal path renderers
-
-		let circleRenderer = MetalCircleRenderer(device: device,
-		                                         pixelFormat: layer.pixelFormat)
 		let errorRenderer = MetalErrorRenderer(device: device,
 		                                       pixelFormat: layer.pixelFormat)
+		let circleRenderer = MetalCircleRenderer(device: device,
+		                                         pixelFormat: layer.pixelFormat)
 		
 		// Register renderers with their passes
 		let renderPasses: [RenderPass : Renderer] =
