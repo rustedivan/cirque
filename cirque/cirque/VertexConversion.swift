@@ -93,3 +93,10 @@ extension ErrorArea : VertexSource {
 		return out
 	}
 }
+
+extension BestFitCircle : VertexSource {
+	func toVertices() -> VertexSource.Buffer {
+		var out: VertexSource.Buffer = []
+		return out
+	}
+}

@@ -66,6 +66,12 @@ struct ErrorArea {
 	var center: CGPoint
 }
 
+struct BestFitCircle {
+	var lineWidths: [(a: Double, w: Double)]
+	var fitRadius: CGFloat
+	var center: CGPoint
+}
+
 extension Circle {
 	static func generateErrorArea(_ points: [Polar], around: CGPoint, radius: CGFloat, treshold: CGFloat) -> ErrorArea {
 		var errorArea = ErrorArea(errorBars: [], fitRadius: radius, center: around)
@@ -90,6 +96,23 @@ extension Circle {
 		}
 		
 		return errorArea
+	}
+	
+	static func generateBestFitCircle(around: CGPoint, radius: CGFloat, startAngle: Double, progress: Double, taper: Taper) -> BestFitCircle {
+		var bestFitCircle = BestFitCircle(lineWidths: [], fitRadius: radius, center: around)
+		let fidelity = 1.0/360.0
+		let direction = taper.clockwise ? -1.0 : 1.0
+		let endAngle = startAngle + progress * 2.0 * M_PI * direction
+		let step = 2.0 * M_PI * fidelity * direction
+		
+		let arcs = stride(from: startAngle, through: endAngle, by: step)
+		let widths = taper.taperWidths(angles: arcs)
+		
+		bestFitCircle.lineWidths = zip(arcs, widths).map {
+			(a: $0, w: $1)
+		}
+			
+		return bestFitCircle
 	}
 }
 
