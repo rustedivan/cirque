@@ -95,8 +95,31 @@ extension ErrorArea : VertexSource {
 }
 
 extension BestFitCircle : VertexSource {
+	// TODO: rewrite to use a less general Trail instead
+	// TODO: set the trail width on Trail and use normalized widths instead
 	func toVertices() -> VertexSource.Buffer {
 		var out: VertexSource.Buffer = []
+		
+		for segment in lineWidths {
+			let angle = segment.0
+			let width = segment.1
+			
+			let pIn =  CGPoint(x: cos(angle) * (fitRadius - (width / 2.0)),
+								 				 y: sin(angle) * (fitRadius - (width / 2.0)))
+			let pOut = CGPoint(x: cos(angle) * (fitRadius + (width / 2.0)),
+			                   y: sin(angle) * (fitRadius + (width / 2.0)))
+			
+			
+			let vL = CirqueVertex(position: vector_float4(Float(pIn.x + center.x),
+			                                              Float(pIn.y + center.y),
+			                                              0.0, 1.0))
+			let vR = CirqueVertex(position: vector_float4(Float(pOut.x + center.x),
+			                                              Float(pOut.y + center.y),
+			                                              0.0, 1.0))
+			
+			out.append(vL)
+			out.append(vR)
+		}
 		return out
 	}
 }

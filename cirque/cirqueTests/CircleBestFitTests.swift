@@ -21,7 +21,7 @@ class CircleBestFitTests: XCTestCase {
 	}
 	
 	func testGeneratePartialRing() {
-		func generateTestFitCircle(a0: Double) -> ((Double) -> (BestFitCircle)) {
+		func generateTestFitCircle(a0: CGFloat) -> ((Double) -> (BestFitCircle)) {
 			let around = CGPoint(x: 10.0, y: -20.0)
 			
 			let taper = Taper(taperRatio: 0.1, clockwise: false)
@@ -65,7 +65,7 @@ class CircleBestFitTests: XCTestCase {
 			let taper = Taper(taperRatio: 0.1, clockwise: false)
 			
 			return { (a0: Double) in
-				Circle.generateBestFitCircle(around: around, radius: 100.0, startAngle: a0, progress: p, taper: taper)
+				Circle.generateBestFitCircle(around: around, radius: 100.0, startAngle: CGFloat(a0), progress: p, taper: taper)
 			}
 		}
 		
@@ -99,7 +99,7 @@ class CircleBestFitTests: XCTestCase {
 			let taper = Taper(taperRatio: taper, clockwise: false)
 			
 			return { (p: Double) in
-				Circle.generateBestFitCircle(around: around, radius: 100.0, startAngle: a0, progress: p, taper: taper)
+				Circle.generateBestFitCircle(around: around, radius: 100.0, startAngle: CGFloat(a0), progress: p, taper: taper)
 			}
 		}
 		
@@ -140,7 +140,7 @@ class CircleBestFitTests: XCTestCase {
 			let taper = Taper(taperRatio: 0.1, clockwise: true)
 			
 			return { (p: Double) in
-				Circle.generateBestFitCircle(around: around, radius: 100.0, startAngle: a0, progress: p, taper: taper)
+				Circle.generateBestFitCircle(around: around, radius: 100.0, startAngle: CGFloat(a0), progress: p, taper: taper)
 			}
 		}
 		
@@ -182,7 +182,7 @@ class CircleBestFitTests: XCTestCase {
 		let taper = Taper(taperRatio: 0.2, clockwise: false)
 		let f = Circle.generateBestFitCircle(around: around, radius: modelRadius, startAngle: 0.2, progress: 0.8, taper: taper)
 		let t = f.toVertices()
-		XCTAssertEqual(t.count, 288 * 2, "Should have generated 0.8 * 360 segments of two vertices each")
+		XCTAssertEqual(t.count, 289 * 2, "Should have generated 0.8 * 360 segments of two vertices each")
 		
 		func radius(_ v: CirqueVertex) -> CGFloat {
 			let p = CGPoint(x: CGFloat(v.position.x) - around.x,
@@ -193,19 +193,19 @@ class CircleBestFitTests: XCTestCase {
 		
 		// Beginning of ring has full width
 		// First vertex inside radius, second outside
-		XCTAssertEqualWithAccuracy(radius(t[0]), 102.0, accuracy: 0.1)
-		XCTAssertEqualWithAccuracy(radius(t[1]),  98.0, accuracy: 0.1)
+		XCTAssertEqualWithAccuracy(radius(t[0]), 99.5, accuracy: 0.1)
+		XCTAssertEqualWithAccuracy(radius(t[1]), 100.5, accuracy: 0.1)
 		
 		// Middle of ring still has full width
-		XCTAssertEqualWithAccuracy(radius(t[143]), 102.0, accuracy: 0.1)
-		XCTAssertEqualWithAccuracy(radius(t[144]),  98.0, accuracy: 0.1)
+		XCTAssertEqualWithAccuracy(radius(t[184]), 99.5, accuracy: 0.1)
+		XCTAssertEqualWithAccuracy(radius(t[185]), 100.5, accuracy: 0.1)
 		
 		// End of ring starts tapering
-		XCTAssertEqualWithAccuracy(radius(t[271]), 101.0, accuracy: 0.1)
-		XCTAssertEqualWithAccuracy(radius(t[272]), 99.0, accuracy: 0.1)
+		XCTAssertEqualWithAccuracy(radius(t[540]), 99.8, accuracy: 0.1)
+		XCTAssertEqualWithAccuracy(radius(t[541]), 100.2, accuracy: 0.1)
 		
 		// End of ring comes to a point
-		XCTAssertEqualWithAccuracy(radius(t[286]), 100.0, accuracy: 0.1)
-		XCTAssertEqualWithAccuracy(radius(t[287]), 100.0, accuracy: 0.1)
+		XCTAssertEqualWithAccuracy(radius(t[572]), 100.0, accuracy: 0.1)
+		XCTAssertEqualWithAccuracy(radius(t[573]), 100.0, accuracy: 0.1)
 	}
 }
