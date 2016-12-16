@@ -15,6 +15,9 @@ extension CGPoint {
 	init(vertex: CirqueVertex) {
 		self.init(x: CGFloat(vertex.position.x), y: CGFloat(vertex.position.y))
 	}
+	init(point: Point) {
+		self.init(x: CGFloat(point.x), y: CGFloat(point.y))
+	}
 }
 
 // MARK: Shape renderer

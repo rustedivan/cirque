@@ -30,24 +30,28 @@ class CirqueViewController: UIViewController {
 		guard let touch = touches.first else { return }
 		errorLabel.text = ""
 		circleController = CircleController()
-		circleController.beginNewCircle(touch.location(in: view))
+		let p = touch.location(in: view)
+		circleController.beginNewCircle(Point(x: Double(p.x), y: Double(p.y)))
 	}
 	
 	override func touchesMoved(_ touches: Set<UITouch>, with event: UIEvent?) {
 		guard let touch = touches.first else { return }
 		if #available(iOS 9.0, *) {
 		    for extraTouch in event!.coalescedTouches(for: touch)! {
-    			circleController.addSegment(extraTouch.location(in: view))
+					let p = extraTouch.location(in: view)
+					circleController.addSegment(Point(x: Double(p.x), y: Double(p.y)))
     		}
-		} else {
-		    circleController.addSegment(touch.location(in: view))
 		}
+		
+		let p = touch.location(in: view)
+		circleController.addSegment(Point(x: Double(p.x), y: Double(p.y)))
 	}
 	
 	override func touchesEnded(_ touches: Set<UITouch>, with _: UIEvent?) {
 		guard let touch = touches.first else { return }
 		
-		circleController.endCircle(touch.location(in: view)) { (result: CircleResult) in
+		let p = touch.location(in: view)
+		circleController.endCircle(Point(x: Double(p.x), y: Double(p.y))) { (result: CircleResult) in
 			// Ignore if the circle isn't even a triangle
 			guard self.circleController.circle.segments.points.count >= 3 else { return }
 			
@@ -55,9 +59,9 @@ class CirqueViewController: UIViewController {
 				switch result {
 				case .accepted(let score, _, let fit, let errorArea):
 					self.circleController.errorArea = errorArea
-					self.showScore(Int(score * 100), at: fit.center)
+					self.showScore(Int(score * 100), at: CGPoint(point: fit.center))
 				case .rejected(let centroid):
-					self.rejectScore(at: centroid)
+					self.rejectScore(at: CGPoint(point: centroid))
 				}
 			})
 		}

@@ -35,9 +35,9 @@ class ScoreView: UIView {
 	
 	override func draw(_ rect: CGRect) {
 		let scoreImage = percentageAsImage(viewModel.scoreString, imageWidth: rect.width)
-		let center = CGPoint(x: rect.midX, y: rect.midY)
-		let centered = CGPoint(x: center.x - scoreImage.size.width / 2.0, y: center.y - scoreImage.size.height / 2.0)
-		let scoreRect = CGRect(origin: centered, size: scoreImage.size)
+		let center = Point(x: Double(rect.midX), y: Double(rect.midY))
+		let centered = Point(x: center.x - Double(scoreImage.size.width) / 2.0, y: center.y - Double(scoreImage.size.height) / 2.0)
+		let scoreRect = CGRect(origin: CGPoint(point: centered), size: scoreImage.size)
 		
 		scoreImage.draw(in: scoreRect)
 	}

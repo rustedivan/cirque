@@ -21,8 +21,8 @@ extension Trail : VertexSource {
 			let pC = segment.0
 			let angle = segment.1.0
 			let length = segment.1.1
-			let width = CGFloat(2.0) + log2(length)
-			let span = CGVector(dx: sin(angle) * width / 2.0, dy: -cos(angle) * width / 2.0)
+			let width = 2.0 + log2(length)
+			let span = Vector(dx: sin(angle) * width / 2.0, dy: -cos(angle) * width / 2.0)
 			
 			let pL = CirqueVertex(position: vector_float4(Float(pC.x + span.dx), Float(pC.y + span.dy), 0.0, 1.0))
 			let pR = CirqueVertex(position: vector_float4(Float(pC.x - span.dx), Float(pC.y - span.dy), 0.0, 1.0))
@@ -104,10 +104,10 @@ extension BestFitCircle : VertexSource {
 			let angle = segment.0
 			let width = segment.1
 			
-			let pIn =  CGPoint(x: cos(angle) * (fitRadius - (width / 2.0)),
-								 				 y: sin(angle) * (fitRadius - (width / 2.0)))
-			let pOut = CGPoint(x: cos(angle) * (fitRadius + (width / 2.0)),
-			                   y: sin(angle) * (fitRadius + (width / 2.0)))
+			let pIn =  Point(x: cos(angle) * (fitRadius - (width / 2.0)),
+								 			 y: sin(angle) * (fitRadius - (width / 2.0)))
+			let pOut = Point(x: cos(angle) * (fitRadius + (width / 2.0)),
+			                 y: sin(angle) * (fitRadius + (width / 2.0)))
 			
 			
 			let vL = CirqueVertex(position: vector_float4(Float(pIn.x + center.x),

@@ -21,8 +21,8 @@ class CircleBestFitTests: XCTestCase {
 	}
 	
 	func testGeneratePartialRing() {
-		func generateTestFitCircle(a0: CGFloat) -> ((Double) -> (BestFitCircle)) {
-			let around = CGPoint(x: 10.0, y: -20.0)
+		func generateTestFitCircle(a0: Double) -> ((Double) -> (BestFitCircle)) {
+			let around = Point(x: 10.0, y: -20.0)
 			
 			let taper = Taper(taperRatio: 0.1, clockwise: false)
 			
@@ -61,11 +61,11 @@ class CircleBestFitTests: XCTestCase {
 	
 	func testGenerateOffsetRing() {
 		func generateTestFitCircle(p: Double) -> ((Double) -> (BestFitCircle)) {
-			let around = CGPoint(x: 10.0, y: -20.0)
+			let around = Point(x: 10.0, y: -20.0)
 			let taper = Taper(taperRatio: 0.1, clockwise: false)
 			
 			return { (a0: Double) in
-				Circle.generateBestFitCircle(around: around, radius: 100.0, startAngle: CGFloat(a0), progress: p, taper: taper)
+				Circle.generateBestFitCircle(around: around, radius: 100.0, startAngle: a0, progress: p, taper: taper)
 			}
 		}
 		
@@ -95,11 +95,11 @@ class CircleBestFitTests: XCTestCase {
 	
 	func testGenerateTaperedRing() {
 		func generateTestFitCircle(a0: Double, taper: Double) -> ((Double) -> (BestFitCircle)) {
-			let around = CGPoint(x: 10.0, y: -20.0)
+			let around = Point(x: 10.0, y: -20.0)
 			let taper = Taper(taperRatio: taper, clockwise: false)
 			
 			return { (p: Double) in
-				Circle.generateBestFitCircle(around: around, radius: 100.0, startAngle: CGFloat(a0), progress: p, taper: taper)
+				Circle.generateBestFitCircle(around: around, radius: 100.0, startAngle: a0, progress: p, taper: taper)
 			}
 		}
 		
@@ -136,11 +136,11 @@ class CircleBestFitTests: XCTestCase {
 	
 	func testGenerateClockwiseRing() {
 		func generateTestFitCircle(a0: Double, taper: Double) -> ((Double) -> (BestFitCircle)) {
-			let around = CGPoint(x: 10.0, y: -20.0)
+			let around = Point(x: 10.0, y: -20.0)
 			let taper = Taper(taperRatio: 0.1, clockwise: true)
 			
 			return { (p: Double) in
-				Circle.generateBestFitCircle(around: around, radius: 100.0, startAngle: CGFloat(a0), progress: p, taper: taper)
+				Circle.generateBestFitCircle(around: around, radius: 100.0, startAngle: a0, progress: p, taper: taper)
 			}
 		}
 		
@@ -176,19 +176,19 @@ class CircleBestFitTests: XCTestCase {
 	}
 	
 	func testGenerateBestFitTriangles() {
-		let modelRadius: CGFloat = 100.0
-		let around = CGPoint(x: 10.0, y: -20.0)
+		let modelRadius = 100.0
+		let around = Point(x: 10.0, y: -20.0)
 		
 		let taper = Taper(taperRatio: 0.2, clockwise: false)
 		let f = Circle.generateBestFitCircle(around: around, radius: modelRadius, startAngle: 0.2, progress: 0.8, taper: taper)
 		let t = f.toVertices()
 		XCTAssertEqual(t.count, 289 * 2, "Should have generated 0.8 * 360 segments of two vertices each")
 		
-		func radius(_ v: CirqueVertex) -> CGFloat {
-			let p = CGPoint(x: CGFloat(v.position.x) - around.x,
-			                y: CGFloat(v.position.y) - around.y)
+		func radius(_ v: CirqueVertex) -> Double {
+			let p = Point(x: Double(v.position.x) - around.x,
+			              y: Double(v.position.y) - around.y)
 			let r = sqrt(p.x * p.x + p.y * p.y)
-			return CGFloat(r)
+			return r
 		}
 		
 		// Beginning of ring has full width

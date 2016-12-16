@@ -7,7 +7,6 @@
 //
 
 import Foundation
-import CoreGraphics.CGGeometry
 
 /* 
 	Insight: - for scoring, only radial displacement counts. Put that on an exponential curve and report it verbatim.
@@ -43,7 +42,7 @@ class TrailAnalyser: NSObject, NSCoding {
 		let rArray = aDecoder.decodeObject(forKey: "radii") as! [Double]
 		let aArray = aDecoder.decodeObject(forKey: "angles") as! [Double]
 		let pairs = Array(zip(rArray, aArray))
-		points = pairs.map{ Polar(r: CGFloat($0.0), a: CGFloat($0.1)) }
+		points = pairs.map{ Polar(r: $0.0, a: $0.1) }
 		pointBuckets = TrailAnalyser.binPointsByAngle(points, intoBuckets: analysisBuckets)
 		
 		super.init()
@@ -60,13 +59,13 @@ class TrailAnalyser: NSObject, NSCoding {
 	
 	class func binPointsByAngle(_ points: PolarArray, intoBuckets buckets: Int) -> [AngleBucket] {
 		var histogram = [AngleBucket](repeating: ([], 0.0), count: buckets)
-		let nBuckets = CGFloat(buckets)
+		let nBuckets = Double(buckets)
 		
 		for i in 0..<buckets {
-			histogram[i].angle = (CGFloat(2.0 * M_PI) / nBuckets) * CGFloat(i)
+			histogram[i].angle = (2.0 * M_PI / nBuckets) * Double(i)
 		}
 		
-		let bucketWidth = CGFloat(2.0 * M_PI) / nBuckets
+		let bucketWidth = 2.0 * M_PI / nBuckets
 		for p in points {
 			let i = Int(p.a / bucketWidth)
 			histogram[i].points.append(p)
@@ -100,7 +99,7 @@ extension TrailAnalyser {
 			let bucket = pointBuckets[i]
 			var bucketError = 0.0
 			for p in bucket.points {
-				let e = Double(p.r) - radius
+				let e = p.r - radius
 				bucketError += e * e
 			}
 			bucketErrors[i] = bucketError
@@ -126,7 +125,7 @@ extension TrailAnalyser {
 			around the circle. Report the largest absolute deviation from the mean.
 			Report the value and map its center to an angle.
 	*/
-	func radialDeviation() -> (peak: Double, angle: CGFloat) {
+	func radialDeviation() -> (peak: Double, angle: Double) {
 		let errorThreshold = 1.0
 		
 		if bucketErrors == nil {
@@ -147,7 +146,7 @@ extension TrailAnalyser {
 		let bucketRadii = largestBucket.points.map({$0.r})
 		var peakError = 0.0
 		for r in bucketRadii {
-			let e = Double(r) - radius
+			let e = r - radius
 			if abs(e) > abs(peakError) {
 				peakError = e
 			}
@@ -166,7 +165,7 @@ extension TrailAnalyser {
 		let n = points.count
 		let windowSize = n / 20
 		let calcRMS = { (points: ArraySlice<Polar>) -> Double in
-			sqrt(points.reduce(0.0) {$0 + Double($1.r * $1.r)} / Double(n))
+			sqrt(points.reduce(0.0) { $0 + ($1.r * $1.r) } / Double(n))
 		}
 		
 		let startPoints = points[0 ..< windowSize]
@@ -180,7 +179,7 @@ extension TrailAnalyser {
 	}
 	
 	func deviationsFromFit() -> Array<Double> {
-		return points.map {Double($0.r) - self.radius}
+		return points.map { $0.r - self.radius }
 	}
 }
 
@@ -189,12 +188,13 @@ extension TrailAnalyser {
 		let errorThreshold = 10.0
 		
 		let startPolar = points.first!
-		let startPoint = CGPoint(x: cos(startPolar.a) * startPolar.r, y: sin(startPolar.a) * startPolar.r)
+		let startPoint = Point(x: cos(startPolar.a) * startPolar.r, y: sin(startPolar.a) * startPolar.r)
 		let endPolar = points.last!
-		let endPoint = CGPoint(x: cos(endPolar.a) * endPolar.r, y: sin(endPolar.a) * endPolar.r)
+		let endPoint = Point(x: cos(endPolar.a) * endPolar.r, y: sin(endPolar.a) * endPolar.r)
 		
-		let capsSeparationVector = CGVector(dx: endPoint.x - startPoint.x, dy: endPoint.y - startPoint.y)
-		let separation = Double(sqrt(capsSeparationVector.dx * capsSeparationVector.dx + capsSeparationVector.dy * capsSeparationVector.dy))
+		let capsSeparationVector = Vector(dx: endPoint.x - startPoint.x, dy: endPoint.y - startPoint.y)
+		let separation = sqrt(capsSeparationVector.dx * capsSeparationVector.dx +
+													capsSeparationVector.dy * capsSeparationVector.dy)
 		return (separation > errorThreshold) ? separation : 0.0
 	}
 }
@@ -230,10 +230,10 @@ extension TrailAnalyser {
 			fell into each. Find the bucket that deviates the most from the
 			mean. Return its relative error and direction.
 	*/
-	func strokeCongestion() -> (peak: Double, angle: CGFloat) {
+	func strokeCongestion() -> (peak: Double, angle: Double) {
 		let n = pointBuckets.count
-		let bucketSizes = pointBuckets.map{$0.points.count}
-		let avgBucketSize = bucketSizes.reduce(0.0) {$0 + Double($1)} / Double(n)
+		let bucketSizes = pointBuckets.map{ $0.points.count }
+		let avgBucketSize = bucketSizes.reduce(0.0) { $0 + Double($1) } / Double(n)
 
 		// Find largest/smallest value among the averages
 		var sparsestValue = -1
@@ -258,11 +258,11 @@ extension TrailAnalyser {
 	func angleDeltas(_ points: PolarArray) -> Array<Double> {
 		var deltaA = Array<Double>()
 		for i in 0 ..< points.count - 1 {
-			let prev = Double(points[i].a)
-			let next = Double(points[i + 1].a)
+			let prev = points[i].a
+			let next = points[i + 1].a
 			var d = next - prev
-			if d > M_PI {d -= 2.0 * M_PI}
-			if d < -M_PI {d += 2.0 * M_PI}
+			if d > M_PI { d -= 2.0 * M_PI }
+			if d < -M_PI { d += 2.0 * M_PI }
 			deltaA.append(d)
 		}
 		return deltaA

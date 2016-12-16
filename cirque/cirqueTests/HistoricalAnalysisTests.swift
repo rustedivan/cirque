@@ -58,7 +58,7 @@ class HistoricalAnalysisTests: XCTestCase {
 		let t = Trail(tuples: points)
 		let fit = CircleFitter.fitCenterAndRadius(t.points)
 		let polar = polarize(t.points, around: fit.center)
-		return TrailAnalyser(points: polar, fitRadius: Double(fit.radius))
+		return TrailAnalyser(points: polar, fitRadius: fit.radius)
 	}
 	
 	func testBuildsTrailHistory() {

@@ -13,18 +13,18 @@ import CoreGraphics.CGGeometry
 @objc
 class Trail: NSObject {
 	var points = PointArray()
-	var angles: Array<CGFloat> = Array()
-	var distances: Array<CGFloat> = Array()
+	var angles: [Double] = []
+	var distances: [Double] = []
 	
-	convenience init(tuples: Array<(Double, Double)>) {
+	convenience init(tuples: [(Double, Double)]) {
 		self.init()
 		for t in tuples {
-			addPoint(CGPoint(x: t.0, y: t.1))
+			addPoint(Point(x: t.0, y: t.1))
 		}
 	}
 	
-	func addPoint(_ p: CGPoint) {
-		guard points.last != p else { return }
+	func addPoint(_ p: Point) {
+		guard points.last == nil || points.last! != p else { return }
 		
 		points.append(p)
 		updateAngles()
@@ -32,7 +32,7 @@ class Trail: NSObject {
 	}
 	
 	fileprivate func updateAngles() {
-		func angleBetween(_ p1: CGPoint, p2: CGPoint) -> CGFloat {
+		func angleBetween(_ p1: Point, p2: Point) -> Double {
 			return atan2(p2.y - p1.y, p2.x - p1.x)
 		}
 		
@@ -55,7 +55,7 @@ class Trail: NSObject {
 		if points.count < 2 {return}
 		let p1 = points.last!
 		let p2 = points[points.count-2]
-		let dP = CGVector(dx: p1.x - p2.x, dy: p1.y - p2.y)
+		let dP = Vector(dx: p1.x - p2.x, dy: p1.y - p2.y)
 		let d = sqrt(dP.dx * dP.dx + dP.dy * dP.dy)
 		distances.append(d)
 		// The first and second points have the same thickness

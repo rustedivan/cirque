@@ -9,34 +9,39 @@
 import Foundation
 import CoreGraphics.CGGeometry
 
-typealias Point = CGPoint
-typealias PointArray = Array<Point>
-typealias Polar = (r: CGFloat, a: CGFloat)
-typealias PolarArray = Array<Polar>
-typealias AngleBucket = (points: PolarArray, angle: CGFloat)
+typealias Point = (x: Double, y: Double)
+typealias Vector = (dx: Double, dy: Double)
+typealias PointArray = [Point]
+typealias Polar = (r: Double, a: Double)
+typealias PolarArray = [Polar]
+typealias AngleBucket = (points: PolarArray, angle: Double)
+
+let zeroPoint = Point(x: 0.0, y: 0.0)
 
 @objc
 open class Circle: NSObject {
-	var segmentFilterDistance: CGFloat {get {return 2.0}}
+	var segmentFilterDistance: Double {get {return 2.0}}
 	var segments = Trail()
 	
 	func begin() {
 	}
 	
-	func addSegment(_ p: CGPoint) {
+	func addSegment(_ p: Point) {
 		segments.addPoint(p)
 	}
 	
 	func end() {
 	}
 	
-	func distanceFromEnd(_ point: CGPoint) -> CGFloat {
-		let p = CGVector(dx: point.x - segments.points.last!.x, dy: point.y - segments.points.last!.y)
+	func distanceFromEnd(_ point: Point) -> Double {
+		guard let last = segments.points.last else { return 0.0 }
+		let p = Vector(dx: point.x - last.x,
+									 dy: point.y - last.y)
 		return sqrt(p.dx * p.dx + p.dy * p.dy)
 	}
 }
 
-func polarize(_ points: PointArray, around c: CGPoint) -> PolarArray {
+func polarize(_ points: PointArray, around c: Point) -> PolarArray {
 	var polar: PolarArray = []
 	
 	for i in 0 ..< points.count {
@@ -44,7 +49,7 @@ func polarize(_ points: PointArray, around c: CGPoint) -> PolarArray {
 		p.x -= c.x
 		p.y -= c.y
 		
-		let a = CGFloat(atan2f(Float(p.y), Float(p.x)))
+		let a = atan2(p.y, p.x)
 		let r = sqrt(p.x * p.x + p.y * p.y)
 		
 		polar.append((r: r, a: a))
@@ -52,28 +57,28 @@ func polarize(_ points: PointArray, around c: CGPoint) -> PolarArray {
 	
 	// Normalize angles
 	for i in 0 ..< polar.count {
-		if polar[i].a < 0.0 {polar[i].a += CGFloat(M_PI * 2.0)}
-		if polar[i].a > CGFloat(2.0 * M_PI) {polar[i].a -= CGFloat(M_PI * 2.0)}
+		if polar[i].a < 0.0 { polar[i].a += M_PI * 2.0 }
+		if polar[i].a > 2.0 * M_PI { polar[i].a -= M_PI * 2.0 }
 	}
 	
 	return polar
 }
 
 struct ErrorArea {
-	typealias ErrorBar = (a: CGFloat, r: CGFloat, isCap: Bool)
+	typealias ErrorBar = (a: Double, r: Double, isCap: Bool)
 	var errorBars: [ErrorBar]
-	var fitRadius: CGFloat
-	var center: CGPoint
+	var fitRadius: Double
+	var center: Point
 }
 
 struct BestFitCircle {
-	var lineWidths: [(a: CGFloat, w: CGFloat)]
-	var fitRadius: CGFloat
-	var center: CGPoint
+	var lineWidths: [(a: Double, w: Double)]
+	var fitRadius: Double
+	var center: Point
 }
 
 extension Circle {
-	static func generateErrorArea(_ points: [Polar], around: CGPoint, radius: CGFloat, treshold: CGFloat) -> ErrorArea {
+	static func generateErrorArea(_ points: [Polar], around: Point, radius: Double, treshold: Double) -> ErrorArea {
 		var errorArea = ErrorArea(errorBars: [], fitRadius: radius, center: around)
 		
 		var insideErrorArea = false
@@ -98,18 +103,18 @@ extension Circle {
 		return errorArea
 	}
 	
-	static func generateBestFitCircle(around: CGPoint, radius: CGFloat, startAngle: CGFloat, progress: Double, taper: Taper) -> BestFitCircle {
+	static func generateBestFitCircle(around: Point, radius: Double, startAngle: Double, progress: Double, taper: Taper) -> BestFitCircle {
 		var bestFitCircle = BestFitCircle(lineWidths: [], fitRadius: radius, center: around)
 		let fidelity = 1.0/360.0
 		let direction = taper.clockwise ? -1.0 : 1.0
-		let endAngle = startAngle + CGFloat(progress * 2.0 * M_PI * direction)
+		let endAngle = startAngle + progress * 2.0 * M_PI * direction
 		let step = 2.0 * M_PI * fidelity * direction
 		
-		let arcs = stride(from: Double(startAngle), through: Double(endAngle), by: step)
+		let arcs = stride(from: startAngle, through: endAngle, by: step)
 		let widths = taper.taperWidths(angles: arcs)
 		
 		bestFitCircle.lineWidths = zip(arcs, widths).map {
-			(a: CGFloat($0), w: CGFloat($1))	// TODO: Audit how many casts we do
+			(a: $0, w: $1)
 		}
 			
 		return bestFitCircle

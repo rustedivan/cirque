@@ -17,28 +17,27 @@ enum CircleResult {
 class CircleController: NSObject {
 	var circle: Circle = Circle()
 	var bestFit: CircleFit?
-	var errorArea: ErrorArea = ErrorArea(errorBars: [], fitRadius: 0.0, center: .zero)
+	var errorArea: ErrorArea = ErrorArea(errorBars: [], fitRadius: 0.0, center: zeroPoint)
 
 	var analysisTimestamp = Date()
 	var analysisRunning = false
 	let analysisQueue = DispatchQueue(label: "se.rusted.cirque.analysis", attributes: [])
 		
-	func beginNewCircle(_ p: CGPoint) {
+	func beginNewCircle(_ p: Point) {
 		circle.begin()
 		circle.addSegment(p)
 	}
 	
-	func addSegment(_ p: CGPoint) {
+	func addSegment(_ p: Point) {
 		let distanceFromLastSegment = circle.distanceFromEnd(p)
 		if distanceFromLastSegment < circle.segmentFilterDistance {
 			return
 		}
 		
 		circle.addSegment(p)
-		
 	}
 
-	func endCircle(_ p: CGPoint, after: @escaping (CircleResult) -> ()) {
+	func endCircle(_ p: Point, after: @escaping (CircleResult) -> ()) {
 		circle.addSegment(p)
 		circle.end()
 		
@@ -50,7 +49,7 @@ class CircleController: NSObject {
 			
 			let polar = polarize(self.circle.segments.points, around: fit.center)
 			
-			let analyser = TrailAnalyser(points: polar, fitRadius: Double(fit.radius))
+			let analyser = TrailAnalyser(points: polar, fitRadius: fit.radius)
 			
 			let isCircle = analyser.isCircle()
 			var trend = 0.0

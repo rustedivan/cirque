@@ -21,9 +21,9 @@ class CircleErrorAreaTests: XCTestCase {
     }
     
     func testGenerateErrorArea() {
-			let modelRadius: CGFloat = 100.0
-			let errorTreshold: CGFloat = 4.0
-			let around = CGPoint(x: 10.0, y: -20.0)
+			let modelRadius = 100.0
+			let errorTreshold = 4.0
+			let around = Point(x: 10.0, y: -20.0)
 			var imperfectPoints: [Polar] = []
 			imperfectPoints.append(Polar(a:  0.0, r: 100.0))	// In range
 			imperfectPoints.append(Polar(a:  0.1, r: 101.0))	// In range
@@ -42,7 +42,8 @@ class CircleErrorAreaTests: XCTestCase {
 			                                 radius: modelRadius,
 			                                 treshold: errorTreshold)
 			
-			XCTAssertEqual(e.center, around)
+			XCTAssertEqual(e.center.x, around.x)
+			XCTAssertEqual(e.center.y, around.y)
 			XCTAssertEqual(e.fitRadius, modelRadius)
 			
 			XCTAssertEqual(e.errorBars.count, 9)
@@ -76,9 +77,9 @@ class CircleErrorAreaTests: XCTestCase {
 	}
 	
 	func testGenerateErrorTriangles() {
-		let modelRadius: CGFloat = 100.0
-		let errorTreshold: CGFloat = 4.0
-		let around = CGPoint(x: 10.0, y: -20.0)
+		let modelRadius = 100.0
+		let errorTreshold = 4.0
+		let around = Point(x: 10.0, y: -20.0)
 		var imperfectPoints: [Polar] = []
 		imperfectPoints.append(Polar(a:  0.0, r: 100.0))	// In range
 		imperfectPoints.append(Polar(a:  0.1, r: 101.0))	// In range
@@ -94,11 +95,11 @@ class CircleErrorAreaTests: XCTestCase {
 		let t = e.toVertices()
 		XCTAssertEqual(t.count, 6 * 3, "Should have generated six triangles")
 		
-		func radius(_ v: CirqueVertex) -> CGFloat {
-			let p = CGPoint(x: CGFloat(v.position.x) - around.x,
-			                y: CGFloat(v.position.y) - around.y)
+		func radius(_ v: CirqueVertex) -> Double {
+			let p = Point(x: Double(v.position.x) - around.x,
+										y: Double(v.position.y) - around.y)
 			let r = sqrt(p.x * p.x + p.y * p.y)
-			return CGFloat(r)
+			return r
 		}
 		
 		// Start cap triangle
