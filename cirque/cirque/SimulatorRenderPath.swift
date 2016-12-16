@@ -35,6 +35,12 @@ struct SimulatorRenderPath : RenderPath {
 	}
 	
 	func runPasses(renderAllPasses: () -> ()) {
+		// Clear all shape paths
+		for renderer in activeRenderers.values {
+			let shapeRenderer = renderer as! ShapeRenderer
+			shapeRenderer.shapeLayer.path = nil
+		}
+		
 		// Run all rendering passes
 		renderAllPasses()
 	}

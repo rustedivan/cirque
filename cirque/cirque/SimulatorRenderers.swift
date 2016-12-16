@@ -22,9 +22,7 @@ extension CGPoint {
 
 // MARK: Shape renderer
 protocol ShapeRenderer : Renderer {
-}
-	
-extension ShapeRenderer {
+	var shapeLayer: CAShapeLayer { get }
 }
 
 // MARK: Specific shape renderers
