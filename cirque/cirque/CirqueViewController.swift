@@ -9,11 +9,16 @@
 import UIKit
 
 class CirqueViewController: UIViewController {
+
 	var renderingLink: CADisplayLink!
 	var circleController: CircleController!
+	@IBOutlet var scoreView: ScoreView!
 	
-	@IBOutlet var errorLabel: UILabel!
-	var scoreView: ScoreView?
+	var renderState: RenderWorld = .idle {
+		willSet {
+			transitionRenderState(from: renderState, to: newValue)
+		}
+	}
 	
 	var cirqueView: CirqueView {
 		return view as! CirqueView
@@ -28,10 +33,11 @@ class CirqueViewController: UIViewController {
 
 	override func touchesBegan(_ touches: Set<UITouch>, with _: UIEvent?) {
 		guard let touch = touches.first else { return }
-		errorLabel.text = ""
 		circleController = CircleController()
 		let p = touch.location(in: view)
 		circleController.beginNewCircle(Point(x: Double(p.x), y: Double(p.y)))
+		
+		renderState = .drawing(circle: circleController.circle)
 	}
 	
 	override func touchesMoved(_ touches: Set<UITouch>, with event: UIEvent?) {
@@ -45,6 +51,8 @@ class CirqueViewController: UIViewController {
 		
 		let p = touch.location(in: view)
 		circleController.addSegment(Point(x: Double(p.x), y: Double(p.y)))
+		
+		renderState = .drawing(circle: circleController.circle)
 	}
 	
 	override func touchesEnded(_ touches: Set<UITouch>, with _: UIEvent?) {
@@ -58,33 +66,62 @@ class CirqueViewController: UIViewController {
 			DispatchQueue.main.async(execute: { 
 				switch result {
 				case .accepted(let score, _, let fit, let errorArea):
-					self.circleController.errorArea = errorArea
-					self.showScore(Int(score * 100), at: CGPoint(point: fit.center))
+					self.renderState = .analysis(circle: self.circleController.circle,
+					                             fit: fit,
+					                             errorArea: errorArea)
+//					self.showScore(Int(score * 100), at: CGPoint(point: fit.center))
 				case .rejected(let centroid):
-					self.rejectScore(at: CGPoint(point: centroid))
+					self.renderState = .rejection(circle: self.circleController.circle,
+					                              center: centroid)
+//					self.rejectScore(at: CGPoint(point: centroid))
 				}
 			})
 		}
 	}
 	
 	func render() {
-		if scoreView != nil {
-			scoreView!.update()
-		}
 		
-		cirqueView.render(circle: circleController.circle,
-		                  errorArea: circleController.errorArea)
+		switch renderState {
+		case .idle:
+			cirqueView.backgroundColor = .gray
+			cirqueView.render(renderState: renderState)
+		case .drawing:
+			cirqueView.backgroundColor = .white
+			cirqueView.render(renderState: renderState)
+		case .analysis:
+			cirqueView.backgroundColor = .cyan
+			cirqueView.render(renderState: renderState)
+		case .rejection:
+			cirqueView.backgroundColor = .red
+			
+			cirqueView.render(renderState: renderState)
+		case .scoring:
+			scoreView.update()
+			cirqueView.backgroundColor = .green
+			cirqueView.render(renderState: renderState)
+		}
 	}
 	
+	func transitionRenderState(from: RenderWorld, to: RenderWorld) {
+		switch (from: from, to: to) {
+		case (_, .scoring):
+			print("Show scoring")
+		case (.scoring, _):
+			print("Hide scoring")
+		default: break
+		}
+	}
+	
+	// FIXME: keep score view onscreen at all times, just make it show nothing
 	func showScore(_ score: Int, at: CGPoint) {
-		scoreView = ScoreView(frame: CGRect(x: at.x - 50.0, y: at.y - 50.0, width: 100.0, height: 100.0), score: score)
-		scoreView!.update()
-		view.addSubview(scoreView!)
+		scoreView.frame = CGRect(x: at.x - 50.0, y: at.y - 50.0, width: 100.0, height: 100.0)
+		scoreView.targetScore = score
+		scoreView.update()
 	}
 	
 	func rejectScore(at: CGPoint) {
-		scoreView = ScoreView(frame: CGRect(x: at.x - 50.0, y: at.y - 50.0, width: 100.0, height: 100.0), score: 0)
-		scoreView!.update()
-		view.addSubview(scoreView!)
+		scoreView.frame = CGRect(x: at.x - 50.0, y: at.y - 50.0, width: 100.0, height: 100.0)
+		scoreView.targetScore = 0
+		scoreView.update()
 	}
 }

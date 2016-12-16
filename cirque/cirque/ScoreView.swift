@@ -10,12 +10,17 @@ import UIKit
 
 class ScoreView: UIView {
 	struct ViewModel {
+		var displaying: Bool
 		var scoreString: String
 	}
 	
 	var countUpStartTime: Date!
-	var viewModel = ViewModel(scoreString: "")
-	var targetScore: Int = 0
+	var viewModel = ViewModel(displaying: false, scoreString: "")
+	var targetScore: Int = 0 {
+		didSet {
+			startCountup()
+		}
+	}
 	
 	required init?(coder aDecoder: NSCoder) {
 		super.init(coder: aDecoder)
@@ -27,8 +32,6 @@ class ScoreView: UIView {
 	
 	convenience init(frame: CGRect, score: Int) {
 		self.init(frame: frame)
-		self.countUpStartTime = Date()
-		self.targetScore = score
 		self.backgroundColor = UIColor.clear
 		self.isOpaque = false
 	}
@@ -50,11 +53,15 @@ class ScoreView: UIView {
 		}
 		
 		if (Date().timeIntervalSince(countUpStartTime) > 1.0) {
-			removeFromSuperview()
+			viewModel.displaying = false
 		}
 		else {
 			setNeedsDisplay()
 		}
+	}
+	
+	func startCountup() {
+		self.countUpStartTime = Date()
 	}
 	
 	func percentageAsImage(_ percentageString: String, imageWidth: CGFloat) -> UIImage {
@@ -84,6 +91,6 @@ class ScoreView: UIView {
 		
 		string.draw(at: CGPoint.zero, withAttributes: fontAttributes)
 		
-		return UIGraphicsGetImageFromCurrentImageContext()!
+		return UIGraphicsGetImageFromCurrentImageContext() ?? UIImage()
 	}
 }

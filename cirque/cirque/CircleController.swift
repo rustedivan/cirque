@@ -11,13 +11,11 @@ import CoreGraphics.CGGeometry
 
 enum CircleResult {
 	case rejected (centroid: Point)
-	case accepted (score: Double, trend: Double, fit: CircleFit, errorArea: ErrorArea)
+	case accepted (score: Double, trend: Double, fit: BestFitCircle, errorArea: ErrorArea)
 }
 
 class CircleController: NSObject {
 	var circle: Circle = Circle()
-	var bestFit: CircleFit?
-	var errorArea: ErrorArea = ErrorArea(errorBars: [], fitRadius: 0.0, center: zeroPoint)
 
 	var analysisTimestamp = Date()
 	var analysisRunning = false
@@ -44,7 +42,6 @@ class CircleController: NSObject {
 //		circle.dumpAsSwiftArray()
 		
 		fitCircle(circle.segments) { (fit: CircleFit) in
-			self.bestFit = fit
 			self.analysisTimestamp = Date()
 			
 			let polar = polarize(self.circle.segments.points, around: fit.center)
@@ -61,8 +58,11 @@ class CircleController: NSObject {
 				historyWriter.dumpScoreHistory()
 				
 				let score = analyser.circularityScore()
-				self.errorArea = Circle.generateErrorArea(polar, around: fit.center, radius: fit.radius, treshold: 2.0)
-				after(.accepted(score: score, trend: trend, fit: fit, errorArea: self.errorArea))
+				let errorArea = Circle.generateErrorArea(polar, around: fit.center, radius: fit.radius, treshold: 2.0)
+				let t = Taper(taperRatio: 0.2, clockwise: false)
+				let bestFitCircle = Circle.generateBestFitCircle(around: fit.center, radius: fit.radius, startAngle: 0.0, progress: 1.0, taper: t)
+				
+				after(.accepted(score: score, trend: trend, fit: bestFitCircle, errorArea: errorArea))
 			}
 			else {
 				after(.rejected(centroid: fit.center))

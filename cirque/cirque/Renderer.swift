@@ -35,6 +35,14 @@ struct CirqueVertex {
 	let position: vector_float4
 }
 
+enum RenderWorld {
+	case idle
+	case drawing(circle: Circle)
+	case rejection(circle: Circle, center: Point)
+	case analysis(circle: Circle, fit: BestFitCircle, errorArea: ErrorArea)
+	case scoring(circle: Circle, score: Double)
+}
+
 enum RenderPass: Hashable {
 	typealias Identifier = String
 	case trail

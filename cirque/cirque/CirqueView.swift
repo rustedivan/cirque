@@ -17,15 +17,35 @@ class CirqueView: UIView {
 		super.init(coder: aDecoder)
 	}
 	
-	func render(circle: Circle, errorArea: ErrorArea) {
+	func render(renderState: RenderWorld) {
 		renderPath.runPasses { (commandEncoder) in
-			renderPath.renderPass(vertices: errorArea,
-														inRenderPass: .error(progress: 1.0),
-														intoCommandEncoder: commandEncoder)
-		
-			renderPath.renderPass(vertices: circle.segments,
-			                      inRenderPass: .trail,
-			                      intoCommandEncoder: commandEncoder)
+			
+			switch renderState {
+			case .idle:
+				break
+			case .drawing(let circle):
+				renderPath.renderPass(vertices: circle.segments,
+				                      inRenderPass: .trail,
+				                      intoCommandEncoder: commandEncoder)
+			case .analysis(let circle, let fit, let errorArea):
+				renderPath.renderPass(vertices: errorArea,
+															inRenderPass: .error(progress: 1.0),
+															intoCommandEncoder: commandEncoder)
+				
+				renderPath.renderPass(vertices: circle.segments,
+				                      inRenderPass: .trail,
+				                      intoCommandEncoder: commandEncoder)
+			default: break
+			}
+			
+			
+//			renderPath.renderPass(vertices: errorArea,
+//														inRenderPass: .error(progress: 1.0),
+//														intoCommandEncoder: commandEncoder)
+//		
+//			renderPath.renderPass(vertices: circle.segments,
+//			                      inRenderPass: .trail,
+//			                      intoCommandEncoder: commandEncoder)
 		}
 	}
 	
