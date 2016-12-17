@@ -41,7 +41,7 @@ class CircleModelTests: XCTestCase {
 	}
 	
 	func testCircleShouldFilterShortSegments() {
-		let c = Circle()
+		var c = Circle()
 		c.addSegment(zeroPoint)
 		XCTAssertEqual(c.distanceFromEnd(Point(x: 10.0, y: 0.0)), 10.0, "Distance incorrect")
 		XCTAssertEqual(c.distanceFromEnd(Point(x: 20.0, y: 0.0)), 20.0, "Distance incorrect")

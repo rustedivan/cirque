@@ -29,7 +29,6 @@ class TrailAnalyser: NSObject, NSCoding {
 	var angleDeltas: Array<Double>?
 	var bucketErrors: Array<Double>?
 	
-	
 	init(points polarPoints: PolarArray, fitRadius inRadius: Double) {
 		points = polarPoints
 		radius = inRadius

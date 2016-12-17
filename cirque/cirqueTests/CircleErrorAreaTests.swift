@@ -37,11 +37,11 @@ class CircleErrorAreaTests: XCTestCase {
 			imperfectPoints.append(Polar(a:  0.9, r: 100.0))	// In range
 			imperfectPoints.append(Polar(a:  0.10, r: 100.0))	// In range
 			
-			let e = Circle.generateErrorArea(imperfectPoints,
-			                                 around: around,
-			                                 radius: modelRadius,
-			                                 treshold: errorTreshold)
-			
+			let e = ErrorArea(imperfectPoints,
+												around: around,
+												radius: modelRadius,
+												treshold: errorTreshold)
+
 			XCTAssertEqual(e.center.x, around.x)
 			XCTAssertEqual(e.center.y, around.y)
 			XCTAssertEqual(e.fitRadius, modelRadius)
@@ -88,10 +88,10 @@ class CircleErrorAreaTests: XCTestCase {
 		imperfectPoints.append(Polar(a:  0.4, r:  90.0))	// Negative overshoot
 		imperfectPoints.append(Polar(a:  0.5, r: 102.0))	// In range
 		
-		let e = Circle.generateErrorArea(imperfectPoints,
-		                                 around: around,
-		                                 radius: modelRadius,
-		                                 treshold: errorTreshold)
+		let e = ErrorArea(imperfectPoints,
+										  around: around,
+										  radius: modelRadius,
+										  treshold: errorTreshold)
 		let t = e.toVertices()
 		XCTAssertEqual(t.count, 6 * 3, "Should have generated six triangles")
 		

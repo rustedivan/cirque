@@ -22,14 +22,14 @@ class TrailTests: XCTestCase {
 	}
 
 	func testTrailWithOutSegmentHasNoAngles() {
-		let t = Trail()
+		var t = Trail()
 		XCTAssertEqual(t.angles.count, 0, "Degenerate trail should have no angles")
 		t.addPoint(Point(x: 0.0, y: 0.0))
 		XCTAssertEqual(t.angles.count, 0, "Degenerate trail should have no angles")
 	}
 
 	func testTrailGeneratesAnglesForAllSegments() {
-		let t = Trail()
+		var t = Trail()
 		
 		t.addPoint(Point(x: 0.0, y: 0.0))
 		t.addPoint(Point(x: 100.0, y: 0.0))
@@ -40,7 +40,7 @@ class TrailTests: XCTestCase {
 	}
 
 	func testTrailShouldGenerateIntermediateAngles() {
-		let t = Trail()
+		var t = Trail()
 		
 		t.addPoint(Point(x: 0.0, y: 0.0))
 		t.addPoint(Point(x: 100.0, y: 0.0))
@@ -50,7 +50,7 @@ class TrailTests: XCTestCase {
 	}
 	
 	func testTrailShouldHaveAngledEndSegments() {
-		let t = Trail()
+		var t = Trail()
 		
 		t.addPoint(Point(x: 0.0, y: 0.0))
 		t.addPoint(Point(x: 100.0, y: 0.0))
@@ -61,7 +61,7 @@ class TrailTests: XCTestCase {
 	}
 	
 	func testTrailShouldRecalculateTrailEndWhenExtending() {
-		let t = Trail()
+		var t = Trail()
 		
 		t.addPoint(Point(x: 0.0, y: 0.0))
 		t.addPoint(Point(x: 10.0, y: 0.0))
@@ -77,7 +77,7 @@ class TrailTests: XCTestCase {
 	}
 	
 	func testTrailGeneratesDistancesBetweenSegments() {
-		let t = Trail()
+		var t = Trail()
 		
 		t.addPoint(Point(x: 0.0, y: 0.0))
 		t.addPoint(Point(x: 100.0, y: 0.0))

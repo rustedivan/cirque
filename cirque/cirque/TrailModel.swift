@@ -8,59 +8,57 @@
 
 import Foundation
 import Darwin
-import CoreGraphics.CGGeometry
 
-@objc
-class Trail: NSObject {
+struct Trail {
 	var points = PointArray()
-	var angles: [Double] = []
-	var distances: [Double] = []
-	
-	convenience init(tuples: [(Double, Double)]) {
-		self.init()
-		for t in tuples {
-			addPoint(Point(x: t.0, y: t.1))
-		}
+	var angles: [Double] {
+		return anglesBetweenPoints()
+	}
+	var distances: [Double] {
+		return distancesBetweenPoints()
 	}
 	
-	func addPoint(_ p: Point) {
+	mutating func addPoint(_ p: Point) {
 		guard points.last == nil || points.last! != p else { return }
-		
 		points.append(p)
-		updateAngles()
-		updateDistances()
 	}
 	
-	fileprivate func updateAngles() {
-		func angleBetween(_ p1: Point, p2: Point) -> Double {
+	fileprivate func anglesBetweenPoints() -> [Double] {
+		guard points.count > 1 else { return [] }
+		
+		func angleBetween(_ p1: Point, _ p2: Point) -> Double {
 			return atan2(p2.y - p1.y, p2.x - p1.x)
 		}
 		
-		let n = points.count
-		if n < 2 { return }
-		if (angles.count == 0) {angles.append(0.0)}
-
-		// Add the new point
-		angles.append(angleBetween(points[n - 2], p2: points[n - 1]))
-		
-		// Re-align the previous point
-		if n == 2 {
-			angles[n - 2] = angleBetween(points[n - 2], p2: points[n - 1])
-		} else {
-			angles[n - 2] = angleBetween(points[n - 3], p2: points[n - 1])
+		let segmentAngles = points.indices.map { i -> Double in
+			if i == 0 {
+				return angleBetween(points[0], points[1])
+			} else if i == points.count - 1 {
+				return angleBetween(points[i - 1], points[i])
+			} else {
+				return angleBetween(points[i - 1], points[i + 1])
+			}
 		}
+		
+		return segmentAngles
 	}
 	
-	fileprivate func updateDistances() {
-		if points.count < 2 {return}
-		let p1 = points.last!
-		let p2 = points[points.count-2]
-		let dP = Vector(dx: p1.x - p2.x, dy: p1.y - p2.y)
-		let d = sqrt(dP.dx * dP.dx + dP.dy * dP.dy)
-		distances.append(d)
-		// The first and second points have the same thickness
-		if points.count == 2 {
-			distances.append(d)
+	fileprivate func distancesBetweenPoints() -> [Double] {
+		guard points.count > 1 else { return [] }
+		
+		func distanceBetween(_ p1: Point, _ p2: Point) -> Double {
+			let dP = Vector(dx: p1.x - p2.x, dy: p1.y - p2.y)
+			return sqrt(dP.dx * dP.dx + dP.dy * dP.dy)
 		}
-}	
+		
+		let segmentLengths = points.indices.map { i -> Double in
+			if i == 0 {
+				return distanceBetween(points[0], points[1])
+			} else {
+				return distanceBetween(points[i - 1], points[i])
+			}
+		}
+		
+		return segmentLengths
+	}
 }

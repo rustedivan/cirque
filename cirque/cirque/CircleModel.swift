@@ -18,15 +18,14 @@ typealias AngleBucket = (points: PolarArray, angle: Double)
 
 let zeroPoint = Point(x: 0.0, y: 0.0)
 
-@objc
-open class Circle: NSObject {
-	var segmentFilterDistance: Double {get {return 2.0}}
+struct Circle {
+	let segmentFilterDistance = 2.0
 	var segments = Trail()
 	
 	func begin() {
 	}
 	
-	func addSegment(_ p: Point) {
+	mutating func addSegment(_ p: Point) {
 		segments.addPoint(p)
 	}
 	
@@ -38,86 +37,6 @@ open class Circle: NSObject {
 		let p = Vector(dx: point.x - last.x,
 									 dy: point.y - last.y)
 		return sqrt(p.dx * p.dx + p.dy * p.dy)
-	}
-}
-
-func polarize(_ points: PointArray, around c: Point) -> PolarArray {
-	var polar: PolarArray = []
-	
-	for i in 0 ..< points.count {
-		var p = points[i]
-		p.x -= c.x
-		p.y -= c.y
-		
-		let a = atan2(p.y, p.x)
-		let r = sqrt(p.x * p.x + p.y * p.y)
-		
-		polar.append((r: r, a: a))
-	}
-	
-	// Normalize angles
-	for i in 0 ..< polar.count {
-		if polar[i].a < 0.0 { polar[i].a += M_PI * 2.0 }
-		if polar[i].a > 2.0 * M_PI { polar[i].a -= M_PI * 2.0 }
-	}
-	
-	return polar
-}
-
-struct ErrorArea {
-	typealias ErrorBar = (a: Double, r: Double, isCap: Bool)
-	var errorBars: [ErrorBar]
-	var fitRadius: Double
-	var center: Point
-}
-
-struct BestFitCircle {
-	var lineWidths: [(a: Double, w: Double)]
-	var fitRadius: Double
-	var center: Point
-}
-
-extension Circle {
-	static func generateErrorArea(_ points: [Polar], around: Point, radius: Double, treshold: Double) -> ErrorArea {
-		var errorArea = ErrorArea(errorBars: [], fitRadius: radius, center: around)
-		
-		var insideErrorArea = false
-		for (i, p) in points.enumerated() {
-			if fabs(p.r - radius) > treshold {
-				let prev = (i - 1 > points.startIndex) ? points[i - 1] : p
-				
-				// Cap the start of the error area
-				if !insideErrorArea {
-					errorArea.errorBars.append((a: prev.a, r: radius, isCap: true))
-					insideErrorArea = true
-				}
-				
-				errorArea.errorBars.append((a: p.a, r: p.r, isCap: false))
-			} else if insideErrorArea {
-				// Cap the end of the error area
-				errorArea.errorBars.append((a: p.a, r: radius, isCap: true))
-				insideErrorArea = false
-			}
-		}
-		
-		return errorArea
-	}
-	
-	static func generateBestFitCircle(around: Point, radius: Double, startAngle: Double, progress: Double, taper: Taper) -> BestFitCircle {
-		var bestFitCircle = BestFitCircle(lineWidths: [], fitRadius: radius, center: around)
-		let fidelity = 1.0/360.0
-		let direction = taper.clockwise ? -1.0 : 1.0
-		let endAngle = startAngle + progress * 2.0 * M_PI * direction
-		let step = 2.0 * M_PI * fidelity * direction
-		
-		let arcs = stride(from: startAngle, through: endAngle, by: step)
-		let widths = taper.taperWidths(angles: arcs)
-		
-		bestFitCircle.lineWidths = zip(arcs, widths).map {
-			(a: $0, w: $1)
-		}
-			
-		return bestFitCircle
 	}
 }
 
