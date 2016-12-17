@@ -40,7 +40,7 @@ class ScoreView: UIView {
 		let scoreImage = percentageAsImage(viewModel.scoreString, imageWidth: rect.width)
 		let center = Point(x: Double(rect.midX), y: Double(rect.midY))
 		let centered = Point(x: center.x - Double(scoreImage.size.width) / 2.0, y: center.y - Double(scoreImage.size.height) / 2.0)
-		let scoreRect = CGRect(origin: CGPoint(point: centered), size: scoreImage.size)
+		let scoreRect = CGRect(origin: CGPoint(x: centered.x, y: centered.y), size: scoreImage.size)
 		
 		scoreImage.draw(in: scoreRect)
 	}
