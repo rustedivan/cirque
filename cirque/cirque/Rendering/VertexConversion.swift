@@ -95,14 +95,12 @@ extension ErrorArea : VertexSource {
 }
 
 extension BestFitCircle : VertexSource {
-	// TODO: rewrite to use a less general Trail instead
-	// TODO: set the trail width on Trail and use normalized widths instead
 	func toVertices() -> VertexSource.Buffer {
 		var out: VertexSource.Buffer = []
 		
 		for segment in lineWidths {
 			let angle = segment.0
-			let width = segment.1
+			let width = segment.1 * bestFitWidth
 			
 			let pIn =  Point(x: cos(angle) * (fitRadius - (width / 2.0)),
 								 			 y: sin(angle) * (fitRadius - (width / 2.0)))
