@@ -9,15 +9,6 @@
 import Foundation
 import CoreGraphics.CGGeometry
 
-typealias Point = (x: Double, y: Double)
-typealias Vector = (dx: Double, dy: Double)
-typealias PointArray = [Point]
-typealias Polar = (r: Double, a: Double)
-typealias PolarArray = [Polar]
-typealias AngleBucket = (points: PolarArray, angle: Double)
-
-let zeroPoint = Point(x: 0.0, y: 0.0)
-
 struct Circle {
 	let segmentFilterDistance = 2.0
 	var segments = Trail()
