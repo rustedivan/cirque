@@ -45,3 +45,10 @@ fragment float4 fragment_error(Vertex fragmentIn [[stage_in]],
 	float g = sin(fragmentIn.position.x);
 	return float4(1.0, g, 0.0, 0.8);
 }
+
+fragment float4 fragment_bestfit(Vertex fragmentIn [[stage_in]],
+															 constant Uniforms* uniforms [[buffer(1)]])
+{
+	float g = 0.5 * sin(fragmentIn.position.x) + 0.5;
+	return float4(0.0, 1.0, 0.0, g);
+}

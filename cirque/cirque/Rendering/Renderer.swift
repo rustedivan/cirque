@@ -47,11 +47,13 @@ enum RenderPass: Hashable {
 	typealias Identifier = String
 	case trail
 	case error (progress: Double)
+	case bestFit
 	
 	var passIdentifier: Identifier {
 		switch self {
 		case .trail: return "Trail pass"
 		case .error: return "Error area pass"
+		case .bestFit: return "Best fit pass"
 		}
 	}
 	

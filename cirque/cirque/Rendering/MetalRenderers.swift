@@ -102,6 +102,53 @@ struct MetalCircleRenderer: MetalRenderer {
 		commandEncoder.drawPrimitives(type: .triangleStrip, vertexStart: 0, vertexCount: vertexCount)
 	}
 }
+	
+struct MetalBestFitRenderer: MetalRenderer {
+	static let MaxRenderableSegments = 1024
+	
+	var pipeline: MTLRenderPipelineState!
+	
+	let vertexBuffer: MTLBuffer
+	let uniformBuffer: MTLBuffer
+	
+	init(device: MTLDevice,
+			 pixelFormat: MTLPixelFormat) {
+		let shaderLibrary = device.newDefaultLibrary()!
+		let vertexFunc = shaderLibrary.makeFunction(name: "vertex_main")
+		let fragmentFunc = shaderLibrary.makeFunction(name: "fragment_bestfit")
+		let pipelineDescriptor = MTLRenderPipelineDescriptor()
+		pipelineDescriptor.vertexFunction = vertexFunc
+		pipelineDescriptor.fragmentFunction = fragmentFunc
+		pipelineDescriptor.colorAttachments[0].pixelFormat = pixelFormat
+		pipelineDescriptor.sampleCount = 4
+		pipeline = try! device.makeRenderPipelineState(descriptor: pipelineDescriptor)
+		
+		// Setup buffers
+		let uniformBufLen = MemoryLayout<CirqueUniforms>.size
+		let vertexBufLen = MemoryLayout<CirqueVertex>.size * MetalCircleRenderer.MaxRenderableSegments * 2
+		uniformBuffer = device.makeBuffer(length: uniformBufLen, options: [])
+		uniformBuffer.label = "BestFit uniforms"
+		vertexBuffer = device.makeBuffer(length: vertexBufLen, options: [])
+		vertexBuffer.label = "BestFit vertices"
+	}
+	
+	func render(vertices: VertexSource,
+							inRenderPass renderPass: RenderPass,
+							intoCommandEncoder commandEncoder: RenderPath.Encoder) {
+		
+		let vertexCount = copyVertices(vertices: vertices, toBuffer: vertexBuffer)
+		
+		let uniforms = CirqueUniforms()
+		copyUniforms(uniforms: uniforms, toBuffer: uniformBuffer)
+		
+		commandEncoder.setRenderPipelineState(pipeline)
+		commandEncoder.setVertexBuffer(vertexBuffer, offset: 0, at: MetalRenderPath.VertexLocations.position.rawValue)
+		commandEncoder.setVertexBuffer(uniformBuffer, offset: 0, at: MetalRenderPath.VertexLocations.uniforms.rawValue)
+		commandEncoder.setFragmentBuffer(uniformBuffer, offset: 0, at: MetalRenderPath.VertexLocations.uniforms.rawValue)
+		
+		commandEncoder.drawPrimitives(type: .triangleStrip, vertexStart: 0, vertexCount: vertexCount)
+	}
+}
 
 struct MetalErrorRenderer: MetalRenderer {
 	var pipeline: MTLRenderPipelineState!

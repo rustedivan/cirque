@@ -50,6 +50,7 @@ struct SimulatorRenderPath : RenderPath {
 	                intoCommandEncoder commandEncoder: RenderPath.Encoder) {
 		guard let renderer = activeRenderers[renderPass] else {
 			print("Unregistered render pass: \(renderPass.passIdentifier)")
+			raise(SIGSTOP)
 			return
 		}
 		
@@ -63,11 +64,13 @@ private extension SimulatorRenderPath {
 	static func setupRenderers(targetLayer layer: CALayer) -> [RenderPass : Renderer] {
 		let errorRenderer = SimulatorErrorRenderer(layer: layer)
 		let circleRenderer = SimulatorCircleRenderer(layer: layer)
+		let bestFitRenderer = SimulatorBestFitRenderer(layer: layer)
 		
 		// Register renderers with their passes
 		let renderPasses: [RenderPass : Renderer] =
 			[.error(progress: 0.0) :	errorRenderer,
-			 .trail :									circleRenderer]
+			 .trail :									circleRenderer,
+			 .bestFit :								bestFitRenderer]
 		return renderPasses
 	}
 }

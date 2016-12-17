@@ -95,6 +95,7 @@ struct MetalRenderPath : RenderPath {
 	                intoCommandEncoder commandEncoder: RenderPath.Encoder) {
 		guard let renderer = activeRenderers[renderPass] else {
 			print("Unregistered render pass: \(renderPass.passIdentifier)")
+			raise(SIGSTOP)
 			return
 		}
 		
@@ -128,11 +129,14 @@ private extension MetalRenderPath {
 		                                       pixelFormat: layer.pixelFormat)
 		let circleRenderer = MetalCircleRenderer(device: device,
 		                                         pixelFormat: layer.pixelFormat)
+		let bestFitRenderer = MetalBestFitRenderer(device: device,
+		                                         pixelFormat: layer.pixelFormat)
 		
 		// Register renderers with their passes
 		let renderPasses: [RenderPass : Renderer] =
 			[.error(progress: 0.0) :	errorRenderer,		// FIXME: passing parameters in the render pass is wrong
-			 .trail :									circleRenderer]
+			 .trail :									circleRenderer,
+			 .bestFit :								bestFitRenderer]
 		return renderPasses
 	}
 }

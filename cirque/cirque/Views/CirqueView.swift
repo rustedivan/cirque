@@ -35,6 +35,9 @@ class CirqueView: UIView {
 				renderPath.renderPass(vertices: circle.segments,
 				                      inRenderPass: .trail,
 				                      intoCommandEncoder: commandEncoder)
+				renderPath.renderPass(vertices: fit,
+				                      inRenderPass: .bestFit,
+				                      intoCommandEncoder: commandEncoder)
 			default: break
 			}
 			
