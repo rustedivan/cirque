@@ -12,6 +12,7 @@ using namespace metal;
 struct Vertex
 {
 	float4 position [[position]];
+	float4 color;
 };
 
 struct Uniforms {
@@ -30,25 +31,24 @@ vertex Vertex vertex_main(device Vertex* vertices [[buffer(0)]],
 {
 	Vertex vertexOut;
 	vertexOut.position = constants->modelViewProjectionMatrix * vertices[vid].position;
+	vertexOut.color = vertices[vid].color;
 	return vertexOut;
 }
 
-fragment float4 fragment_main(Vertex fragmentIn [[stage_in]],
+fragment float4 fragment_trail(Vertex fragmentIn [[stage_in]],
 															constant Uniforms* uniforms [[buffer(1)]])
 {
-	return float4(0.0, 0.2, 0.8, 1.0);
+	return fragmentIn.color;
 }
 
 fragment float4 fragment_error(Vertex fragmentIn [[stage_in]],
 															constant Uniforms* uniforms [[buffer(1)]])
 {
-	float g = sin(fragmentIn.position.x);
-	return float4(1.0, g, 0.0, 0.8);
+	return fragmentIn.color;
 }
 
 fragment float4 fragment_bestfit(Vertex fragmentIn [[stage_in]],
 															 constant Uniforms* uniforms [[buffer(1)]])
 {
-	float g = 0.5 * sin(fragmentIn.position.x) + 0.5;
-	return float4(0.0, 1.0, 0.0, g);
+	return fragmentIn.color;
 }

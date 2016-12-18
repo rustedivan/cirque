@@ -25,8 +25,9 @@ class CirqueViewController: UIViewController {
 	}
 	
 	override func viewDidLoad() {
-		circleController = CircleController()
 		
+		
+		circleController = CircleController()
 		renderingLink = CADisplayLink(target: self, selector: #selector(CirqueViewController.render))
 		renderingLink.add(to: RunLoop.main, forMode: RunLoopMode.defaultRunLoopMode)
 	}
@@ -70,22 +71,19 @@ class CirqueViewController: UIViewController {
 	}
 	
 	func render() {
+		cirqueView.backgroundColor = RenderStyle.backgroundColor
+		
 		switch renderState {
 		case .idle:
-			cirqueView.backgroundColor = .gray
 			cirqueView.render(renderState: renderState)
 		case .drawing:
-			cirqueView.backgroundColor = .white
 			cirqueView.render(renderState: renderState)
 		case .analysis:
-			cirqueView.backgroundColor = .cyan
 			cirqueView.render(renderState: renderState)
 		case .rejection:
-			cirqueView.backgroundColor = .red
 			cirqueView.render(renderState: renderState)
 			scoreView.setNeedsDisplay()
 		case .scoring:
-			cirqueView.backgroundColor = .green
 			cirqueView.render(renderState: renderState)
 			scoreView.setNeedsDisplay()
 		}

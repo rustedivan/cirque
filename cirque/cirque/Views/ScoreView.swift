@@ -63,13 +63,13 @@ class ScoreView: UIView {
 			fontAttributes = [
 				NSFontAttributeName : UIFont.systemFont(ofSize: fontSize, weight: UIFontWeightLight),
 				NSStrokeWidthAttributeName : 0.0 as AnyObject,
-				NSForegroundColorAttributeName : UIColor.blue
+				NSForegroundColorAttributeName : UIColor.white
 			]
 		} else {
 			fontAttributes = [
 				NSFontAttributeName : UIFont.systemFont(ofSize: fontSize),
 				NSStrokeWidthAttributeName : 0.0 as AnyObject,
-				NSForegroundColorAttributeName : UIColor.blue
+				NSForegroundColorAttributeName : UIColor.white
 			]
 		}
 		

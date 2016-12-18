@@ -67,7 +67,9 @@ struct MetalRenderPath : RenderPath {
 		colorAttachmentDescriptor.loadAction = .clear
 		colorAttachmentDescriptor.storeAction = .multisampleResolve
 		colorAttachmentDescriptor.texture = multiSampleTarget
-		colorAttachmentDescriptor.clearColor = MTLClearColorMake(1.0, 1.0, 1.0, 1.0)
+		let backgroundColor = RenderStyle.backgroundColor.vec4
+		colorAttachmentDescriptor.clearColor = MTLClearColorMake(Double(backgroundColor.x), Double(backgroundColor.y),
+		                                                         Double(backgroundColor.z), Double(backgroundColor.w))
 		
 		let renderPassDescriptor = MTLRenderPassDescriptor()
 		renderPassDescriptor.colorAttachments[0] = colorAttachmentDescriptor

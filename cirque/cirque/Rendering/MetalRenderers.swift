@@ -68,7 +68,7 @@ struct MetalCircleRenderer: MetalRenderer {
 	     pixelFormat: MTLPixelFormat) {
 		let shaderLibrary = device.newDefaultLibrary()!
 		let vertexFunc = shaderLibrary.makeFunction(name: "vertex_main")
-		let fragmentFunc = shaderLibrary.makeFunction(name: "fragment_main")
+		let fragmentFunc = shaderLibrary.makeFunction(name: "fragment_trail")
 		let pipelineDescriptor = MTLRenderPipelineDescriptor()
 		pipelineDescriptor.vertexFunction = vertexFunc
 		pipelineDescriptor.fragmentFunction = fragmentFunc

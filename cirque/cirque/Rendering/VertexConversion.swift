@@ -24,8 +24,12 @@ extension Trail : VertexSource {
 			let width = 2.0
 			let span = Vector(dx: sin(angle) * width / 2.0, dy: -cos(angle) * width / 2.0)
 			
-			let pL = CirqueVertex(position: vector_float4(Float(pC.x + span.dx), Float(pC.y + span.dy), 0.0, 1.0))
-			let pR = CirqueVertex(position: vector_float4(Float(pC.x - span.dx), Float(pC.y - span.dy), 0.0, 1.0))
+			let color = RenderStyle.trailColor.withAlphaComponent(CGFloat(log2(length)))
+			
+			let pL = CirqueVertex(position: vector_float4(Float(pC.x + span.dx), Float(pC.y + span.dy), 0.0, 1.0),
+			                      color: color.vec4)
+			let pR = CirqueVertex(position: vector_float4(Float(pC.x - span.dx), Float(pC.y - span.dy), 0.0, 1.0),
+			                      color: color.vec4)
 			
 			vertices.append(pL)
 			vertices.append(pR)
@@ -86,7 +90,8 @@ extension ErrorArea : VertexSource {
 			let v = CirqueVertex(position: [	Float(cos(p.a) * p.r + center.x),
 																				Float(sin(p.a) * p.r + center.y),
 																				0.0,
-																				1.0 ])
+																				1.0 ],
+			                     color: RenderStyle.errorColor.vec4)
 			out.append(v)
 		}
 		
@@ -110,10 +115,12 @@ extension BestFitCircle : VertexSource {
 			
 			let vL = CirqueVertex(position: vector_float4(Float(pIn.x + center.x),
 			                                              Float(pIn.y + center.y),
-			                                              0.0, 1.0))
+			                                              0.0, 1.0),
+			                      color: RenderStyle.bestFitColor.vec4)
 			let vR = CirqueVertex(position: vector_float4(Float(pOut.x + center.x),
 			                                              Float(pOut.y + center.y),
-			                                              0.0, 1.0))
+			                                              0.0, 1.0),
+			                      color: RenderStyle.bestFitColor.vec4)
 			
 			out.append(vL)
 			out.append(vR)

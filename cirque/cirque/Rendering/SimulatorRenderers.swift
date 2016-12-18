@@ -35,7 +35,7 @@ class SimulatorCircleRenderer: ShapeRenderer {
 		self.shapeLayer.frame = layer.frame
 		self.shapeLayer.strokeColor = UIColor.clear.cgColor
 		self.shapeLayer.backgroundColor = UIColor.clear.cgColor
-		self.shapeLayer.fillColor = UIColor.blue.cgColor
+		self.shapeLayer.fillColor = RenderStyle.trailColor.cgColor
 	}
 	
 	deinit {
@@ -70,7 +70,7 @@ class SimulatorBestFitRenderer: ShapeRenderer {
 		self.shapeLayer.frame = layer.frame
 		self.shapeLayer.strokeColor = UIColor.clear.cgColor
 		self.shapeLayer.backgroundColor = UIColor.clear.cgColor
-		self.shapeLayer.fillColor = UIColor.green.cgColor
+		self.shapeLayer.fillColor = RenderStyle.bestFitColor.cgColor
 	}
 	
 	deinit {
@@ -106,7 +106,7 @@ class SimulatorErrorRenderer: ShapeRenderer {
 		self.shapeLayer.strokeColor = UIColor.clear.cgColor
 		self.shapeLayer.lineWidth = 1.0
 		self.shapeLayer.backgroundColor = UIColor.clear.cgColor
-		self.shapeLayer.fillColor = UIColor.red.cgColor
+		self.shapeLayer.fillColor = RenderStyle.errorColor.cgColor
 	}
 	
 	deinit {

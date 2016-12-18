@@ -29,6 +29,8 @@
 		14748B291E051D9B00002A94 /* BestFitCircleModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 14748B261E051C6D00002A94 /* BestFitCircleModel.swift */; };
 		1478A2921C8DFA8E0072290C /* Shaders.metal in Sources */ = {isa = PBXBuildFile; fileRef = 1478A2911C8DFA8E0072290C /* Shaders.metal */; };
 		14998D031D299E3800C34DF9 /* dot.plan in Resources */ = {isa = PBXBuildFile; fileRef = 14998D021D299E3800C34DF9 /* dot.plan */; };
+		149CD5261E06C6D2003A83C9 /* Style.swift in Sources */ = {isa = PBXBuildFile; fileRef = 149CD5251E06C6D2003A83C9 /* Style.swift */; };
+		149CD5271E06CF6F003A83C9 /* Style.swift in Sources */ = {isa = PBXBuildFile; fileRef = 149CD5251E06C6D2003A83C9 /* Style.swift */; };
 		14AFB4801A5936BF00EC7EA7 /* CircleControllerTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 14AFB47F1A5936BF00EC7EA7 /* CircleControllerTests.swift */; };
 		14AFB4811A59394D00EC7EA7 /* CircleController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 14D605A219FCEC900096E228 /* CircleController.swift */; };
 		14B5247A1CA7E88500D38DE2 /* ScoreView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 14B524791CA7E88500D38DE2 /* ScoreView.swift */; };
@@ -87,6 +89,7 @@
 		14748B261E051C6D00002A94 /* BestFitCircleModel.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = BestFitCircleModel.swift; path = GeometricModels/BestFitCircleModel.swift; sourceTree = "<group>"; };
 		1478A2911C8DFA8E0072290C /* Shaders.metal */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.metal; name = Shaders.metal; path = Shaders/Shaders.metal; sourceTree = "<group>"; };
 		14998D021D299E3800C34DF9 /* dot.plan */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = dot.plan; path = ../dot.plan; sourceTree = "<group>"; };
+		149CD5251E06C6D2003A83C9 /* Style.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = Style.swift; path = Rendering/Style.swift; sourceTree = "<group>"; };
 		14AFB47F1A5936BF00EC7EA7 /* CircleControllerTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CircleControllerTests.swift; sourceTree = "<group>"; };
 		14B524791CA7E88500D38DE2 /* ScoreView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = ScoreView.swift; path = Views/ScoreView.swift; sourceTree = "<group>"; };
 		14D189421A52C50E00CD0862 /* TrailAnalyser.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = TrailAnalyser.swift; path = Analysis/TrailAnalyser.swift; sourceTree = "<group>"; };
@@ -247,6 +250,7 @@
 			isa = PBXGroup;
 			children = (
 				14EDEA031DE27CE200AF2F25 /* Renderer.swift */,
+				149CD5251E06C6D2003A83C9 /* Style.swift */,
 				14F0EDC01DE8D354003120BA /* SimulatorRenderPath.swift */,
 				14DAF49F1DE9ABBE00DD92B5 /* MetalRenderPath.swift */,
 				14EDEA071DE27E2000AF2F25 /* MetalRenderers.swift */,
@@ -381,6 +385,7 @@
 				14D605A319FCEC900096E228 /* CircleController.swift in Sources */,
 				14EDEA0E1DE286EF00AF2F25 /* VertexConversion.swift in Sources */,
 				1402B4CD1A346C7D00E335B3 /* TrailModel.swift in Sources */,
+				149CD5261E06C6D2003A83C9 /* Style.swift in Sources */,
 				14EDEA081DE27E2000AF2F25 /* MetalRenderers.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -396,6 +401,7 @@
 				145D01121A6C05DE00B6D5C9 /* HistoryMockTrails.swift in Sources */,
 				141A8E1A1A3C6C6B002ED07F /* CircleFitterTests.swift in Sources */,
 				145855C41A502BED00C44CB1 /* TrailAnalyserTests.swift in Sources */,
+				149CD5271E06CF6F003A83C9 /* Style.swift in Sources */,
 				145A267F1A52BDD700B3FBAB /* MockTrails.swift in Sources */,
 				14AFB4811A59394D00EC7EA7 /* CircleController.swift in Sources */,
 				1402B4CE1A346D6C00E335B3 /* TrailModel.swift in Sources */,

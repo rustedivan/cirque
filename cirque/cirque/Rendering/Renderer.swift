@@ -33,6 +33,7 @@ struct CirqueUniforms {
 
 struct CirqueVertex {
 	let position: vector_float4
+	let color: vector_float4
 }
 
 enum RenderWorld {
