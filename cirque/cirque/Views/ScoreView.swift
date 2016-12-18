@@ -10,61 +10,51 @@ import UIKit
 
 class ScoreView: UIView {
 	struct ViewModel {
-		var displaying: Bool
-		var scoreString: String
-	}
-	
-	var countUpStartTime: Date!
-	var viewModel = ViewModel(displaying: false, scoreString: "")
-	var targetScore: Int = 0 {
-		didSet {
-			startCountup()
+		let score: Double
+		let displayStartTime: Date
+		let countUpStartTime: Date
+		
+		func scoreString(atTime time: Date, countDuration duration: Double) -> String {
+			guard score > DBL_EPSILON else { return "X" }
+			
+			let displayedDuration = time.timeIntervalSince(countUpStartTime)
+			
+			let percentFormatter = NumberFormatter()
+			percentFormatter.numberStyle = .percent
+			percentFormatter.minimumFractionDigits = 0
+			percentFormatter.maximumFractionDigits = 0
+			
+			let progress = displayedDuration / duration
+			let displayedScore = score * min(progress, 1.0)
+			
+			return percentFormatter.string(from: NSNumber(value: displayedScore)) ?? ""
 		}
 	}
 	
-	required init?(coder aDecoder: NSCoder) {
-		super.init(coder: aDecoder)
-	}
+	static let displayDuration = 1.5
+	static let countupDuration = 0.5
 	
-	override init(frame: CGRect) {
-		super.init(frame: frame)
-	}
-	
-	convenience init(frame: CGRect, score: Int) {
-		self.init(frame: frame)
-		self.backgroundColor = UIColor.clear
-		self.isOpaque = false
-	}
+	var viewModel = ViewModel(score: 0.0, displayStartTime: .distantPast, countUpStartTime: .distantPast)
 	
 	override func draw(_ rect: CGRect) {
-		let scoreImage = percentageAsImage(viewModel.scoreString, imageWidth: rect.width)
-		let center = Point(x: Double(rect.midX), y: Double(rect.midY))
-		let centered = Point(x: center.x - Double(scoreImage.size.width) / 2.0, y: center.y - Double(scoreImage.size.height) / 2.0)
-		let scoreRect = CGRect(origin: CGPoint(x: centered.x, y: centered.y), size: scoreImage.size)
-		
-		scoreImage.draw(in: scoreRect)
-	}
-	
-	func update() {
-		if targetScore > 0 {
-			viewModel.scoreString = "\(targetScore)%"
-		} else {
-			viewModel.scoreString = "X"
-		}
-		
-		if (Date().timeIntervalSince(countUpStartTime) > 1.0) {
-			viewModel.displaying = false
-		}
-		else {
-			setNeedsDisplay()
+		if Date().timeIntervalSince(viewModel.displayStartTime) < ScoreView.displayDuration {
+			let scoreString = viewModel.scoreString(atTime: Date(), countDuration: ScoreView.countupDuration)
+			let scoreImage = percentageAsImage(scoreString, imageWidth: rect.width)
+			let center = Point(x: Double(rect.midX), y: Double(rect.midY))
+			let centered = Point(x: center.x - Double(scoreImage.size.width) / 2.0, y: center.y - Double(scoreImage.size.height) / 2.0)
+			let scoreRect = CGRect(origin: CGPoint(x: centered.x, y: centered.y), size: scoreImage.size)
+			
+			scoreImage.draw(in: scoreRect)
 		}
 	}
 	
-	func startCountup() {
-		self.countUpStartTime = Date()
+	func presentScore(score: Double) {
+		viewModel = ViewModel(score: score,
+		                      displayStartTime: Date(),
+		                      countUpStartTime: Date())
 	}
 	
-	func percentageAsImage(_ percentageString: String, imageWidth: CGFloat) -> UIImage {
+	fileprivate func percentageAsImage(_ percentageString: String, imageWidth: CGFloat) -> UIImage {
 		// $ Add test for this
 		let fontSize = imageWidth / 2.35	// Linear estimate between image width and this particular font setup
 		

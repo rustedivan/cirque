@@ -115,13 +115,11 @@ class CirqueViewController: UIViewController {
 	// FIXME: keep score view onscreen at all times, just make it show nothing
 	func showScore(_ score: Int, at: CGPoint) {
 		scoreView.frame = CGRect(x: at.x - 50.0, y: at.y - 50.0, width: 100.0, height: 100.0)
-		scoreView.targetScore = score
-		scoreView.update()
+		scoreView.presentScore(score: score)
 	}
 	
 	func rejectScore(at: CGPoint) {
 		scoreView.frame = CGRect(x: at.x - 50.0, y: at.y - 50.0, width: 100.0, height: 100.0)
-		scoreView.targetScore = 0
-		scoreView.update()
+		scoreView.presentScore(score: 0.0)
 	}
 }
