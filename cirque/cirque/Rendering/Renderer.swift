@@ -38,9 +38,9 @@ struct CirqueVertex {
 enum RenderWorld {
 	case idle
 	case drawing(circle: Circle)
-	case rejection(circle: Circle, center: Point)
+	case rejection(circle: Circle, showAt: Point)
 	case analysis(circle: Circle, fit: BestFitCircle, errorArea: ErrorArea)
-	case scoring(circle: Circle, score: Double)
+	case scoring(circle: Circle, showAt: Point, score: Double)
 }
 
 enum RenderPass: Hashable {
