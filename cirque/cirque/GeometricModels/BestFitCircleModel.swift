@@ -12,7 +12,7 @@ struct BestFitCircle {
 	var lineWidths: [(a: Double, w: Double)]
 	var fitRadius: Double
 	var center: Point
-	var bestFitWidth = 3.0
+	var bestFitWidth = 1.5
 	
 	init(around: Point, radius: Double, startAngle: Double, progress: Double, taper: Taper) {
 		fitRadius = radius

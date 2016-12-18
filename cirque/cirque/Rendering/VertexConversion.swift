@@ -21,7 +21,7 @@ extension Trail : VertexSource {
 			let pC = segment.0
 			let angle = segment.1.0
 			let length = segment.1.1
-			let width = 2.0 + log2(length)
+			let width = 2.0
 			let span = Vector(dx: sin(angle) * width / 2.0, dy: -cos(angle) * width / 2.0)
 			
 			let pL = CirqueVertex(position: vector_float4(Float(pC.x + span.dx), Float(pC.y + span.dy), 0.0, 1.0))
