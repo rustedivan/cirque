@@ -278,8 +278,10 @@ extension TrailAnalyser {
 		}
 
 		// Circle must be round
-		let radialErrorThreshold = sqrt(0.01 * (radius * radius * M_PI))	// Error area is larger than 0.5% (p^2 > E  ==> p > √E)
-		let p = abs(self.radialDeviation().peak)
+		// Threshold value of 11% is determined via experimentation.
+		let radialErrorThreshold = 0.11
+		let p = self.radialFitness()
+		
 		if (p > radialErrorThreshold) {
 			print("Rejected roundness: \(p) > \(radialErrorThreshold)")
 			return false
