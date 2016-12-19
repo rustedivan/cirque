@@ -87,8 +87,9 @@ extension ErrorArea : VertexSource {
 		// Finally, convert the polar points to vertices
 		var out: VertexSource.Buffer = []
 		for p in polarPoints {
-			let v = CirqueVertex(position: [	Float(cos(p.a) * p.r + center.x),
-																				Float(sin(p.a) * p.r + center.y),
+			let a = -p.a	// Invert angle due to UIView's flipped Y axis
+			let v = CirqueVertex(position: [	Float(cos(a) * p.r + center.x),
+																				Float(sin(a) * p.r + center.y),
 																				0.0,
 																				1.0 ],
 			                     color: RenderStyle.errorColor.vec4)
@@ -104,7 +105,7 @@ extension BestFitCircle : VertexSource {
 		var out: VertexSource.Buffer = []
 		
 		for segment in lineWidths {
-			let angle = segment.0
+			let angle = -segment.0 // Invert angle due to UIView's flipped Y axis
 			let width = segment.1 * bestFitWidth
 			
 			let pIn =  Point(x: cos(angle) * (fitRadius - (width / 2.0)),
