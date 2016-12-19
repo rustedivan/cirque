@@ -21,10 +21,10 @@ class CircleModelTests: XCTestCase {
 	}
 	
 	func testCircleShouldPolarizePoints() {
-		let points = [Point(x: 105.0, y: 98.0),
-									Point(x: -95.0, y: 98.0),
+		let points = [Point(x: 105.0, y: -102.0),
 									Point(x: -95.0, y: -102.0),
-									Point(x: 105.0, y: -102.0)]
+									Point(x: -95.0, y: 98.0),
+									Point(x: 105.0, y: 98.0)]
 		var polar = polarize(points, around: Point(x: 5.0, y: -2.0))
 		
 		XCTAssertEqualWithAccuracy(polar[0].a, 1.0 * M_PI_4, accuracy: 0.01, "Incorrectly polarized")

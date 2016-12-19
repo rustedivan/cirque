@@ -59,7 +59,8 @@ func polarize(_ points: PointArray, around c: Point) -> PolarArray {
 		let a = atan2(p.y, p.x)
 		let r = sqrt(p.x * p.x + p.y * p.y)
 		
-		polar.append((r: r, a: a))
+		// UIView's Y axis is flipped, so the angle must be inverted to correct
+		polar.append((r: r, a: -a))
 	}
 	
 	// Normalize angles

@@ -136,7 +136,7 @@ class CircleAnalyzer: XCTestCase {
 		XCTAssertEqualWithAccuracy(bumpInD.angle, 6.0 * M_PI_4, accuracy: 0.30, "Did not find deviation")
 
 		XCTAssertLessThan(flatRight.peak, 0.0, "Did not calculate deviation")
-		XCTAssertEqualWithAccuracy(flatRight.angle, 8.0 * M_PI_4, accuracy: 0.30, "Did not find deviation")
+		XCTAssertEqualWithAccuracy(flatRight.angle, 0.0, accuracy: 0.30, "Did not find deviation")
 
 		XCTAssertEqual(noBump.peak, 0.0, "Did not calculate deviation")
 	}
