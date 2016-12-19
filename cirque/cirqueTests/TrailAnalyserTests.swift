@@ -119,18 +119,18 @@ class CircleAnalyzer: XCTestCase {
 	/* Radial deviations: given all relative radial displacements, find the largest deviation from circle
 	*/
 	func testFindRadialDeviationsPeak() {
-		let (bumpOutULTrail, bumpOutRadius) = polariseTestPoints(points: upperLeftBumpOut)
+		let (bumpInULTrail, bumpOutRadius) = polariseTestPoints(points: upperLeftBumpIn)
 		let (bumpInDTrail, bumpInRadius) = polariseTestPoints(points: downBumpIn)
 		let (flatRightTrail, flatRightRadius) = polariseTestPoints(points: flatBumpRight)
 		let (noBumpTrail, noBumpRadius) = polariseTestPoints(points: almostNoBump)
 		
-		let bumpOutUL = TrailAnalyser(points: bumpOutULTrail, fitRadius: bumpOutRadius).radialDeviation()
+		let bumpInUL = TrailAnalyser(points: bumpInULTrail, fitRadius: bumpOutRadius).radialDeviation()
 		let bumpInD = TrailAnalyser(points: bumpInDTrail, fitRadius: bumpInRadius).radialDeviation()
 		let flatRight = TrailAnalyser(points: flatRightTrail, fitRadius: flatRightRadius).radialDeviation()
 		let noBump = TrailAnalyser(points: noBumpTrail, fitRadius: noBumpRadius).radialDeviation()
 		
-		XCTAssertGreaterThan(bumpOutUL.peak, 0.0, "Did not calculate deviation")
-		XCTAssertEqualWithAccuracy(bumpOutUL.angle, 3.0 * M_PI_4, accuracy: 0.30, "Did not find deviation")
+		XCTAssertLessThan(bumpInUL.peak, 0.0, "Did not calculate deviation")
+		XCTAssertEqualWithAccuracy(bumpInUL.angle, M_PI_2, accuracy: 0.30, "Did not find deviation in Q2 bucket")
 
 		XCTAssertLessThan(bumpInD.peak, 0.0, "Did not calculate deviation")
 		XCTAssertEqualWithAccuracy(bumpInD.angle, 6.0 * M_PI_4, accuracy: 0.30, "Did not find deviation")
