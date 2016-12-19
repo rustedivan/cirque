@@ -89,7 +89,6 @@ extension TrailAnalyser {
 		return gradedScore
 	}
 	
-	// FIXME: computed property pls
 	func calcBucketErrors() -> [Double] {
 		// Calculate moving average
 		let n = analysisBuckets
@@ -104,6 +103,15 @@ extension TrailAnalyser {
 			bucketErrors[i] = bucketError
 		}
 		return bucketErrors
+	}
+	
+	func isClockwise() -> Bool {
+		if angleDeltas == nil {
+			angleDeltas = angleDeltas(points)
+		}
+		let sumOfArcs = angleDeltas!.reduce(0.0, +)
+		
+		return sumOfArcs < 0.0
 	}
 	
 	/*	Measure the relative RMS of radial errors, i.e. how round the circle is.

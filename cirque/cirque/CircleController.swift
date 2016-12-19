@@ -59,8 +59,8 @@ class CircleController {
 				
 				let score = analyser.circularityScore()
 				let errorArea = ErrorArea(polar, around: fit.center, radius: fit.radius, treshold: 2.0)
-				let t = Taper(taperRatio: 0.2, clockwise: false)
-				let bestFitCircle = BestFitCircle(around: fit.center, radius: fit.radius, startAngle: 0.0, progress: 1.0, taper: t)
+				let t = Taper(taperRatio: 0.2, clockwise: analyser.isClockwise())
+				let bestFitCircle = BestFitCircle(around: fit.center, radius: fit.radius, startAngle: polar.first?.a ?? 0.0, progress: 1.0, taper: t)
 				
 				after(.accepted(score: score, trend: trend, fit: bestFitCircle, errorArea: errorArea))
 			}

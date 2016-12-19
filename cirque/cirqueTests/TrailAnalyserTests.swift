@@ -230,6 +230,17 @@ class CircleAnalyzer: XCTestCase {
 		XCTAssertTrue(accept, "Complete circle should be accepted")
 	}
 	
+	func testShouldCalculateDirection() {
+		let (cwTrail, cwRadius) = polariseTestPoints(points: clockwiseCircle)
+		let cwAnalysis = TrailAnalyser(points: cwTrail, fitRadius: cwRadius)
+		
+		let (ccwTrail, ccwRadius) = polariseTestPoints(points: counterClockwiseCircle)
+		let ccwAnalysis = TrailAnalyser(points: ccwTrail, fitRadius: ccwRadius)
+		
+		XCTAssertTrue(cwAnalysis.isClockwise())
+		XCTAssertFalse(ccwAnalysis.isClockwise())
+	}
+	
 	func testCircleShouldBinAngles() {
 		let t = Trail(points: binTestCircle)
 		let p = polarize(t.points, around: zeroPoint)
