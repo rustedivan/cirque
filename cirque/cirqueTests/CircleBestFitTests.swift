@@ -180,7 +180,8 @@ class CircleBestFitTests: XCTestCase {
 		let around = Point(x: 10.0, y: -20.0)
 		
 		let taper = Taper(taperRatio: 0.2, clockwise: false)
-		let f = BestFitCircle(around: around, radius: modelRadius, startAngle: 0.2, progress: 0.8, taper: taper)
+		var f = BestFitCircle(around: around, radius: modelRadius, startAngle: 0.2, progress: 0.8, taper: taper)
+		f.bestFitWidth = 2.0
 		let t = f.toVertices()
 		XCTAssertEqual(t.count, 289 * 2, "Should have generated 0.8 * 360 segments of two vertices each")
 		
@@ -193,16 +194,16 @@ class CircleBestFitTests: XCTestCase {
 		
 		// Beginning of ring has full width
 		// First vertex inside radius, second outside
-		XCTAssertEqualWithAccuracy(radius(t[0]), 99.5, accuracy: 0.1)
-		XCTAssertEqualWithAccuracy(radius(t[1]), 100.5, accuracy: 0.1)
+		XCTAssertEqualWithAccuracy(radius(t[0]), 99.0, accuracy: 0.1)
+		XCTAssertEqualWithAccuracy(radius(t[1]), 101.0, accuracy: 0.1)
 		
 		// Middle of ring still has full width
-		XCTAssertEqualWithAccuracy(radius(t[184]), 99.5, accuracy: 0.1)
-		XCTAssertEqualWithAccuracy(radius(t[185]), 100.5, accuracy: 0.1)
+		XCTAssertEqualWithAccuracy(radius(t[184]), 99.0, accuracy: 0.1)
+		XCTAssertEqualWithAccuracy(radius(t[185]), 101.0, accuracy: 0.1)
 		
 		// End of ring starts tapering
-		XCTAssertEqualWithAccuracy(radius(t[540]), 99.8, accuracy: 0.1)
-		XCTAssertEqualWithAccuracy(radius(t[541]), 100.2, accuracy: 0.1)
+		XCTAssertEqualWithAccuracy(radius(t[540]), 99.7, accuracy: 0.1)
+		XCTAssertEqualWithAccuracy(radius(t[541]), 100.3, accuracy: 0.1)
 		
 		// End of ring comes to a point
 		XCTAssertEqualWithAccuracy(radius(t[572]), 100.0, accuracy: 0.1)
