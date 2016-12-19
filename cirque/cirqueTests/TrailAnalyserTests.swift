@@ -231,14 +231,16 @@ class CircleAnalyzer: XCTestCase {
 	}
 	
 	func testCircleShouldBinAngles() {
-		let buckets = TrailAnalyser.binPointsByAngle(binTestCircle, intoBuckets: 4)
+		let t = Trail(points: binTestCircle)
+		let p = polarize(t.points, around: zeroPoint)
+		let buckets = TrailAnalyser.binPointsByAngle(p, intoBuckets: 4)
 		
 		XCTAssertEqual(buckets.count, 4, "Wrong number of buckets")
 		
-		XCTAssertEqual(buckets[0].points.count, 18, "Wrong number of points in bucket 0")
-		XCTAssertEqual(buckets[1].points.count, 10, "Wrong number of points in bucket 1")
-		XCTAssertEqual(buckets[2].points.count, 8, "Wrong number of points in bucket 2")
-		XCTAssertEqual(buckets[3].points.count, 9, "Wrong number of points in bucket 3")
+		XCTAssertEqual(buckets[0].points.count, 6, "Wrong number of points in right-bucket")
+		XCTAssertEqual(buckets[1].points.count, 5, "Wrong number of points in up-bucket")
+		XCTAssertEqual(buckets[2].points.count, 4, "Wrong number of points in left-bucket")
+		XCTAssertEqual(buckets[3].points.count, 3, "Wrong number of points in down-bucket")
 		
 		XCTAssertEqualWithAccuracy(buckets[0].angle, 0.0, accuracy: 0.01, "Bucket 0 in wrong direction")
 		XCTAssertEqualWithAccuracy(buckets[1].angle, M_PI_2, accuracy: 0.01, "Bucket 1 in wrong direction")
