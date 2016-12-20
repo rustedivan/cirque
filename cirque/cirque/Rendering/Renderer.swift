@@ -80,8 +80,8 @@ protocol RenderPath {
 #endif
 	
 	func runPasses(renderAllPasses : (RenderPath.Encoder) -> () )
-	func renderPass(vertices: VertexSource,
-	                inRenderPass renderPass: RenderPass,
+	func renderPass(_ renderPass: RenderPass,
+	                vertices: VertexSource,
 	                intoCommandEncoder commandEncoder: RenderPath.Encoder)
 	mutating func renderTargetSizeDidChange(to size: CGSize)
 }

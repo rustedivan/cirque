@@ -45,8 +45,8 @@ struct SimulatorRenderPath : RenderPath {
 		renderAllPasses()
 	}
 	
-	func renderPass(vertices: VertexSource,
-	                inRenderPass renderPass: RenderPass,
+	func renderPass(_ renderPass: RenderPass,
+	                vertices: VertexSource,
 	                intoCommandEncoder commandEncoder: RenderPath.Encoder) {
 		guard let renderer = activeRenderers[renderPass] else {
 			print("Unregistered render pass: \(renderPass.passIdentifier)")
