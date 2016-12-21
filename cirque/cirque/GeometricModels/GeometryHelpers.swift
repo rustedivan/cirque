@@ -7,6 +7,8 @@
 //
 
 import Foundation
+import CoreGraphics.CGGeometry
+import simd
 
 typealias Point = (x: Double, y: Double)
 typealias Vector = (dx: Double, dy: Double)
@@ -70,4 +72,23 @@ func polarize(_ points: PointArray, around c: Point) -> PolarArray {
 	}
 	
 	return polar
+}
+
+func ortho2d(l: CGFloat, r: CGFloat, b: CGFloat, t: CGFloat, n: CGFloat, f: CGFloat) -> matrix_float4x4 {
+	let width = 1.0 / (r - l)
+	let height = 1.0 / (t - b)
+	let depth = 1.0 / (f - n)
+	
+	var p = float4(0.0)
+	var q = float4(0.0)
+	var r = float4(0.0)
+	var s = float4(0.0)
+	
+	p.x = 2.0 * Float(width)
+	q.y = 2.0 * Float(height)
+	r.z = Float(depth)
+	s.z = Float(-n * depth)
+	s.w = 1.0
+	
+	return matrix_float4x4(columns: (p, q, r, s))
 }
