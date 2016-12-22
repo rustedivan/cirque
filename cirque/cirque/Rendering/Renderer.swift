@@ -27,13 +27,23 @@ struct CirqueConstants {
 	}
 }
 
-struct CirqueUniforms {
-	var progress: Float = 0.0
-}
-
 struct CirqueVertex {
 	let position: vector_float4
 	let color: vector_float4
+}
+
+// TODO: push into the renderers
+// Solve conflict by path-specific extensions
+struct TrailUniforms {
+}
+
+struct ErrorAreaUniforms {
+	let progress: Double
+	let errorFlashIntensity: Double
+}
+struct BestFitUniforms {
+	let progress: Double
+	let quality: Double
 }
 
 enum RenderWorld {
@@ -44,27 +54,10 @@ enum RenderWorld {
 	case scoring(circle: Circle, showAt: Point, score: Double)
 }
 
-enum RenderPass: Hashable {
-	typealias Identifier = String
-	case trail
-	case error (progress: Double)
-	case bestFit
-	
-	var passIdentifier: Identifier {
-		switch self {
-		case .trail: return "Trail pass"
-		case .error: return "Error area pass"
-		case .bestFit: return "Best fit pass"
-		}
-	}
-	
-	var hashValue: Int {
-		return passIdentifier.hashValue
-	}
-	
-	public static func ==(lhs: RenderPass, rhs: RenderPass) -> Bool {
-		return lhs.passIdentifier == rhs.passIdentifier
-	}
+enum RenderPass {
+	case trail(_: TrailUniforms)
+	case error(_: ErrorAreaUniforms)
+	case bestFit(_: BestFitUniforms)
 }
 
 protocol VertexSource {
@@ -72,24 +65,30 @@ protocol VertexSource {
 	func toVertices() -> Buffer
 }
 
+// MARK: Render path
+
 protocol RenderPath {
-#if arch(i386) || arch(x86_64)
-	typealias Encoder = Void
-#else
-	typealias Encoder = MTLRenderCommandEncoder
-#endif
+	associatedtype Encoder
+	associatedtype TrailRenderer
+	associatedtype ErrorAreaRenderer
+	associatedtype BestFitRenderer
 	
-	func runPasses(renderAllPasses : (RenderPath.Encoder) -> () )
-	func renderPass(_ renderPass: RenderPass,
-	                vertices: VertexSource,
-	                intoCommandEncoder commandEncoder: RenderPath.Encoder)
+	var trailRenderer: TrailRenderer { get }
+	var errorRenderer: ErrorAreaRenderer { get }
+	var bestFitRenderer: BestFitRenderer { get }
+	
+	func renderFrame(allRenderPasses : (Encoder) -> () )
+	func renderPass(vertices: VertexSource, inRenderPass: RenderPass, intoEncoder: Encoder)
 	mutating func renderTargetSizeDidChange(to size: CGSize)
 }
 
-protocol Renderer {
-	func render(vertices: VertexSource,
-	            inRenderPass: RenderPass,
-	            intoCommandEncoder: RenderPath.Encoder)
-}
+// MARK: Renderers
 
+protocol Renderer {
+	associatedtype Encoder
+	associatedtype Uniforms
+	
+	func render(vertices: VertexSource,
+	            withUniforms: Uniforms,
+	            intoEncoder: Encoder)
 }

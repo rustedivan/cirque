@@ -20,13 +20,7 @@ extension CGPoint {
 	}
 }
 
-// MARK: Shape renderer
-protocol ShapeRenderer : Renderer {
-	var shapeLayer: CAShapeLayer { get }
-}
-
-// MARK: Specific shape renderers
-class SimulatorCircleRenderer: ShapeRenderer {
+class CGTrailRenderer<Encoder>: Renderer {
 	var shapeLayer: CAShapeLayer
 	
 	init(layer: CALayer) {
@@ -43,8 +37,8 @@ class SimulatorCircleRenderer: ShapeRenderer {
 	}
 	
 	func render(vertices: VertexSource,
-	            inRenderPass renderPass: RenderPass,
-	            intoCommandEncoder: RenderPath.Encoder) {
+	            withUniforms uniforms: TrailUniforms,
+	            intoEncoder: Encoder) {
 		let vertexArray = vertices.toVertices()
 		let trailPath = UIBezierPath()
 		
@@ -61,7 +55,7 @@ class SimulatorCircleRenderer: ShapeRenderer {
 	}
 }
 	
-class SimulatorBestFitRenderer: ShapeRenderer {
+class CGBestFitRenderer<Encoder>: Renderer {
 	var shapeLayer: CAShapeLayer
 	
 	init(layer: CALayer) {
@@ -78,8 +72,8 @@ class SimulatorBestFitRenderer: ShapeRenderer {
 	}
 	
 	func render(vertices: VertexSource,
-							inRenderPass renderPass: RenderPass,
-							intoCommandEncoder: RenderPath.Encoder) {
+							withUniforms uniforms: BestFitUniforms,
+							intoEncoder: Encoder) {
 		let vertexArray = vertices.toVertices()
 		let trailPath = UIBezierPath()
 		
@@ -96,7 +90,7 @@ class SimulatorBestFitRenderer: ShapeRenderer {
 	}
 }
 
-class SimulatorErrorRenderer: ShapeRenderer {
+class CGErrorRenderer<Encoder>: Renderer {
 	var shapeLayer: CAShapeLayer
 	
 	init(layer: CALayer) {
@@ -114,8 +108,8 @@ class SimulatorErrorRenderer: ShapeRenderer {
 	}
 	
 	func render(vertices: VertexSource,
-	            inRenderPass renderPass: RenderPass,
-	            intoCommandEncoder commandEncoder: RenderPath.Encoder) {
+	            withUniforms uniforms: ErrorAreaUniforms,
+	            intoEncoder encoder: Encoder) {
 		let vertexArray = vertices.toVertices()
 		guard vertexArray.count >= 3 else {
 			shapeLayer.path = nil

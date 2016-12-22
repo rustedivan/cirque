@@ -22,13 +22,17 @@ struct MetalRenderPath : RenderPath {
 		case constants = 2
 	}
 	
+	typealias Encoder = MTLRenderCommandEncoder
+	
 	let device: MTLDevice
 	let commandQueue: MTLCommandQueue!
 	
 	var targetLayer: CAMetalLayer
 	var multiSampleTarget: MTLTexture
 	
-	var activeRenderers: [RenderPass : Renderer]
+	var trailRenderer: MetalTrailRenderer<Encoder>
+	var errorRenderer: MetalErrorRenderer<Encoder>
+	var bestFitRenderer: MetalBestFitRenderer<Encoder>
 	
 	init(layer: CAMetalLayer) {
 		// Prepare Metal
@@ -43,8 +47,13 @@ struct MetalRenderPath : RenderPath {
 		multiSampleTarget = MetalRenderPath.buildRenderTarget(onDevice: device,
 																													pixelFormat: layer.pixelFormat,
 																													renderTargetSize: scaledSize)
-
-		self.activeRenderers = MetalRenderPath.setupRenderers(onDevice: device, targetLayer: targetLayer)
+		
+		errorRenderer = MetalErrorRenderer(device: device,
+																			 pixelFormat: layer.pixelFormat)
+		trailRenderer = MetalTrailRenderer(device: device,
+																				 pixelFormat: layer.pixelFormat)
+		bestFitRenderer = MetalBestFitRenderer(device: device,
+		                                       pixelFormat: layer.pixelFormat)
 	}
 	
 	mutating func renderTargetSizeDidChange(to size: CGSize) {
@@ -53,10 +62,18 @@ struct MetalRenderPath : RenderPath {
 			return
 		}
 		
-		activeRenderers = MetalRenderPath.setupRenderers(onDevice: device, targetLayer: targetLayer)
+		// FIXME: multiSampleTarget doesn't get recreated?
+		
+		// TODO: figure out a way to be sure that all renderers get treated
+		errorRenderer = MetalErrorRenderer(device: device,
+		                                   pixelFormat: targetLayer.pixelFormat)
+		trailRenderer = MetalTrailRenderer(device: device,
+		                                    pixelFormat: targetLayer.pixelFormat)
+		bestFitRenderer = MetalBestFitRenderer(device: device,
+		                                       pixelFormat: targetLayer.pixelFormat)
 	}
 	
-	func runPasses(renderAllPasses: (RenderPath.Encoder) -> ()) {
+	func renderFrame(allRenderPasses: (Encoder) -> ()) {
 		guard let drawable = targetLayer.nextDrawable() else {
 			print("Drawable buffer exhausted, blocking.")
 			return
@@ -85,25 +102,31 @@ struct MetalRenderPath : RenderPath {
 		                              at: VertexLocations.constants.rawValue)
 		
 		// Render all passes into this command encoder
-		renderAllPasses(commandEncoder)
+		allRenderPasses(commandEncoder)
 		
 		commandEncoder.endEncoding()
 		commandBuffer.present(drawable)
 		commandBuffer.commit()
 	}
 	
-	func renderPass(_ renderPass: RenderPass,
-	                vertices: VertexSource,
-	                intoCommandEncoder commandEncoder: RenderPath.Encoder) {
-		guard let renderer = activeRenderers[renderPass] else {
-			print("Unregistered render pass: \(renderPass.passIdentifier)")
-			raise(SIGSTOP)
-			return
+	func renderPass(vertices: VertexSource,
+	                inRenderPass renderPass: RenderPass,
+	                intoEncoder encoder: Encoder) {
+		// FIXME: large block of duplicated code
+		switch renderPass {
+		case .trail(let uniforms):
+			trailRenderer.render(vertices: vertices,
+			                     withUniforms: uniforms,
+			                     intoEncoder: encoder)
+		case .error(let uniforms):
+			errorRenderer.render(vertices: vertices,
+			                     withUniforms: uniforms,
+			                     intoEncoder: encoder)
+		case .bestFit(let uniforms):
+			bestFitRenderer.render(vertices: vertices,
+			                       withUniforms: uniforms,
+			                       intoEncoder: encoder)
 		}
-		
-		renderer.render(vertices: vertices,
-		                inRenderPass: renderPass,
-		                intoCommandEncoder: commandEncoder)
 	}
 }
 
@@ -123,24 +146,6 @@ private extension MetalRenderPath {
 		}
 		return device.makeTexture(descriptor: targetDescriptor)
 	}
-	
-	static func setupRenderers(onDevice device: MTLDevice,
-	                           targetLayer layer: CAMetalLayer) -> [RenderPass : Renderer] {
-		// Prepare Metal path renderers
-		let errorRenderer = MetalErrorRenderer(device: device,
-		                                       pixelFormat: layer.pixelFormat)
-		let circleRenderer = MetalCircleRenderer(device: device,
-		                                         pixelFormat: layer.pixelFormat)
-		let bestFitRenderer = MetalBestFitRenderer(device: device,
-		                                         pixelFormat: layer.pixelFormat)
-		
-		// Register renderers with their passes
-		let renderPasses: [RenderPass : Renderer] =
-			[.error(progress: 0.0) :	errorRenderer,		// FIXME: passing parameters in the render pass is wrong
-			 .trail :									circleRenderer,
-			 .bestFit :								bestFitRenderer]
-		return renderPasses
-	}
 }
-	
+
 #endif

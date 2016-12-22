@@ -43,8 +43,8 @@ extension MetalRenderer {
 		})
 	}
 	
-	func copyUniforms(uniforms: CirqueUniforms, toBuffer uniformBuffer: MTLBuffer) {
-		let uniformLen = MemoryLayout<CirqueUniforms>.stride
+	func copyUniforms<Uniforms>(uniforms: Uniforms, toBuffer uniformBuffer: MTLBuffer) {
+		let uniformLen = MemoryLayout<Uniforms>.stride
 		guard uniformLen <= uniformBuffer.length else {
 			print("Could not copy \(uniformLen) bytes into MTLBuffer \"\(uniformBuffer.label ?? "")\".")
 			return
@@ -56,8 +56,8 @@ extension MetalRenderer {
 	}
 }
 	
-struct MetalCircleRenderer: MetalRenderer {
-	static let MaxRenderableSegments = 1024
+struct MetalTrailRenderer<Encoder>: MetalRenderer {
+	let MaxRenderableSegments = 1024
 	
 	var pipeline: MTLRenderPipelineState!
 	
@@ -77,8 +77,8 @@ struct MetalCircleRenderer: MetalRenderer {
 		pipeline = try! device.makeRenderPipelineState(descriptor: pipelineDescriptor)
 
 		// Setup buffers
-		let uniformBufLen = MemoryLayout<CirqueUniforms>.size
-		let vertexBufLen = MemoryLayout<CirqueVertex>.size * MetalCircleRenderer.MaxRenderableSegments * 2
+		let uniformBufLen = MemoryLayout<TrailUniforms>.size
+		let vertexBufLen = MemoryLayout<CirqueVertex>.size * MaxRenderableSegments * 2
 		uniformBuffer = device.makeBuffer(length: uniformBufLen, options: [])
 		uniformBuffer.label = "Trail uniforms"
 		vertexBuffer = device.makeBuffer(length: vertexBufLen, options: [])
@@ -86,25 +86,24 @@ struct MetalCircleRenderer: MetalRenderer {
 	}
 	
 	func render(vertices: VertexSource,
-	            inRenderPass renderPass: RenderPass,
-	            intoCommandEncoder commandEncoder: RenderPath.Encoder) {
+	            withUniforms uniforms: TrailUniforms,
+	            intoEncoder encoder: MTLRenderCommandEncoder) {
 		
 		let vertexCount = copyVertices(vertices: vertices, toBuffer: vertexBuffer)
 		
-		let uniforms = CirqueUniforms()
 		copyUniforms(uniforms: uniforms, toBuffer: uniformBuffer)
 		
-		commandEncoder.setRenderPipelineState(pipeline)
-		commandEncoder.setVertexBuffer(vertexBuffer, offset: 0, at: MetalRenderPath.VertexLocations.position.rawValue)
-		commandEncoder.setVertexBuffer(uniformBuffer, offset: 0, at: MetalRenderPath.VertexLocations.uniforms.rawValue)
-		commandEncoder.setFragmentBuffer(uniformBuffer, offset: 0, at: MetalRenderPath.VertexLocations.uniforms.rawValue)
+		encoder.setRenderPipelineState(pipeline)
+		encoder.setVertexBuffer(vertexBuffer, offset: 0, at: MetalRenderPath.VertexLocations.position.rawValue)
+		encoder.setVertexBuffer(uniformBuffer, offset: 0, at: MetalRenderPath.VertexLocations.uniforms.rawValue)
+		encoder.setFragmentBuffer(uniformBuffer, offset: 0, at: MetalRenderPath.VertexLocations.uniforms.rawValue)
 		
-		commandEncoder.drawPrimitives(type: .triangleStrip, vertexStart: 0, vertexCount: vertexCount)
+		encoder.drawPrimitives(type: .triangleStrip, vertexStart: 0, vertexCount: vertexCount)
 	}
 }
 	
-struct MetalBestFitRenderer: MetalRenderer {
-	static let MaxRenderableSegments = 1024
+struct MetalBestFitRenderer<Encoder>: MetalRenderer {
+	let MaxRenderableSegments = 1024
 	
 	var pipeline: MTLRenderPipelineState!
 	
@@ -124,8 +123,8 @@ struct MetalBestFitRenderer: MetalRenderer {
 		pipeline = try! device.makeRenderPipelineState(descriptor: pipelineDescriptor)
 		
 		// Setup buffers
-		let uniformBufLen = MemoryLayout<CirqueUniforms>.size
-		let vertexBufLen = MemoryLayout<CirqueVertex>.size * MetalCircleRenderer.MaxRenderableSegments * 2
+		let uniformBufLen = MemoryLayout<BestFitUniforms>.size
+		let vertexBufLen = MemoryLayout<CirqueVertex>.size * MaxRenderableSegments * 2
 		uniformBuffer = device.makeBuffer(length: uniformBufLen, options: [])
 		uniformBuffer.label = "BestFit uniforms"
 		vertexBuffer = device.makeBuffer(length: vertexBufLen, options: [])
@@ -133,26 +132,27 @@ struct MetalBestFitRenderer: MetalRenderer {
 	}
 	
 	func render(vertices: VertexSource,
-							inRenderPass renderPass: RenderPass,
-							intoCommandEncoder commandEncoder: RenderPath.Encoder) {
+	            withUniforms uniforms: BestFitUniforms,
+							intoEncoder encoder: MTLRenderCommandEncoder) {
 		
 		let vertexCount = copyVertices(vertices: vertices, toBuffer: vertexBuffer)
 		
-		let uniforms = CirqueUniforms()
+		// TODO: typealias the uniform block type across the renderer
 		copyUniforms(uniforms: uniforms, toBuffer: uniformBuffer)
 		
-		commandEncoder.setRenderPipelineState(pipeline)
-		commandEncoder.setVertexBuffer(vertexBuffer, offset: 0, at: MetalRenderPath.VertexLocations.position.rawValue)
-		commandEncoder.setVertexBuffer(uniformBuffer, offset: 0, at: MetalRenderPath.VertexLocations.uniforms.rawValue)
-		commandEncoder.setFragmentBuffer(uniformBuffer, offset: 0, at: MetalRenderPath.VertexLocations.uniforms.rawValue)
+		encoder.setRenderPipelineState(pipeline)
+		encoder.setVertexBuffer(vertexBuffer, offset: 0, at: MetalRenderPath.VertexLocations.position.rawValue)
+		encoder.setVertexBuffer(uniformBuffer, offset: 0, at: MetalRenderPath.VertexLocations.uniforms.rawValue)
+		encoder.setFragmentBuffer(uniformBuffer, offset: 0, at: MetalRenderPath.VertexLocations.uniforms.rawValue)
 		
-		commandEncoder.drawPrimitives(type: .triangleStrip, vertexStart: 0, vertexCount: vertexCount)
+		encoder.drawPrimitives(type: .triangleStrip, vertexStart: 0, vertexCount: vertexCount)
 	}
 }
 
-struct MetalErrorRenderer: MetalRenderer {
-	var pipeline: MTLRenderPipelineState!
+struct MetalErrorRenderer<Encoder>: MetalRenderer {
+	let MaxRenderableSegments = 1024
 	
+	var pipeline: MTLRenderPipelineState!
 	let vertexBuffer: MTLBuffer
 	let uniformBuffer: MTLBuffer
 	
@@ -169,8 +169,8 @@ struct MetalErrorRenderer: MetalRenderer {
 		pipeline = try! device.makeRenderPipelineState(descriptor: pipelineDescriptor)
 		
 		// Setup buffers
-		let uniformBufLen = MemoryLayout<CirqueUniforms>.size
-		let vertexBufLen = MemoryLayout<CirqueVertex>.size * MetalCircleRenderer.MaxRenderableSegments * 2
+		let uniformBufLen = MemoryLayout<ErrorAreaUniforms>.size
+		let vertexBufLen = MemoryLayout<CirqueVertex>.size * MaxRenderableSegments * 2
 		uniformBuffer = device.makeBuffer(length: uniformBufLen, options: [])
 		uniformBuffer.label = "Error uniforms"
 		vertexBuffer = device.makeBuffer(length: vertexBufLen, options: [])
@@ -178,20 +178,19 @@ struct MetalErrorRenderer: MetalRenderer {
 	}
 	
 	func render(vertices: VertexSource,
-	            inRenderPass: RenderPass,
-	            intoCommandEncoder commandEncoder: RenderPath.Encoder) {
+	            withUniforms uniforms: ErrorAreaUniforms,
+	            intoEncoder encoder: MTLRenderCommandEncoder) {
 		
 		let vertexCount = copyVertices(vertices: vertices, toBuffer: vertexBuffer)
 		
-		let uniforms = CirqueUniforms()
 		copyUniforms(uniforms: uniforms, toBuffer: uniformBuffer)
 		
-		commandEncoder.setRenderPipelineState(pipeline)
-		commandEncoder.setVertexBuffer(vertexBuffer, offset: 0, at: MetalRenderPath.VertexLocations.position.rawValue)
-		commandEncoder.setVertexBuffer(uniformBuffer, offset: 0, at: MetalRenderPath.VertexLocations.uniforms.rawValue)
-		commandEncoder.setFragmentBuffer(uniformBuffer, offset: 0, at: MetalRenderPath.VertexLocations.uniforms.rawValue)
+		encoder.setRenderPipelineState(pipeline)
+		encoder.setVertexBuffer(vertexBuffer, offset: 0, at: MetalRenderPath.VertexLocations.position.rawValue)
+		encoder.setVertexBuffer(uniformBuffer, offset: 0, at: MetalRenderPath.VertexLocations.uniforms.rawValue)
+		encoder.setFragmentBuffer(uniformBuffer, offset: 0, at: MetalRenderPath.VertexLocations.uniforms.rawValue)
 		
-		commandEncoder.drawPrimitives(type: .triangle, vertexStart: 0, vertexCount: vertexCount)
+		encoder.drawPrimitives(type: .triangle, vertexStart: 0, vertexCount: vertexCount)
 	}
 }
 	

@@ -11,48 +11,46 @@ import UIKit
 // MARK: Base view
 
 class CirqueView: UIView {
-	var renderPath: RenderPath!
+	var renderPath: AppRenderPath!
 	
 	required init?(coder aDecoder: NSCoder) {
 		super.init(coder: aDecoder)
 	}
 	
 	func render(renderState: RenderWorld) {
-		renderPath.runPasses { (commandEncoder) in
+		renderPath.renderFrame { encoder in
 			
 			switch renderState {
 			case .idle:
 				break
 			case .drawing(let circle):
+				let uniforms = TrailUniforms()
 				renderPath.renderPass(vertices: circle.segments,
-				                      inRenderPass: .trail,
-				                      intoCommandEncoder: commandEncoder)
-			case .analysis(let circle, let fit, let errorArea):
-				renderPath.renderPass(vertices: errorArea,
-															inRenderPass: .error(progress: 1.0),
-															intoCommandEncoder: commandEncoder)
+				                      inRenderPass: .trail(uniforms),
+				                      intoEncoder: encoder)
 				
+			case .analysis(let circle, let fit, let errorArea):
+				let uniforms = ErrorAreaUniforms(progress: 1.0,																		 errorFlashIntensity: 0.0)
+				renderPath.renderPass(vertices: errorArea,
+				                      inRenderPass: .error(uniforms),
+				                      intoEncoder: encoder)
+				
+				let trailUniforms = TrailUniforms()
 				renderPath.renderPass(vertices: circle.segments,
-				                      inRenderPass: .trail,
-				                      intoCommandEncoder: commandEncoder)
+				                      inRenderPass: .trail(trailUniforms),
+				                      intoEncoder: encoder)
+				
+				let bestFitUniforms = BestFitUniforms(progress: 1.0, quality: 1.0)
 				renderPath.renderPass(vertices: fit,
-				                      inRenderPass: .bestFit,
-				                      intoCommandEncoder: commandEncoder)
+				                      inRenderPass: .bestFit(bestFitUniforms),
+				                      intoEncoder: encoder)
 			case .scoring(let circle, _, _):
+				let trailUniforms = TrailUniforms()
 				renderPath.renderPass(vertices: circle.segments,
-				                      inRenderPass: .trail,
-				                      intoCommandEncoder: commandEncoder)
+				                      inRenderPass: .trail(trailUniforms),
+				                      intoEncoder: encoder)
 			default: break
 			}
-			
-			
-//			renderPath.renderPass(vertices: errorArea,
-//														inRenderPass: .error(progress: 1.0),
-//														intoCommandEncoder: commandEncoder)
-//		
-//			renderPath.renderPass(vertices: circle.segments,
-//			                      inRenderPass: .trail,
-//			                      intoCommandEncoder: commandEncoder)
 		}
 	}
 	
