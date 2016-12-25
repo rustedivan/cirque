@@ -14,22 +14,20 @@ class CirqueViewController: UIViewController {
 	var circleController: CircleController!
 	@IBOutlet var scoreView: ScoreView!
 	
-	var renderState: RenderWorld = .idle {
-		willSet {
-			renderStateTransition(from: renderState, to: newValue)
-		}
-	}
+	var stateMachine: StateMachine = StateMachine(startState: .idle)
 	
 	var cirqueView: CirqueView {
 		return view as! CirqueView
 	}
 	
 	override func viewDidLoad() {
-		
-		
 		circleController = CircleController()
 		renderingLink = CADisplayLink(target: self, selector: #selector(CirqueViewController.render))
 		renderingLink.add(to: RunLoop.main, forMode: RunLoopMode.defaultRunLoopMode)
+		
+		stateMachine.onStateChange = { (from, to) in
+			self.renderStateTransition(from: from, to: to)
+		}
 	}
 
 	override func touchesBegan(_ touches: Set<UITouch>, with _: UIEvent?) {
@@ -38,7 +36,8 @@ class CirqueViewController: UIViewController {
 		let p = touch.location(in: view)
 		circleController.beginNewCircle(Point(x: Double(p.x), y: Double(p.y)))
 		
-		renderState = .drawing(circle: circleController.circle)
+		let data = DrawingData(circle: circleController.circle)
+		stateMachine.currentState = .drawing(data)
 	}
 	
 	override func touchesMoved(_ touches: Set<UITouch>, with event: UIEvent?) {
@@ -53,7 +52,8 @@ class CirqueViewController: UIViewController {
 		let p = touch.location(in: view)
 		circleController.addSegment(Point(x: Double(p.x), y: Double(p.y)))
 		
-		renderState = .drawing(circle: circleController.circle)
+		let data = DrawingData(circle: circleController.circle)
+		stateMachine.currentState = .drawing(data)
 	}
 	
 	override func touchesEnded(_ touches: Set<UITouch>, with _: UIEvent?) {
@@ -73,28 +73,29 @@ class CirqueViewController: UIViewController {
 	func render() {
 		cirqueView.backgroundColor = RenderStyle.backgroundColor
 		
-		switch renderState {
+		let state = stateMachine.currentState
+		switch state {
 		case .idle:
-			cirqueView.render(renderState: renderState)
+			cirqueView.render(renderState: state)
 		case .drawing:
-			cirqueView.render(renderState: renderState)
-		case .analysis:
-			cirqueView.render(renderState: renderState)
-		case .rejection:
-			cirqueView.render(renderState: renderState)
+			cirqueView.render(renderState: state)
+		case .analysing:
+			cirqueView.render(renderState: state)
+		case .rejecting:
+			cirqueView.render(renderState: state)
 			scoreView.setNeedsDisplay()
 		case .scoring:
-			cirqueView.render(renderState: renderState)
+			cirqueView.render(renderState: state)
 			scoreView.setNeedsDisplay()
 		}
 	}
 	
-	func renderStateTransition(from old: RenderWorld, to new: RenderWorld) {
+	func renderStateTransition(from old: State, to new: State) {
 		switch (old, new) {
-		case (_, .scoring(_, let showAt, let score)):
-			showScore(score, at: showAt)
-		case (_, .rejection(_, let showAt)):
-			rejectScore(at: showAt)
+		case (_, .scoring(let data)):
+			showScore(data.score, at: data.showAt)
+		case (_, .rejecting(let data)):
+			rejectScore(at: data.showAt)
 		default: break
 		}
 	}
@@ -104,21 +105,20 @@ class CirqueViewController: UIViewController {
 			
 		case .accepted(let score, _, let fit, let errorArea):
 			// Show analysis
-			renderState = .analysis(circle: circleController.circle,
-			                        fit: fit,
-															errorArea: errorArea)
+			let data = AnalysingData(circle: circleController.circle, fit: fit, errorArea: errorArea)
+			
+			stateMachine.currentState = .analysing(data)
 			
 			// Enqueue score countup
 			let startScoreCountupAt = DispatchTime.now() + .milliseconds(1500)
 			DispatchQueue.main.asyncAfter(deadline: startScoreCountupAt) {
-				self.renderState = .scoring(circle: self.circleController.circle,
-				                            showAt: fit.center,
-				                            score: score)
+				let data = ScoringData(circle: self.circleController.circle, showAt: fit.center, score: score)
+				self.stateMachine.currentState = .scoring(data)
 			}
 		case .rejected(let centroid):
 			// Show rejection immediately
-			self.renderState = .rejection(circle: self.circleController.circle,
-			                              showAt: centroid)
+			let data = RejectingData(circle: circleController.circle, showAt: centroid)
+			stateMachine.currentState = .rejecting(data)
 			
 		}
 	}

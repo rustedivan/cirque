@@ -77,9 +77,12 @@ class CGBestFitRenderer<Encoder>: Renderer {
 		let vertexArray = vertices.toVertices()
 		let trailPath = UIBezierPath()
 		
+		let drawProgress = uniforms.progress
+		let vertexCount = Int(Double(vertexArray.count) * drawProgress)
+		
 		guard vertexArray.count >= 3 else { return }
-		let triangleFanStream = vertexArray[0 ..< vertexArray.endIndex - 2]
-		for (i, p) in triangleFanStream.enumerated() {
+		let triangleStripStream = vertexArray[0 ..< vertexCount - 2]
+		for (i, p) in triangleStripStream.enumerated() {
 			trailPath.move(to: CGPoint(vertex: p))
 			trailPath.addLine(to: CGPoint(vertex: vertexArray[i + 1]))
 			trailPath.addLine(to: CGPoint(vertex: vertexArray[i + 2]))
@@ -116,6 +119,9 @@ class CGErrorRenderer<Encoder>: Renderer {
 			return
 		}
 		
+		let errorProgress = uniforms.progress
+		let vertexCount = Int(Double(vertexArray.count) * errorProgress)
+		
 		let trailPath = UIBezierPath()
 		
 		var i = 0;
@@ -125,7 +131,7 @@ class CGErrorRenderer<Encoder>: Renderer {
 			trailPath.addLine(to: CGPoint(vertex: vertexArray[i + 2]))
 			trailPath.close()
 			i = i + 3
-		} while i + 3 < vertexArray.count
+		} while i + 3 < vertexCount
 		
 		shapeLayer.path = trailPath.cgPath
 	}

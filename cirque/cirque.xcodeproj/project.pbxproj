@@ -17,6 +17,7 @@
 		144170151CFB693E00A1BF03 /* CircleErrorAreaTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 144170141CFB693E00A1BF03 /* CircleErrorAreaTests.swift */; };
 		144170161CFE395500A1BF03 /* CircleModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 14D605A019FCEB530096E228 /* CircleModel.swift */; };
 		144170171CFE396500A1BF03 /* CirqueView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 14E44FAF1C550F09006B594D /* CirqueView.swift */; };
+		144F0BEF1E0CCECB00850009 /* StateMachine.swift in Sources */ = {isa = PBXBuildFile; fileRef = 144F0BEE1E0CCECB00850009 /* StateMachine.swift */; };
 		145855C41A502BED00C44CB1 /* TrailAnalyserTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 145855C31A502BED00C44CB1 /* TrailAnalyserTests.swift */; };
 		145A267F1A52BDD700B3FBAB /* MockTrails.swift in Sources */ = {isa = PBXBuildFile; fileRef = 145A267E1A52BDD700B3FBAB /* MockTrails.swift */; };
 		145D01121A6C05DE00B6D5C9 /* HistoryMockTrails.swift in Sources */ = {isa = PBXBuildFile; fileRef = 145D01111A6C05DE00B6D5C9 /* HistoryMockTrails.swift */; };
@@ -50,6 +51,8 @@
 		14D605A119FCEB530096E228 /* CircleModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 14D605A019FCEB530096E228 /* CircleModel.swift */; };
 		14D605A319FCEC900096E228 /* CircleController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 14D605A219FCEC900096E228 /* CircleController.swift */; };
 		14DAF4A01DE9ABBE00DD92B5 /* MetalRenderPath.swift in Sources */ = {isa = PBXBuildFile; fileRef = 14DAF49F1DE9ABBE00DD92B5 /* MetalRenderPath.swift */; };
+		14DBBDC71E0FB94F009239E0 /* AppHelpers.swift in Sources */ = {isa = PBXBuildFile; fileRef = 14DBBDC61E0FB94F009239E0 /* AppHelpers.swift */; };
+		14DBBDC91E0FBCA8009239E0 /* Uniforms.swift in Sources */ = {isa = PBXBuildFile; fileRef = 14DBBDC81E0FBCA8009239E0 /* Uniforms.swift */; };
 		14E44FAE1C55053E006B594D /* CirqueViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 14E44FAD1C55053E006B594D /* CirqueViewController.swift */; };
 		14E44FB01C550F09006B594D /* CirqueView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 14E44FAF1C550F09006B594D /* CirqueView.swift */; };
 		14E44FB21C551D76006B594D /* QuartzCore.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 14E44FB11C551D76006B594D /* QuartzCore.framework */; };
@@ -80,6 +83,7 @@
 		141A8E191A3C6C6B002ED07F /* CircleFitterTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CircleFitterTests.swift; sourceTree = "<group>"; };
 		142A02201A66EECF00AC3942 /* HistoricalAnalysisTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = HistoricalAnalysisTests.swift; sourceTree = "<group>"; };
 		144170141CFB693E00A1BF03 /* CircleErrorAreaTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CircleErrorAreaTests.swift; sourceTree = "<group>"; };
+		144F0BEE1E0CCECB00850009 /* StateMachine.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = StateMachine.swift; sourceTree = "<group>"; };
 		145855C31A502BED00C44CB1 /* TrailAnalyserTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TrailAnalyserTests.swift; sourceTree = "<group>"; };
 		145A267E1A52BDD700B3FBAB /* MockTrails.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MockTrails.swift; sourceTree = "<group>"; };
 		145D01111A6C05DE00B6D5C9 /* HistoryMockTrails.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = HistoryMockTrails.swift; sourceTree = "<group>"; };
@@ -104,6 +108,8 @@
 		14D605A019FCEB530096E228 /* CircleModel.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = CircleModel.swift; path = GeometricModels/CircleModel.swift; sourceTree = "<group>"; };
 		14D605A219FCEC900096E228 /* CircleController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CircleController.swift; sourceTree = "<group>"; };
 		14DAF49F1DE9ABBE00DD92B5 /* MetalRenderPath.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = MetalRenderPath.swift; path = Rendering/MetalRenderPath.swift; sourceTree = "<group>"; };
+		14DBBDC61E0FB94F009239E0 /* AppHelpers.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AppHelpers.swift; sourceTree = "<group>"; };
+		14DBBDC81E0FBCA8009239E0 /* Uniforms.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = Uniforms.swift; path = Rendering/Uniforms.swift; sourceTree = "<group>"; };
 		14E44FAD1C55053E006B594D /* CirqueViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CirqueViewController.swift; sourceTree = "<group>"; };
 		14E44FAF1C550F09006B594D /* CirqueView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = CirqueView.swift; path = Views/CirqueView.swift; sourceTree = "<group>"; };
 		14E44FB11C551D76006B594D /* QuartzCore.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = QuartzCore.framework; path = System/Library/Frameworks/QuartzCore.framework; sourceTree = SDKROOT; };
@@ -198,6 +204,8 @@
 				14D6057C19FCE63C0096E228 /* AppDelegate.swift */,
 				14E44FAD1C55053E006B594D /* CirqueViewController.swift */,
 				14D605A219FCEC900096E228 /* CircleController.swift */,
+				144F0BEE1E0CCECB00850009 /* StateMachine.swift */,
+				14DBBDC61E0FB94F009239E0 /* AppHelpers.swift */,
 				14748B2A1E051F4500002A94 /* Geometric models */,
 				14748B2B1E051F5500002A94 /* Analysis */,
 				14EDEA061DE27E0F00AF2F25 /* Rendering */,
@@ -250,6 +258,7 @@
 			isa = PBXGroup;
 			children = (
 				14EDEA031DE27CE200AF2F25 /* Renderer.swift */,
+				14DBBDC81E0FBCA8009239E0 /* Uniforms.swift */,
 				149CD5251E06C6D2003A83C9 /* Style.swift */,
 				14F0EDC01DE8D354003120BA /* CGRenderPath.swift */,
 				14EDEA091DE27E3300AF2F25 /* CGRenderers.swift */,
@@ -370,10 +379,13 @@
 				145D01141A6C064700B6D5C9 /* TrailHistory.swift in Sources */,
 				14748B251E051C1900002A94 /* ErrorAreaModel.swift in Sources */,
 				14F0EDC11DE8D354003120BA /* CGRenderPath.swift in Sources */,
+				14DBBDC91E0FBCA8009239E0 /* Uniforms.swift in Sources */,
 				14D189431A52C50E00CD0862 /* TrailAnalyser.swift in Sources */,
 				14D605A119FCEB530096E228 /* CircleModel.swift in Sources */,
 				14E749951DFF77360036939B /* GeometryHelpers.swift in Sources */,
+				144F0BEF1E0CCECB00850009 /* StateMachine.swift in Sources */,
 				14748B271E051C6D00002A94 /* BestFitCircleModel.swift in Sources */,
+				14DBBDC71E0FB94F009239E0 /* AppHelpers.swift in Sources */,
 				14E44FAE1C55053E006B594D /* CirqueViewController.swift in Sources */,
 				14EDEA041DE27CE200AF2F25 /* Renderer.swift in Sources */,
 				14D6057D19FCE63C0096E228 /* AppDelegate.swift in Sources */,

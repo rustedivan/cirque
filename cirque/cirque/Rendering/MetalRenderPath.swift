@@ -96,9 +96,9 @@ struct MetalRenderPath : RenderPath {
 		let commandEncoder = commandBuffer.makeRenderCommandEncoder(descriptor: renderPassDescriptor)
 		
 		// Setup constants for the entire frame
-		var frameConstants = CirqueConstants(projectionSize: targetLayer.bounds.size)
+		var frameConstants = FrameConstants(projectionSize: targetLayer.bounds.size)
 		commandEncoder.setVertexBytes(&frameConstants,
-		                              length: MemoryLayout<CirqueConstants>.stride,
+		                              length: MemoryLayout<FrameConstants>.stride,
 		                              at: VertexLocations.constants.rawValue)
 		
 		// Render all passes into this command encoder

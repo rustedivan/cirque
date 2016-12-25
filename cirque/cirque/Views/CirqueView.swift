@@ -17,36 +17,36 @@ class CirqueView: UIView {
 		super.init(coder: aDecoder)
 	}
 	
-	func render(renderState: RenderWorld) {
+	func render(renderState: State) {
 		renderPath.renderFrame { encoder in
 			
 			switch renderState {
 			case .idle:
 				break
-			case .drawing(let circle):
-				let uniforms = TrailUniforms()
-				renderPath.renderPass(vertices: circle.segments,
+			case .drawing(let data):
+				let uniforms = data.uniforms
+				renderPath.renderPass(vertices: data.circle.segments,
 				                      inRenderPass: .trail(uniforms),
 				                      intoEncoder: encoder)
 				
-			case .analysis(let circle, let fit, let errorArea):
-				let uniforms = ErrorAreaUniforms(progress: 1.0,																		 errorFlashIntensity: 0.0)
-				renderPath.renderPass(vertices: errorArea,
+			case .analysing(let data):
+				let uniforms = data.errorUniforms
+				renderPath.renderPass(vertices: data.errorArea,
 				                      inRenderPass: .error(uniforms),
 				                      intoEncoder: encoder)
 				
 				let trailUniforms = TrailUniforms()
-				renderPath.renderPass(vertices: circle.segments,
+				renderPath.renderPass(vertices: data.circle.segments,
 				                      inRenderPass: .trail(trailUniforms),
 				                      intoEncoder: encoder)
 				
-				let bestFitUniforms = BestFitUniforms(progress: 1.0, quality: 1.0)
-				renderPath.renderPass(vertices: fit,
+				let bestFitUniforms = data.bestFitUniforms
+				renderPath.renderPass(vertices: data.fit,
 				                      inRenderPass: .bestFit(bestFitUniforms),
 				                      intoEncoder: encoder)
-			case .scoring(let circle, _, _):
+			case .scoring(let data):
 				let trailUniforms = TrailUniforms()
-				renderPath.renderPass(vertices: circle.segments,
+				renderPath.renderPass(vertices: data.circle.segments,
 				                      inRenderPass: .trail(trailUniforms),
 				                      intoEncoder: encoder)
 			default: break
