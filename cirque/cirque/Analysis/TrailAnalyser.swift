@@ -39,9 +39,12 @@ class TrailAnalyser: NSObject, NSCoding {
 		radius = aDecoder.decodeDouble(forKey: "radius")
 		let rArray = aDecoder.decodeObject(forKey: "radii") as! [Double]
 		let aArray = aDecoder.decodeObject(forKey: "angles") as! [Double]
-		let bucketCount = aDecoder.decodeCInt(forKey: "bucketcount")
+		var bucketCount = aDecoder.decodeCInt(forKey: "bucketcount")
 		let pairs = Array(zip(rArray, aArray))
 		points = pairs.map{ Polar(r: $0.0, a: $0.1) }
+		
+		// Fixup old savefiles:
+		if bucketCount == 0 { bucketCount = 8 }
 		pointBuckets = TrailAnalyser.binPointsByAngle(points, intoBuckets: Int(bucketCount))
 		
 		super.init()
