@@ -124,10 +124,10 @@ class CircleAnalyzer: XCTestCase {
 		let (flatRightTrail, flatRightRadius) = polariseTestPoints(points: flatBumpRight)
 		let (noBumpTrail, noBumpRadius) = polariseTestPoints(points: almostNoBump)
 		
-		let bumpInUL = TrailAnalyser(points: bumpInULTrail, fitRadius: bumpOutRadius).radialDeviation()
-		let bumpInD = TrailAnalyser(points: bumpInDTrail, fitRadius: bumpInRadius).radialDeviation()
-		let flatRight = TrailAnalyser(points: flatRightTrail, fitRadius: flatRightRadius).radialDeviation()
-		let noBump = TrailAnalyser(points: noBumpTrail, fitRadius: noBumpRadius).radialDeviation()
+		let bumpInUL = TrailAnalyser(points: bumpInULTrail, fitRadius: bumpOutRadius, bucketCount: 36).radialDeviation()
+		let bumpInD = TrailAnalyser(points: bumpInDTrail, fitRadius: bumpInRadius, bucketCount: 36).radialDeviation()
+		let flatRight = TrailAnalyser(points: flatRightTrail, fitRadius: flatRightRadius, bucketCount: 36).radialDeviation()
+		let noBump = TrailAnalyser(points: noBumpTrail, fitRadius: noBumpRadius, bucketCount: 36).radialDeviation()
 		
 		XCTAssertLessThan(bumpInUL.peak, 0.0, "Did not calculate deviation")
 		XCTAssertEqualWithAccuracy(bumpInUL.angle, M_PI_2, accuracy: 0.30, "Did not find deviation in Q2 bucket")

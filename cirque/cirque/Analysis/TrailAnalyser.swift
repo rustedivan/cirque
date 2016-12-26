@@ -25,14 +25,13 @@ class TrailAnalyser: NSObject, NSCoding {
 	let points: PolarArray!
 	let pointBuckets: [AngleBucket]!
 	let radius: Double
-	let analysisBuckets = 36
 	var angleDeltas: Array<Double>?
 	var bucketErrors: Array<Double>?
 	
-	init(points polarPoints: PolarArray, fitRadius inRadius: Double) {
+	init(points polarPoints: PolarArray, fitRadius inRadius: Double, bucketCount: Int) {
 		points = polarPoints
 		radius = inRadius
-		pointBuckets = TrailAnalyser.binPointsByAngle(polarPoints, intoBuckets: analysisBuckets)
+		pointBuckets = TrailAnalyser.binPointsByAngle(polarPoints, intoBuckets: bucketCount)
 		super.init()
 	}
 	
@@ -40,9 +39,10 @@ class TrailAnalyser: NSObject, NSCoding {
 		radius = aDecoder.decodeDouble(forKey: "radius")
 		let rArray = aDecoder.decodeObject(forKey: "radii") as! [Double]
 		let aArray = aDecoder.decodeObject(forKey: "angles") as! [Double]
+		let bucketCount = aDecoder.decodeCInt(forKey: "bucketcount")
 		let pairs = Array(zip(rArray, aArray))
 		points = pairs.map{ Polar(r: $0.0, a: $0.1) }
-		pointBuckets = TrailAnalyser.binPointsByAngle(points, intoBuckets: analysisBuckets)
+		pointBuckets = TrailAnalyser.binPointsByAngle(points, intoBuckets: Int(bucketCount))
 		
 		super.init()
 	}
@@ -54,6 +54,7 @@ class TrailAnalyser: NSObject, NSCoding {
 		aCoder.encode(rList, forKey: "radii")
 		aCoder.encode(aList, forKey: "angles")
 		aCoder.encode(radius, forKey: "radius")
+		aCoder.encode(pointBuckets.count, forKey: "bucketcount")
 	}
 	
 	class func binPointsByAngle(_ points: PolarArray, intoBuckets buckets: Int) -> [AngleBucket] {
@@ -91,7 +92,7 @@ extension TrailAnalyser {
 	
 	func calcBucketErrors() -> [Double] {
 		// Calculate moving average
-		let n = analysisBuckets
+		let n = pointBuckets.count
 		var bucketErrors = Array<Double>(repeating: 0.0, count: n)
 		for i in 0..<n {
 			let bucket = pointBuckets[i]
@@ -296,14 +297,11 @@ extension TrailAnalyser {
 		}
 		
 		// Circle must be complete
-		let circleLengthThreshold = 0.95 * 2.0 * M_PI
-		if angleDeltas == nil {
-			angleDeltas = angleDeltas(points)
-		}
-		let arcLength = angleDeltas!.reduce(0.0, +)
-		if (abs(arcLength) < circleLengthThreshold) {
-			print("Rejected arc length: \(arcLength) < \(circleLengthThreshold)")
-			return false
+		for bucket in pointBuckets {
+			if bucket.points.isEmpty {
+				print("Rejected completeness: point bucket at \(bucket.angle) is empty")
+				return false
+			}
 		}
 		
 		return true

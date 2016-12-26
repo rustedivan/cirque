@@ -46,7 +46,7 @@ class CircleController {
 			
 			let polar = polarize(self.circle.segments.points, around: fit.center)
 			
-			let analyser = TrailAnalyser(points: polar, fitRadius: fit.radius)
+			let analyser = TrailAnalyser(points: polar, fitRadius: fit.radius, bucketCount: 16)
 			
 			let isCircle = analyser.isCircle()
 			var trend = 0.0
