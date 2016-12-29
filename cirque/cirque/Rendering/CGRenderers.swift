@@ -78,9 +78,9 @@ class CGBestFitRenderer<Encoder>: Renderer {
 		let trailPath = UIBezierPath()
 		
 		let drawProgress = uniforms.progress
-		let vertexCount = Int(Double(vertexArray.count) * drawProgress)
+		let vertexCount = Int(Float(vertexArray.count) * drawProgress)
 		
-		guard vertexArray.count >= 3 else { return }
+		guard vertexCount >= 3 else { return }
 		let triangleStripStream = vertexArray[0 ..< vertexCount - 2]
 		for (i, p) in triangleStripStream.enumerated() {
 			trailPath.move(to: CGPoint(vertex: p))
@@ -120,7 +120,7 @@ class CGErrorRenderer<Encoder>: Renderer {
 		}
 		
 		let errorProgress = uniforms.progress
-		let vertexCount = Int(Double(vertexArray.count) * errorProgress)
+		let vertexCount = Int(Float(vertexArray.count) * errorProgress)
 		
 		let trailPath = UIBezierPath()
 		
