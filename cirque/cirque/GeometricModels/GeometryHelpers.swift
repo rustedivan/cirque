@@ -74,6 +74,19 @@ func polarize(_ points: PointArray, around c: Point) -> PolarArray {
 	return polar
 }
 
+func angleDistances(_ points: PolarArray) -> [Double] {
+	var deltaA: [Double] = []
+	for i in 0 ..< points.count - 1 {
+		let prev = points[i].a
+		let next = points[i + 1].a
+		var d = next - prev
+		if d > M_PI { d -= 2.0 * M_PI }
+		if d < -M_PI { d += 2.0 * M_PI }
+		deltaA.append(d)
+	}
+	return deltaA
+}
+
 func ortho2d(l: CGFloat, r: CGFloat, b: CGFloat, t: CGFloat, n: CGFloat, f: CGFloat) -> matrix_float4x4 {
 	let width = 1.0 / (r - l)
 	let height = 1.0 / (t - b)

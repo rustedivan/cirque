@@ -111,7 +111,7 @@ extension TrailAnalyser {
 	
 	func isClockwise() -> Bool {
 		if angleDeltas == nil {
-			angleDeltas = angleDeltas(points)
+			angleDeltas = angleDistances(points)
 		}
 		let sumOfArcs = angleDeltas!.reduce(0.0, +)
 		
@@ -220,7 +220,7 @@ extension TrailAnalyser {
 		
 		// FIXME: computed property pls
 		if angleDeltas == nil {
-			angleDeltas = angleDeltas(points)
+			angleDeltas = angleDistances(points)
 		}
 		
 		let ad = angleDeltas!
@@ -264,19 +264,6 @@ extension TrailAnalyser {
 			sparsestIndex : densestIndex
 
 		return (peak: Double(bucketSizes[worstBucket]) - avgBucketSize, angle: pointBuckets[worstBucket].angle)
-	}
-	
-	func angleDeltas(_ points: PolarArray) -> Array<Double> {
-		var deltaA = Array<Double>()
-		for i in 0 ..< points.count - 1 {
-			let prev = points[i].a
-			let next = points[i + 1].a
-			var d = next - prev
-			if d > M_PI { d -= 2.0 * M_PI }
-			if d < -M_PI { d += 2.0 * M_PI }
-			deltaA.append(d)
-		}
-		return deltaA
 	}
 }
 
