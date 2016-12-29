@@ -26,13 +26,13 @@ extension MetalRenderer {
 
 		return vertexArray.withUnsafeBytes( { vertexSrc -> Int in
 			guard let rawVertexSrc = vertexSrc.baseAddress else {
-				print("Could not copy vertices into MTLBuffer \"\(vertexBuffer.label ?? "")\".")
+				print("Could not copy vertices into MTLBuffer pointer \"\(vertexBuffer.label ?? "")\".")
 				return 0
 			}
 
 			let vertexLen = vertexArray.count * MemoryLayout<CirqueVertex>.stride
 			guard vertexLen <= vertexBuffer.length else {
-				print("Could not copy \(vertexLen) bytes into MTLBuffer \"\(vertexBuffer.label ?? "")\".")
+				print("Could not fit \(vertexLen) vertex bytes into MTLBuffer \"\(vertexBuffer.label ?? "")\".")
 				return 0
 			}
 			
@@ -46,7 +46,7 @@ extension MetalRenderer {
 	func copyUniforms<UniformBlock>(uniforms: UniformBlock, toBuffer uniformBuffer: MTLBuffer) {
 		let uniformLen = MemoryLayout<UniformBlock>.stride
 		guard uniformLen <= uniformBuffer.length else {
-			print("Could not copy \(uniformLen) bytes into MTLBuffer \"\(uniformBuffer.label ?? "")\".")
+			print("Could not copy \(uniformLen) uniform bytes into MTLBuffer \"\(uniformBuffer.label ?? "")\".")
 			return
 		}
 
@@ -57,7 +57,7 @@ extension MetalRenderer {
 }
 	
 struct MetalTrailRenderer<Encoder>: MetalRenderer {
-	let MaxRenderableSegments = 1024
+	let MaxRenderableSegments = 10240
 	
 	var pipeline: MTLRenderPipelineState!
 	
