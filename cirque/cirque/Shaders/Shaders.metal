@@ -15,17 +15,12 @@ struct Vertex
 	float4 color;
 };
 
-struct Uniforms {
-	float progress;
-};
-
 struct Constants
 {
 	float4x4 modelViewProjectionMatrix;
 };
 
 vertex Vertex vertex_main(device Vertex* vertices [[buffer(0)]],
-													constant Uniforms* uniforms [[buffer(1)]],
 													constant Constants* constants [[buffer(2)]],
 													uint vid [[vertex_id]])
 {
@@ -35,20 +30,35 @@ vertex Vertex vertex_main(device Vertex* vertices [[buffer(0)]],
 	return vertexOut;
 }
 
+struct TrailUniforms {
+};
+
 fragment float4 fragment_trail(Vertex fragmentIn [[stage_in]],
-															constant Uniforms* uniforms [[buffer(1)]])
+															constant TrailUniforms* uniforms [[buffer(1)]])
 {
 	return fragmentIn.color;
 }
+
+struct ErrorAreaUniforms {
+	float progress;
+	float errorFlashIntensity;
+};
 
 fragment float4 fragment_error(Vertex fragmentIn [[stage_in]],
-															constant Uniforms* uniforms [[buffer(1)]])
+															constant ErrorAreaUniforms* uniforms [[buffer(1)]])
 {
-	return fragmentIn.color;
+	float alpha = fragmentIn.color.w + uniforms->progress;
+	return float4(fragmentIn.color.x, fragmentIn.color.y, fragmentIn.color.z, alpha);
 }
 
+struct BestFitUniforms {
+	float progress;
+	float quality;
+};
+
 fragment float4 fragment_bestfit(Vertex fragmentIn [[stage_in]],
-															 constant Uniforms* uniforms [[buffer(1)]])
+															 constant BestFitUniforms* uniforms [[buffer(1)]])
 {
-	return fragmentIn.color;
+	float alpha = (fragmentIn.color.w < uniforms->progress) ? 0.0 : 1.0;
+	return float4(fragmentIn.color.x, fragmentIn.color.y, fragmentIn.color.z, alpha);
 }

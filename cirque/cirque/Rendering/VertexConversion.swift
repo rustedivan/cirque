@@ -104,6 +104,8 @@ extension BestFitCircle : VertexSource {
 	func toVertices() -> VertexSource.Buffer {
 		var out: VertexSource.Buffer = []
 		
+		let startAngle = lineWidths.first?.a ?? 0.0
+		
 		for segment in lineWidths {
 			let angle = -segment.0 // Invert angle due to UIView's flipped Y axis
 			let width = segment.1 * bestFitWidth
@@ -113,15 +115,16 @@ extension BestFitCircle : VertexSource {
 			let pOut = Point(x: cos(angle) * (fitRadius + (width / 2.0)),
 			                 y: sin(angle) * (fitRadius + (width / 2.0)))
 			
-			
+			let progress = abs(angle - startAngle) / (2.0 * M_PI)
+			let color = RenderStyle.bestFitColor.withAlphaComponent(CGFloat(progress)).vec4
 			let vL = CirqueVertex(position: vector_float4(Float(pIn.x + center.x),
 			                                              Float(pIn.y + center.y),
 			                                              0.0, 1.0),
-			                      color: RenderStyle.bestFitColor.vec4)
+			                      color: color)
 			let vR = CirqueVertex(position: vector_float4(Float(pOut.x + center.x),
 			                                              Float(pOut.y + center.y),
 			                                              0.0, 1.0),
-			                      color: RenderStyle.bestFitColor.vec4)
+			                      color: color)
 			
 			out.append(vL)
 			out.append(vR)

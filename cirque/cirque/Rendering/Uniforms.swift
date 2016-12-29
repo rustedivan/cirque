@@ -30,13 +30,13 @@ struct TrailUniforms {
 }
 
 struct ErrorAreaUniforms {
-	let progress: Double
-	let errorFlashIntensity: Double
+	let progress: Float
+	let errorFlashIntensity: Float
 }
 
 struct BestFitUniforms {
-	let progress: Double
-	let quality: Double
+	let progress: Float
+	let quality: Float
 }
 
 // Retro-model all state data as uniforms too
@@ -51,14 +51,14 @@ extension DrawingData {
 extension AnalysingData {
 	var bestFitUniforms: BestFitUniforms {
 		get {
-			return BestFitUniforms(progress: bestFitProgress().p,
+			return BestFitUniforms(progress: Float(bestFitProgress().p),
 			                       quality: 1.0)
 		}
 	}
 	
 	var errorUniforms: ErrorAreaUniforms {
 		get {
-			return ErrorAreaUniforms(progress: errorProgress().p,
+			return ErrorAreaUniforms(progress: Float(errorProgress().p),
 			                         errorFlashIntensity: 1.0)
 		}
 	}
