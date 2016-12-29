@@ -50,10 +50,10 @@ class CircleAnalyzer: XCTestCase {
 		let (justBadTrail, justBadRadius) = polariseTestPoints(points: justBadCircleTrail)
 		let (realBadTrail, realBadRadius) = polariseTestPoints(points: realBadCircleTrail)
 
-		let realGood = TrailAnalyser(points: realGoodTrail, fitRadius: realGoodRadius).circularityScore()
-		let justGood = TrailAnalyser(points: justGoodTrail, fitRadius: justGoodRadius).circularityScore()
-		let justBad = TrailAnalyser(points: justBadTrail, fitRadius: justBadRadius).circularityScore()
-		let realBad = TrailAnalyser(points: realBadTrail, fitRadius: realBadRadius).circularityScore()
+		let realGood = TrailAnalyser(points: realGoodTrail, fitRadius: realGoodRadius, bucketCount: 8).circularityScore()
+		let justGood = TrailAnalyser(points: justGoodTrail, fitRadius: justGoodRadius, bucketCount: 8).circularityScore()
+		let justBad = TrailAnalyser(points: justBadTrail, fitRadius: justBadRadius, bucketCount: 8).circularityScore()
+		let realBad = TrailAnalyser(points: realBadTrail, fitRadius: realBadRadius, bucketCount: 8).circularityScore()
 
 		// Assert score ordering
 		XCTAssertLessThan(justGood, realGood, "Wrong order")
@@ -75,9 +75,9 @@ class CircleAnalyzer: XCTestCase {
 		let (evenTrail, _) = polariseTestPoints(points: evenStrokeTrail)
 		let (perfectTrail, _) = polariseTestPoints(points: perfectStrokeTrail)
 		
-		let bad = TrailAnalyser(points: unevenTrail, fitRadius: 0.0).strokeEvenness()
-		let good = TrailAnalyser(points: evenTrail, fitRadius: 0.0).strokeEvenness()
-		let perfect = TrailAnalyser(points: perfectTrail, fitRadius: 0.0).strokeEvenness()
+		let bad = TrailAnalyser(points: unevenTrail, fitRadius: 0.0, bucketCount: 8).strokeEvenness()
+		let good = TrailAnalyser(points: evenTrail, fitRadius: 0.0, bucketCount: 8).strokeEvenness()
+		let perfect = TrailAnalyser(points: perfectTrail, fitRadius: 0.0, bucketCount: 8).strokeEvenness()
 		
 		XCTAssertGreaterThan(bad, 0.0, "This stroke should not be perfect")
 		XCTAssertGreaterThan(good, 0.0, "This stroke should not be perfect")
@@ -91,8 +91,8 @@ class CircleAnalyzer: XCTestCase {
 	func testFindStrokeCongestionDirection() {
 		let (congestionDown, _) = polariseTestPoints(points: congestedDown)
 		let (congestionUpLeft, _) = polariseTestPoints(points: congestedUpperLeft)
-		let congestionD = TrailAnalyser(points: congestionDown, fitRadius: 10.0).strokeCongestion()
-		let congestionUL = TrailAnalyser(points: congestionUpLeft, fitRadius: 10.0).strokeCongestion()
+		let congestionD = TrailAnalyser(points: congestionDown, fitRadius: 10.0, bucketCount: 8).strokeCongestion()
+		let congestionUL = TrailAnalyser(points: congestionUpLeft, fitRadius: 10.0, bucketCount: 8).strokeCongestion()
 		
 		XCTAssertGreaterThan(congestionD.peak, 0.0, "Did not calculate congestion")
 		XCTAssertEqualWithAccuracy(congestionD.angle, 3.0 * M_PI_2, accuracy: M_PI_4, "Did not direct congestion")
@@ -148,16 +148,16 @@ class CircleAnalyzer: XCTestCase {
 		let (roundTrail, roundRadius) = polariseTestPoints(points: roundCircleTrail)
 		let (perfectTrail, perfectRadius) = polariseTestPoints(points: perfectCircleTrail)
 		
-		let bad = TrailAnalyser(points: bumpyTrail, fitRadius: bumpyRadius).radialFitness()
-		let good = TrailAnalyser(points: roundTrail, fitRadius: roundRadius).radialFitness()
-		let perfect = TrailAnalyser(points: perfectTrail, fitRadius: perfectRadius).radialFitness()
+		let bad = TrailAnalyser(points: bumpyTrail, fitRadius: bumpyRadius, bucketCount: 8).radialFitness()
+		let good = TrailAnalyser(points: roundTrail, fitRadius: roundRadius, bucketCount: 8).radialFitness()
+		let perfect = TrailAnalyser(points: perfectTrail, fitRadius: perfectRadius, bucketCount: 8).radialFitness()
 		
 		XCTAssertLessThan(good, bad, "Uneven circle should have higher error than even stroke")
 		XCTAssertEqual(perfect, 0.0, "Close-to-perfect circle should snap error to zero")
 		
 		let largeBadTrailScaled = bumpyCircleTrail.map{TestPoint($0.0 * 100.0, $0.1 * 100.0)}
 		let (largeBadTrail, largeBadRadius) = polariseTestPoints(points: largeBadTrailScaled)
-		let largeBad = TrailAnalyser(points: largeBadTrail, fitRadius: largeBadRadius).radialFitness()
+		let largeBad = TrailAnalyser(points: largeBadTrail, fitRadius: largeBadRadius, bucketCount: 8).radialFitness()
 		XCTAssertEqualWithAccuracy(largeBad, bad, accuracy: 0.01, "Scaling the circle shouldn't cause larger error")
 	}
 	
@@ -169,9 +169,9 @@ class CircleAnalyzer: XCTestCase {
 		let (expandingTrail, _) = polariseTestPoints(points: radialExpansionTrail)
 		let (perfectTrail, _) = polariseTestPoints(points: perfectContractionTrail)
 		
-		let contraction = TrailAnalyser(points: contractingTrail, fitRadius: 10.0).radialContraction()
-		let expansion = TrailAnalyser(points: expandingTrail, fitRadius: 10.0).radialContraction()
-		let perfect = TrailAnalyser(points: perfectTrail, fitRadius: 10.0).radialContraction()
+		let contraction = TrailAnalyser(points: contractingTrail, fitRadius: 10.0, bucketCount: 8).radialContraction()
+		let expansion = TrailAnalyser(points: expandingTrail, fitRadius: 10.0, bucketCount: 8).radialContraction()
+		let perfect = TrailAnalyser(points: perfectTrail, fitRadius: 10.0, bucketCount: 8).radialContraction()
 		
 		XCTAssertLessThan(contraction, 0.0, "Contracting circle should be negative")
 		XCTAssertGreaterThan(expansion, 0.0, "Expanding circle should be positive")
@@ -188,9 +188,9 @@ class CircleAnalyzer: XCTestCase {
 		let (veryDistantCapsTrail, _) = polariseTestPoints(points: veryDistantCaps)
 		let (perfectTrail, _) = polariseTestPoints(points: perfectCaps)
 		
-		let distant = TrailAnalyser(points: distantCapsTrail, fitRadius: 10.0).endCapsSeparation()
-		let veryDistant = TrailAnalyser(points: veryDistantCapsTrail, fitRadius: 10.0).endCapsSeparation()
-		let perfect = TrailAnalyser(points: perfectTrail, fitRadius: 10.0).endCapsSeparation()
+		let distant = TrailAnalyser(points: distantCapsTrail, fitRadius: 10.0, bucketCount: 8).endCapsSeparation()
+		let veryDistant = TrailAnalyser(points: veryDistantCapsTrail, fitRadius: 10.0, bucketCount: 8).endCapsSeparation()
+		let perfect = TrailAnalyser(points: perfectTrail, fitRadius: 10.0, bucketCount: 8).endCapsSeparation()
 		
 		XCTAssertGreaterThan(veryDistant, distant, "More distant caps should be a larger error")
 		XCTAssertEqual(perfect, 0.0, "Close-to-perfect end caps should snap error to zero")
@@ -198,7 +198,7 @@ class CircleAnalyzer: XCTestCase {
 	
 	func testShouldRejectNonClosedCircle() {
 		let (notClosedTrail, radius) = polariseTestPoints(points: notClosed)
-		let reject = TrailAnalyser(points: notClosedTrail, fitRadius: radius).isCircle()
+		let reject = TrailAnalyser(points: notClosedTrail, fitRadius: radius, bucketCount: 8).isCircle()
 		
 		XCTAssertFalse(reject, "Nonclosed circle should be rejected")
 	}
@@ -206,8 +206,8 @@ class CircleAnalyzer: XCTestCase {
 	func testShouldRejectNotEvenCloseToCircle() {
 		let (squareTrail, radius1) = polariseTestPoints(points: square)
 		let (eightTrail, radius2) = polariseTestPoints(points: eight)
-		let reject1 = TrailAnalyser(points: squareTrail, fitRadius: radius1).isCircle()
-		let reject2 = TrailAnalyser(points: eightTrail, fitRadius: radius2).isCircle()
+		let reject1 = TrailAnalyser(points: squareTrail, fitRadius: radius1, bucketCount: 8).isCircle()
+		let reject2 = TrailAnalyser(points: eightTrail, fitRadius: radius2, bucketCount: 8).isCircle()
 		
 		XCTAssertFalse(reject1, "Nonround circle should be rejected")
 		XCTAssertFalse(reject2, "Nonround circle should be rejected")
@@ -216,8 +216,8 @@ class CircleAnalyzer: XCTestCase {
 	func testShouldRejectSegments() {
 		let (lineSegmentTrail, radius1) = polariseTestPoints(points: lineSegment)
 		let (arcSegmentTrail, radius2) = polariseTestPoints(points: arcSegment)
-		let reject1 = TrailAnalyser(points: lineSegmentTrail, fitRadius: radius1).isCircle()
-		let reject2 = TrailAnalyser(points: arcSegmentTrail, fitRadius: radius2).isCircle()
+		let reject1 = TrailAnalyser(points: lineSegmentTrail, fitRadius: radius1, bucketCount: 8).isCircle()
+		let reject2 = TrailAnalyser(points: arcSegmentTrail, fitRadius: radius2, bucketCount: 8).isCircle()
 		
 		XCTAssertFalse(reject1, "Noncomplete circle should be rejected")
 		XCTAssertFalse(reject2, "Noncomplete circle should be rejected")
@@ -225,17 +225,17 @@ class CircleAnalyzer: XCTestCase {
 	
 	func testShouldAcceptHonestCircle() {
 		let (circleTrail, radius) = polariseTestPoints(points: properCircle)
-		let accept = TrailAnalyser(points: circleTrail, fitRadius: radius).isCircle()
+		let accept = TrailAnalyser(points: circleTrail, fitRadius: radius, bucketCount: 8).isCircle()
 		
 		XCTAssertTrue(accept, "Complete circle should be accepted")
 	}
 	
 	func testShouldCalculateDirection() {
 		let (cwTrail, cwRadius) = polariseTestPoints(points: clockwiseCircle)
-		let cwAnalysis = TrailAnalyser(points: cwTrail, fitRadius: cwRadius)
+		let cwAnalysis = TrailAnalyser(points: cwTrail, fitRadius: cwRadius, bucketCount: 8)
 		
 		let (ccwTrail, ccwRadius) = polariseTestPoints(points: counterClockwiseCircle)
-		let ccwAnalysis = TrailAnalyser(points: ccwTrail, fitRadius: ccwRadius)
+		let ccwAnalysis = TrailAnalyser(points: ccwTrail, fitRadius: ccwRadius, bucketCount: 8)
 		
 		XCTAssertTrue(cwAnalysis.isClockwise())
 		XCTAssertFalse(ccwAnalysis.isClockwise())
@@ -262,7 +262,7 @@ class CircleAnalyzer: XCTestCase {
 	func testTrailAnalysisPerformance() {
 		let (testTrail, radius) = polariseTestPoints(points: eight)
 		self.measure() {
-			let _ = TrailAnalyser(points: testTrail, fitRadius: radius)
+			let _ = TrailAnalyser(points: testTrail, fitRadius: radius, bucketCount: 8)
 			return ()
 		}
 	}
