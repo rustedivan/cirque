@@ -20,18 +20,15 @@ extension Trail : VertexSource {
 		for segment in stroke {
 			let pC = segment.0
 			let angle = segment.1.0
-			let length = segment.1.1
 			let width = 2.0
 			let span = Vector(dx: sin(angle) * width / 2.0, dy: -cos(angle) * width / 2.0)
 			
-			let progress = Float(log2(length))
-			
 			let pL = CirqueVertex(position: vector_float4(Float(pC.x + span.dx), Float(pC.y + span.dy), 0.0, 1.0),
 			                      color: RenderStyle.trailColor.vec4,
-			                      progress: progress)
+			                      progress: 1.0)
 			let pR = CirqueVertex(position: vector_float4(Float(pC.x - span.dx), Float(pC.y - span.dy), 0.0, 1.0),
 			                      color: RenderStyle.trailColor.vec4,
-			                      progress: progress)
+			                      progress: 1.0)
 			
 			vertices.append(pL)
 			vertices.append(pR)
@@ -88,14 +85,21 @@ extension ErrorArea : VertexSource {
 	
 		// Finally, convert the polar points to vertices
 		var out: VertexSource.Buffer = []
-		for p in polarPoints {
-			let a = -p.a	// Invert angle due to UIView's flipped Y axis
-			let v = CirqueVertex(position: [	Float(cos(a) * p.r + center.x),
-																				Float(sin(a) * p.r + center.y),
+		var angleDeltas = [0.0] // First point starts at progress 0.0
+		angleDeltas.append(contentsOf: angleDistances(polarPoints))
+		var angularLength = angleDeltas.reduce(0.0, +)
+		
+		var progress = 0.0
+		
+		for p in zip(polarPoints, angleDeltas) {
+			let angle = -p.0.a // Invert angle due to UIView's flipped Y axis
+			progress += p.1
+			let v = CirqueVertex(position: [	Float(cos(angle) * p.0.r + center.x),
+																				Float(sin(angle) * p.0.r + center.y),
 																				0.0,
 																				1.0 ],
 			                     color: RenderStyle.errorColor.vec4,
-			                     progress: 1.0)
+			                     progress: Float(progress / angularLength))
 			out.append(v)
 		}
 		
@@ -107,7 +111,7 @@ extension BestFitCircle : VertexSource {
 	func toVertices() -> VertexSource.Buffer {
 		var out: VertexSource.Buffer = []
 		
-		let startAngle = lineWidths.first?.a ?? 0.0
+		guard let startAngle = lineWidths.first?.a else { return out }
 		
 		for segment in lineWidths {
 			let angle = -segment.0 // Invert angle due to UIView's flipped Y axis
@@ -118,7 +122,7 @@ extension BestFitCircle : VertexSource {
 			let pOut = Point(x: cos(angle) * (fitRadius + (width / 2.0)),
 			                 y: sin(angle) * (fitRadius + (width / 2.0)))
 			
-			let progress = Float(abs(angle - startAngle) / (2.0 * M_PI))
+			let progress = Float(abs(angle - (-startAngle)) / (2.0 * M_PI))
 			let vL = CirqueVertex(position: vector_float4(Float(pIn.x + center.x),
 			                                              Float(pIn.y + center.y),
 			                                              0.0, 1.0),
