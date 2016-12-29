@@ -13,6 +13,7 @@ struct Vertex
 {
 	float4 position [[position]];
 	float4 color;
+	float progress;
 };
 
 struct Constants
@@ -27,6 +28,7 @@ vertex Vertex vertex_main(device Vertex* vertices [[buffer(0)]],
 	Vertex vertexOut;
 	vertexOut.position = constants->modelViewProjectionMatrix * vertices[vid].position;
 	vertexOut.color = vertices[vid].color;
+	vertexOut.progress = vertices[vid].progress;
 	return vertexOut;
 }
 
@@ -47,7 +49,7 @@ struct ErrorAreaUniforms {
 fragment float4 fragment_error(Vertex fragmentIn [[stage_in]],
 															constant ErrorAreaUniforms* uniforms [[buffer(1)]])
 {
-	float alpha = fragmentIn.color.w + uniforms->progress;
+	float alpha = (fragmentIn.progress < uniforms->progress) ? 0.0 : 1.0;
 	return float4(fragmentIn.color.x, fragmentIn.color.y, fragmentIn.color.z, alpha);
 }
 
@@ -59,6 +61,6 @@ struct BestFitUniforms {
 fragment float4 fragment_bestfit(Vertex fragmentIn [[stage_in]],
 															 constant BestFitUniforms* uniforms [[buffer(1)]])
 {
-	float alpha = (fragmentIn.color.w < uniforms->progress) ? 0.0 : 1.0;
+	float alpha = (fragmentIn.progress < uniforms->progress) ? 0.0 : 1.0;
 	return float4(fragmentIn.color.x, fragmentIn.color.y, fragmentIn.color.z, alpha);
 }
