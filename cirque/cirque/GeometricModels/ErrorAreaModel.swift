@@ -12,12 +12,13 @@ struct ErrorArea {
 	typealias ErrorBar = (a: Double, r: Double, isCap: Bool)
 	var errorBars: [ErrorBar] = []
 	var fitRadius: Double
+	var rootAngle: Double
 	var center: Point
 
 	init(_ points: [Polar], around: Point, radius: Double, treshold: Double) {
 		fitRadius = radius
 		center = around
-		
+		rootAngle = points.first?.a ?? 0.0
 		var insideErrorArea = false
 		
 		for (i, p) in points.enumerated() {

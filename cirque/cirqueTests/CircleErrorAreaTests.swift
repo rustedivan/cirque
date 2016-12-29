@@ -76,6 +76,27 @@ class CircleErrorAreaTests: XCTestCase {
 			XCTAssertEqual(e.errorBars[8].r, 100.0, "Did not place end cap correctly")
 	}
 	
+	func testShouldCaptureRootAngle() {
+		let modelRadius = 100.0
+		let errorTreshold = 4.0
+		let around = Point(x: 10.0, y: -20.0)
+		var imperfectPoints: [Polar] = []
+		imperfectPoints.append(Polar(a:  0.4, r: 100.0))	// In range
+		imperfectPoints.append(Polar(a:  0.5, r: 101.0))	// In range
+		imperfectPoints.append(Polar(a:  0.6, r: 108.0))	// Positive overshoot
+		imperfectPoints.append(Polar(a:  0.7, r: 110.0))	// Positive overshoot
+		imperfectPoints.append(Polar(a:  0.8, r:  90.0))	// Negative overshoot
+		imperfectPoints.append(Polar(a:  0.9, r: 102.0))	// In range
+		imperfectPoints.append(Polar(a:  1.0, r:  99.0))	// In range
+		
+		let e = ErrorArea(imperfectPoints,
+		                  around: around,
+		                  radius: modelRadius,
+		                  treshold: errorTreshold)
+		
+		XCTAssertEqual(e.rootAngle, 0.4, "Root angle is not that of first point (regardless of error area)")
+	}
+	
 	func testGenerateErrorTriangles() {
 		let modelRadius = 100.0
 		let errorTreshold = 4.0
