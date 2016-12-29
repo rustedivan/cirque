@@ -43,8 +43,8 @@ extension MetalRenderer {
 		})
 	}
 	
-	func copyUniforms<Uniforms>(uniforms: Uniforms, toBuffer uniformBuffer: MTLBuffer) {
-		let uniformLen = MemoryLayout<Uniforms>.stride
+	func copyUniforms<UniformBlock>(uniforms: UniformBlock, toBuffer uniformBuffer: MTLBuffer) {
+		let uniformLen = MemoryLayout<UniformBlock>.stride
 		guard uniformLen <= uniformBuffer.length else {
 			print("Could not copy \(uniformLen) bytes into MTLBuffer \"\(uniformBuffer.label ?? "")\".")
 			return
@@ -73,6 +73,13 @@ struct MetalTrailRenderer<Encoder>: MetalRenderer {
 		pipelineDescriptor.vertexFunction = vertexFunc
 		pipelineDescriptor.fragmentFunction = fragmentFunc
 		pipelineDescriptor.colorAttachments[0].pixelFormat = pixelFormat
+		pipelineDescriptor.colorAttachments[0].isBlendingEnabled = true
+		pipelineDescriptor.colorAttachments[0].alphaBlendOperation = .add
+		pipelineDescriptor.colorAttachments[0].rgbBlendOperation = .add
+		pipelineDescriptor.colorAttachments[0].sourceRGBBlendFactor = .sourceAlpha
+		pipelineDescriptor.colorAttachments[0].sourceAlphaBlendFactor = .sourceAlpha
+		pipelineDescriptor.colorAttachments[0].destinationRGBBlendFactor = .oneMinusSourceAlpha
+		pipelineDescriptor.colorAttachments[0].destinationAlphaBlendFactor = .oneMinusSourceAlpha
 		pipelineDescriptor.sampleCount = 4
 		pipeline = try! device.makeRenderPipelineState(descriptor: pipelineDescriptor)
 
@@ -91,11 +98,11 @@ struct MetalTrailRenderer<Encoder>: MetalRenderer {
 		
 		let vertexCount = copyVertices(vertices: vertices, toBuffer: vertexBuffer)
 		
-		copyUniforms(uniforms: uniforms, toBuffer: uniformBuffer)
+//		copyUniforms(uniforms: uniforms, toBuffer: uniformBuffer)
 		
 		encoder.setRenderPipelineState(pipeline)
 		encoder.setVertexBuffer(vertexBuffer, offset: 0, at: MetalRenderPath.VertexLocations.position.rawValue)
-		encoder.setVertexBuffer(uniformBuffer, offset: 0, at: MetalRenderPath.VertexLocations.uniforms.rawValue)
+//		encoder.setVertexBuffer(uniformBuffer, offset: 0, at: MetalRenderPath.VertexLocations.uniforms.rawValue)
 		encoder.setFragmentBuffer(uniformBuffer, offset: 0, at: MetalRenderPath.VertexLocations.uniforms.rawValue)
 		
 		encoder.drawPrimitives(type: .triangleStrip, vertexStart: 0, vertexCount: vertexCount)
@@ -119,6 +126,13 @@ struct MetalBestFitRenderer<Encoder>: MetalRenderer {
 		pipelineDescriptor.vertexFunction = vertexFunc
 		pipelineDescriptor.fragmentFunction = fragmentFunc
 		pipelineDescriptor.colorAttachments[0].pixelFormat = pixelFormat
+		pipelineDescriptor.colorAttachments[0].isBlendingEnabled = true
+		pipelineDescriptor.colorAttachments[0].alphaBlendOperation = .add
+		pipelineDescriptor.colorAttachments[0].rgbBlendOperation = .add
+		pipelineDescriptor.colorAttachments[0].sourceRGBBlendFactor = .sourceAlpha
+		pipelineDescriptor.colorAttachments[0].sourceAlphaBlendFactor = .sourceAlpha
+		pipelineDescriptor.colorAttachments[0].destinationRGBBlendFactor = .oneMinusSourceAlpha
+		pipelineDescriptor.colorAttachments[0].destinationAlphaBlendFactor = .oneMinusSourceAlpha
 		pipelineDescriptor.sampleCount = 4
 		pipeline = try! device.makeRenderPipelineState(descriptor: pipelineDescriptor)
 		
@@ -139,7 +153,6 @@ struct MetalBestFitRenderer<Encoder>: MetalRenderer {
 		
 		// TODO: typealias the uniform block type across the renderer
 		copyUniforms(uniforms: uniforms, toBuffer: uniformBuffer)
-		
 		encoder.setRenderPipelineState(pipeline)
 		encoder.setVertexBuffer(vertexBuffer, offset: 0, at: MetalRenderPath.VertexLocations.position.rawValue)
 		encoder.setVertexBuffer(uniformBuffer, offset: 0, at: MetalRenderPath.VertexLocations.uniforms.rawValue)
@@ -165,6 +178,13 @@ struct MetalErrorRenderer<Encoder>: MetalRenderer {
 		pipelineDescriptor.vertexFunction = vertexFunc
 		pipelineDescriptor.fragmentFunction = fragmentFunc
 		pipelineDescriptor.colorAttachments[0].pixelFormat = pixelFormat
+		pipelineDescriptor.colorAttachments[0].isBlendingEnabled = true
+		pipelineDescriptor.colorAttachments[0].alphaBlendOperation = .add
+		pipelineDescriptor.colorAttachments[0].rgbBlendOperation = .add
+		pipelineDescriptor.colorAttachments[0].sourceRGBBlendFactor = .sourceAlpha
+		pipelineDescriptor.colorAttachments[0].sourceAlphaBlendFactor = .sourceAlpha
+		pipelineDescriptor.colorAttachments[0].destinationRGBBlendFactor = .oneMinusSourceAlpha
+		pipelineDescriptor.colorAttachments[0].destinationAlphaBlendFactor = .oneMinusSourceAlpha
 		pipelineDescriptor.sampleCount = 4
 		pipeline = try! device.makeRenderPipelineState(descriptor: pipelineDescriptor)
 		
@@ -184,7 +204,6 @@ struct MetalErrorRenderer<Encoder>: MetalRenderer {
 		let vertexCount = copyVertices(vertices: vertices, toBuffer: vertexBuffer)
 		
 		copyUniforms(uniforms: uniforms, toBuffer: uniformBuffer)
-		
 		encoder.setRenderPipelineState(pipeline)
 		encoder.setVertexBuffer(vertexBuffer, offset: 0, at: MetalRenderPath.VertexLocations.position.rawValue)
 		encoder.setVertexBuffer(uniformBuffer, offset: 0, at: MetalRenderPath.VertexLocations.uniforms.rawValue)
