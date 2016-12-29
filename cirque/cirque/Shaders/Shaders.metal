@@ -49,7 +49,7 @@ struct ErrorAreaUniforms {
 fragment float4 fragment_error(Vertex fragmentIn [[stage_in]],
 															constant ErrorAreaUniforms* uniforms [[buffer(1)]])
 {
-	float alpha = (fragmentIn.progress < uniforms->progress) ? 0.0 : 1.0;
+	float alpha = (uniforms->progress > fragmentIn.progress) ? 1.0 : 0.0;
 	return float4(fragmentIn.color.x, fragmentIn.color.y, fragmentIn.color.z, alpha);
 }
 
@@ -61,6 +61,6 @@ struct BestFitUniforms {
 fragment float4 fragment_bestfit(Vertex fragmentIn [[stage_in]],
 															 constant BestFitUniforms* uniforms [[buffer(1)]])
 {
-	float alpha = (fragmentIn.progress < uniforms->progress) ? 0.0 : 1.0;
+	float alpha = (uniforms->progress > fragmentIn.progress) ? 1.0 : 0.0;
 	return float4(fragmentIn.color.x, fragmentIn.color.y, fragmentIn.color.z, alpha);
 }
