@@ -87,7 +87,7 @@ extension ErrorArea : VertexSource {
 		var out: VertexSource.Buffer = []
 		var angleDeltas = [0.0] // First point starts at progress 0.0
 		angleDeltas.append(contentsOf: angleDistances(polarPoints))
-		var angularLength = angleDeltas.reduce(0.0, +)
+		let angularLength = angleDeltas.reduce(0.0, +)
 		
 		var progress = 0.0
 		
