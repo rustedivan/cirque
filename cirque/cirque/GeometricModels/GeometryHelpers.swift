@@ -105,3 +105,9 @@ func ortho2d(l: CGFloat, r: CGFloat, b: CGFloat, t: CGFloat, n: CGFloat, f: CGFl
 	
 	return matrix_float4x4(columns: (p, q, r, s))
 }
+
+extension CGPoint {
+	init(point: Point) {
+		self.init(x: CGFloat(point.x), y: CGFloat(point.y))
+	}
+}
