@@ -31,8 +31,8 @@ class ScoreView: UIView {
 		}
 	}
 	
-	static let displayDuration = 1.5
-	static let countupDuration = 0.5
+	private static let displayDuration = 1.5
+	private static let countupDuration = 0.5
 	
 	var viewModel = ViewModel(score: 0.0, displayStartTime: .distantPast, countUpStartTime: .distantPast)
 	
