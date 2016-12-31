@@ -58,13 +58,12 @@ class TrailHistory {
 			saveData.write(toFile: directory + savefile, atomically: true)
 			
 			let attribs = (try! FileManager.default.attributesOfItem(atPath: directory + savefile)) as NSDictionary
-//			print("History file has grown to \(attribs.fileSize() / 1024)kB.")
+			print("History file has grown to \(attribs.fileSize() / 1024)kB.")
 		}
 	}
 }
 
 extension TrailHistory {
-	
 	func circularityScoreProgression() -> Double {
 		var scores = [Double]()
 		for analysis in entries {
@@ -94,6 +93,6 @@ extension TrailHistory {
 			scores.append(analysis.circularityScore())
 		}
 		
-//		print(scores)
+		print(scores)
 	}
 }

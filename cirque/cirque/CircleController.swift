@@ -55,7 +55,9 @@ class CircleController {
 				historyWriter.addAnalysis(analyser)
 				trend = historyWriter.circularityScoreProgression()
 				historyWriter.save()
-				historyWriter.dumpScoreHistory()
+//				historyWriter.dumpScoreHistory()
+				
+				analyser.dumpFullAnalysis()
 				
 				let score = analyser.circularityScore()
 				let errorArea = ErrorArea(polar, around: fit.center, radius: fit.radius, treshold: 2.0)

@@ -75,6 +75,22 @@ class TrailAnalyser: NSObject, NSCoding {
 		}
 		return histogram
 	}
+	
+	func dumpFullAnalysis() {
+		print("Accepted circle:")
+		print("\tDirection:        \(isClockwise() ? "clockwise" : "counter-clockwise")")
+		print("\tCircularity:")
+		print("\t- score:          \(Int(circularityScore() * 100.0))%")
+		print("\t- radial fitness: \(Int(radialFitness() * 100.0))%")
+		print("\t- contraction:    \(radialContraction())")
+		print("\t- cap separation: \(Int(endCapsSeparation())) pixels")
+		print("\tRadial deviation:")
+		print("\t- peak:           \(Int(radialDeviation().peak))")
+		print("\t- angle:          \(Int((radialDeviation().angle / M_PI) * 180.0))º")
+		print("\tStroke evenness:")
+		print("\t- peak:           \(Int(strokeCongestion().peak))")
+		print("\t- angle:          \(Int((strokeCongestion().angle / M_PI) * 180.0))º")
+	}
 }
 
 extension TrailAnalyser {
