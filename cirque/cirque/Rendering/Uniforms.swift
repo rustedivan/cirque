@@ -63,3 +63,12 @@ extension AnalysingData {
 		}
 	}
 }
+
+extension HintingData {
+	var bestFitUniforms: BestFitUniforms {
+		get {
+			return BestFitUniforms(progress: 1.0,
+			                       quality: 1.0)
+		}
+	}
+}

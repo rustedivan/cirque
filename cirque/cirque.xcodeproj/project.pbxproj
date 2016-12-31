@@ -44,6 +44,9 @@
 		14D189431A52C50E00CD0862 /* TrailAnalyser.swift in Sources */ = {isa = PBXBuildFile; fileRef = 14D189421A52C50E00CD0862 /* TrailAnalyser.swift */; };
 		14D189441A52C51500CD0862 /* TrailAnalyser.swift in Sources */ = {isa = PBXBuildFile; fileRef = 14D189421A52C50E00CD0862 /* TrailAnalyser.swift */; };
 		14D197091A3C844600832ACA /* CircleFitter.swift in Sources */ = {isa = PBXBuildFile; fileRef = 141A8E171A3C6C36002ED07F /* CircleFitter.swift */; };
+		14D3715F1E1752230056D399 /* AnalysisView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 14D3715E1E1752230056D399 /* AnalysisView.swift */; };
+		14D371611E175B6A0056D399 /* Hinting.swift in Sources */ = {isa = PBXBuildFile; fileRef = 14D371601E175B6A0056D399 /* Hinting.swift */; };
+		14D371621E1760EE0056D399 /* Hinting.swift in Sources */ = {isa = PBXBuildFile; fileRef = 14D371601E175B6A0056D399 /* Hinting.swift */; };
 		14D6057D19FCE63C0096E228 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 14D6057C19FCE63C0096E228 /* AppDelegate.swift */; };
 		14D6058619FCE63C0096E228 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 14D6058419FCE63C0096E228 /* Main.storyboard */; };
 		14D6058819FCE63C0096E228 /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 14D6058719FCE63C0096E228 /* Images.xcassets */; };
@@ -100,6 +103,8 @@
 		14AFB47F1A5936BF00EC7EA7 /* CircleControllerTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CircleControllerTests.swift; sourceTree = "<group>"; };
 		14B524791CA7E88500D38DE2 /* ScoreView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = ScoreView.swift; path = Views/ScoreView.swift; sourceTree = "<group>"; };
 		14D189421A52C50E00CD0862 /* TrailAnalyser.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = TrailAnalyser.swift; path = Analysis/TrailAnalyser.swift; sourceTree = "<group>"; };
+		14D3715E1E1752230056D399 /* AnalysisView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = AnalysisView.swift; path = Views/AnalysisView.swift; sourceTree = "<group>"; };
+		14D371601E175B6A0056D399 /* Hinting.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = Hinting.swift; path = Analysis/Hinting.swift; sourceTree = "<group>"; };
 		14D6057719FCE63C0096E228 /* cirque.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = cirque.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		14D6057B19FCE63C0096E228 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		14D6057C19FCE63C0096E228 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
@@ -168,6 +173,7 @@
 			children = (
 				141A8E171A3C6C36002ED07F /* CircleFitter.swift */,
 				14D189421A52C50E00CD0862 /* TrailAnalyser.swift */,
+				14D371601E175B6A0056D399 /* Hinting.swift */,
 				145D01131A6C064700B6D5C9 /* TrailHistory.swift */,
 			);
 			name = Analysis;
@@ -176,6 +182,7 @@
 		14748B2C1E051F7600002A94 /* Views */ = {
 			isa = PBXGroup;
 			children = (
+				14D3715E1E1752230056D399 /* AnalysisView.swift */,
 				14B524791CA7E88500D38DE2 /* ScoreView.swift */,
 				14E44FAF1C550F09006B594D /* CirqueView.swift */,
 			);
@@ -390,6 +397,8 @@
 				14748B271E051C6D00002A94 /* BestFitCircleModel.swift in Sources */,
 				14DBBDC71E0FB94F009239E0 /* AppHelpers.swift in Sources */,
 				14E44FAE1C55053E006B594D /* CirqueViewController.swift in Sources */,
+				14D3715F1E1752230056D399 /* AnalysisView.swift in Sources */,
+				14D371611E175B6A0056D399 /* Hinting.swift in Sources */,
 				14EDEA041DE27CE200AF2F25 /* Renderer.swift in Sources */,
 				14D6057D19FCE63C0096E228 /* AppDelegate.swift in Sources */,
 				141A8E181A3C6C36002ED07F /* CircleFitter.swift in Sources */,
@@ -420,6 +429,7 @@
 				149CD5271E06CF6F003A83C9 /* Style.swift in Sources */,
 				145A267F1A52BDD700B3FBAB /* MockTrails.swift in Sources */,
 				14AFB4811A59394D00EC7EA7 /* CircleController.swift in Sources */,
+				14D371621E1760EE0056D399 /* Hinting.swift in Sources */,
 				1402B4CE1A346D6C00E335B3 /* TrailModel.swift in Sources */,
 				144170151CFB693E00A1BF03 /* CircleErrorAreaTests.swift in Sources */,
 				14C8E6541DED9DE800F2FD80 /* MetalRenderPath.swift in Sources */,

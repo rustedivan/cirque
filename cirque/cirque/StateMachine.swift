@@ -27,6 +27,12 @@ struct ScoringData {
 	let countupProgress = progress(duration: 1.0)
 }
 
+struct HintingData {
+	let circle: Circle
+	let fit: BestFitCircle
+	let hint: HintType
+}
+
 struct RejectingData {
 	let circle: Circle
 	let showAt: Point
@@ -38,6 +44,7 @@ enum State : Equatable {
 	case drawing(DrawingData)
 	case analysing(AnalysingData)
 	case scoring(ScoringData)
+	case hinting(HintingData)
 	case rejecting(RejectingData)
 	
 	var name: String {
@@ -46,6 +53,7 @@ enum State : Equatable {
 		case .drawing: return "Drawing"
 		case .analysing: return "Analysing"
 		case .scoring: return "Scoring"
+		case .hinting: return "Hinting"
 		case .rejecting: return "Rejecting"
 		}
 	}

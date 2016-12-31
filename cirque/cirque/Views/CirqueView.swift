@@ -21,7 +21,7 @@ class CirqueView: UIView {
 		renderPath.renderFrame { encoder in
 			
 			switch renderState {
-			case .idle:
+			case .idle, .rejecting:
 				break
 			case .drawing(let data):
 				let uniforms = data.uniforms
@@ -49,7 +49,15 @@ class CirqueView: UIView {
 				renderPath.renderPass(vertices: data.circle.segments,
 				                      inRenderPass: .trail(trailUniforms),
 				                      intoEncoder: encoder)
-			default: break
+			case .hinting(let data):
+				let trailUniforms = TrailUniforms()
+				renderPath.renderPass(vertices: data.circle.segments,
+				                      inRenderPass: .trail(trailUniforms),
+				                      intoEncoder: encoder)
+				let bestFitUniforms = data.bestFitUniforms
+				renderPath.renderPass(vertices: data.fit,
+				                      inRenderPass: .bestFit(bestFitUniforms),
+				                      intoEncoder: encoder)
 			}
 		}
 	}

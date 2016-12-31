@@ -11,7 +11,7 @@ import CoreGraphics.CGGeometry
 
 enum CircleResult {
 	case rejected (centroid: Point)
-	case accepted (score: Double, trend: Double, fit: BestFitCircle, errorArea: ErrorArea)
+	case accepted (score: Double, trend: Double, fit: BestFitCircle, errorArea: ErrorArea, hint: HintType)
 }
 
 class CircleController {
@@ -46,7 +46,7 @@ class CircleController {
 			
 			let polar = polarize(self.circle.segments.points, around: fit.center)
 			
-			let analyser = TrailAnalyser(points: polar, fitRadius: fit.radius, bucketCount: 16)
+			let analyser = TrailAnalyser(points: polar, fitRadius: fit.radius, bucketCount: 36)
 			
 			let isCircle = analyser.isCircle()
 			var trend = 0.0
@@ -64,7 +64,12 @@ class CircleController {
 				let t = Taper(taperRatio: 0.2, clockwise: analyser.isClockwise())
 				let bestFitCircle = BestFitCircle(around: fit.center, radius: fit.radius, startAngle: polar.first?.a ?? 0.0, progress: 1.0, taper: t)
 				
-				after(.accepted(score: score, trend: trend, fit: bestFitCircle, errorArea: errorArea))
+				let hint = analyser.bestHint
+				after(.accepted(score: score,
+				                trend: trend,
+				                fit: bestFitCircle,
+				                errorArea: errorArea,
+				                hint: hint))
 			}
 			else {
 				after(.rejected(centroid: fit.center))

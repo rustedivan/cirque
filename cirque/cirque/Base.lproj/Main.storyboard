@@ -1,11 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="11542" systemVersion="16B2555" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" colorMatched="YES" initialViewController="BV1-FR-VrT">
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="11762" systemVersion="16C67" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" colorMatched="YES" initialViewController="BV1-FR-VrT">
     <device id="retina4_7" orientation="portrait">
         <adaptation id="fullscreen"/>
     </device>
     <dependencies>
         <deployment identifier="iOS"/>
-        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="11524"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="11757"/>
         <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
     </dependencies>
     <scenes>
@@ -26,10 +26,21 @@
                                 <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                 <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
                             </view>
+                            <view hidden="YES" opaque="NO" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="QAv-du-Bna" userLabel="Analysis View" customClass="AnalysisView" customModule="cirque" customModuleProvider="target">
+                                <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
+                                <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
+                            </view>
                         </subviews>
                         <color key="backgroundColor" red="0.0" green="0.0" blue="0.0" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                        <constraints>
+                            <constraint firstAttribute="trailing" secondItem="QAv-du-Bna" secondAttribute="trailing" id="2jd-pQ-PEf"/>
+                            <constraint firstItem="QAv-du-Bna" firstAttribute="top" secondItem="3se-qz-xqx" secondAttribute="top" id="ef5-eQ-fvf"/>
+                            <constraint firstItem="QAv-du-Bna" firstAttribute="leading" secondItem="3se-qz-xqx" secondAttribute="leading" id="ibC-YM-7xy"/>
+                            <constraint firstItem="qHh-Mt-9TT" firstAttribute="top" secondItem="QAv-du-Bna" secondAttribute="bottom" id="nil-Jb-9Or"/>
+                        </constraints>
                     </view>
                     <connections>
+                        <outlet property="analysisView" destination="QAv-du-Bna" id="BwA-bT-PuQ"/>
                         <outlet property="scoreView" destination="Mss-1K-8Mr" id="Ex8-mg-GWa"/>
                     </connections>
                 </viewController>
