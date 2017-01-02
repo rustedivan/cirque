@@ -41,7 +41,7 @@ class CircleController {
 		fitCircle(trail) { (fit: CircleFit) in
 			self.analysisTimestamp = Date()
 			
-			let polar = polarize(self.trail.points, around: fit.center)
+			let polar = polarize(self.trail, around: fit.center)
 			
 			let analyser = TrailAnalyser(points: polar, fitRadius: fit.radius, bucketCount: 36)
 			
@@ -87,9 +87,8 @@ class CircleController {
 	}
 	
 	func dispatchFitJob(_ trail: Trail, cb: @escaping CircleFitCallback) {
-		let points = trail.points	// Make copy
 		analysisQueue.async {
-			cb(CircleFitter.fitCenterAndRadius(points))
+			cb(CircleFitter.fitCenterAndRadius(trail))
 		}
 	}
 }

@@ -19,9 +19,9 @@ typealias CircleFitCallback = (CircleFit) -> ()
 
 struct CircleFitter {
 	
-	static func fitCenterAndRadius(_ points: PointArray) -> CircleFit {
+	static func fitCenterAndRadius(_ trail: Trail) -> CircleFit {
 		// Transform into
-		let p = centerPoints(points)
+		let (c, p) = centerPoints(trail)
 		
 		let sUU = sumUU(p)
 		let sUV = sumUV(p)
@@ -36,8 +36,6 @@ struct CircleFitter {
 		let A12 = sUV
 		let A21 = sUV
 		let A22 = sVV
-		
-		let c = centroid(points)
 		
 		// Determinant of A
 		let detA = A11*A22 - A12*A21
@@ -65,18 +63,18 @@ struct CircleFitter {
 		return (Point(x: x + c.x, y: y + c.y), sqrt(alpha)) as CircleFit
 	}
 	
-	static func centroid(_ points: PointArray) -> Point {
-		var c = points.reduce(zeroPoint) {
+	static func centroid(_ trail: Trail) -> Point {
+		var c = trail.reduce(zeroPoint) {
 			Point(x: $0.x + $1.x, y: $0.y + $1.y)
 		}
-		c.x /= Double(points.count)
-		c.y /= Double(points.count)
+		c.x /= Double(trail.count)
+		c.y /= Double(trail.count)
 		return c
 	}
 	
-	static func centerPoints(_ points: PointArray) -> PointArray {
-		let on = centroid(points)
-		return points.map{ Point(x: $0.x - on.x, y: $0.y - on.y) }
+	static func centerPoints(_ trail: Trail) -> (Point, PointArray) {
+		let on = centroid(trail)
+		return (on, trail.map{ Point(x: $0.x - on.x, y: $0.y - on.y) } )
 	}
 	
 	static func sumUU(_ points: PointArray) -> Double {

@@ -11,24 +11,24 @@ import CoreGraphics.CGGeometry
 
 class CircleFitterTests: XCTestCase {
 	let cf = CircleFitter()
-// Points taken from http://www.dtcenter.org/met/users/docs/write_ups/circle_fit.pdf
-	let examplePoints = [	Point(x: 0.00, y: 0.00),
-												Point(x: 0.50, y: 0.25),
-												Point(x: 1.00, y: 1.00),
-												Point(x: 1.50, y: 2.25),
-												Point(x: 2.00, y: 4.00),
-												Point(x: 2.50, y: 6.25),
-												Point(x: 3.00, y: 9.00)]
+	// Points taken from http://www.dtcenter.org/met/users/docs/write_ups/circle_fit.pdf
+	let exampleTrail = Trail(withPoints: [	Point(x: 0.00, y: 0.00),
+	                                      	Point(x: 0.50, y: 0.25),
+	                                      	Point(x: 1.00, y: 1.00),
+	                                      	Point(x: 1.50, y: 2.25),
+	                                      	Point(x: 2.00, y: 4.00),
+	                                      	Point(x: 2.50, y: 6.25),
+	                                      	Point(x: 3.00, y: 9.00)])
 	
 	
 	func testShouldCalculateCentroid() {
-		let c = CircleFitter.centroid(examplePoints)
+		let c = CircleFitter.centroid(exampleTrail)
 		XCTAssertEqualWithAccuracy(c.x, 1.50, accuracy: 0.01, "Centroid not calculated correctly")
 		XCTAssertEqualWithAccuracy(c.y, 3.25, accuracy: 0.01, "Centroid not calculated correctly")
 	}
 	
 	func testShouldCalculateUVSpace() {
-		let uv = CircleFitter.centerPoints(examplePoints)
+		let (_, uv) = CircleFitter.centerPoints(exampleTrail)
 
 		XCTAssertEqualWithAccuracy(uv[0].x, -1.50, accuracy: 0.01, "Centering not done correctly")
 		XCTAssertEqualWithAccuracy(uv[0].y, -3.25, accuracy: 0.01, "Centering not done correctly")
@@ -39,7 +39,7 @@ class CircleFitterTests: XCTestCase {
 	}
 	
 	func testShouldCalculateSums() {
-		let uv = CircleFitter.centerPoints(examplePoints)
+		let (_, uv) = CircleFitter.centerPoints(exampleTrail)
 
 		XCTAssertEqualWithAccuracy(CircleFitter.sumUU(uv), 7.00, accuracy: 0.01, "sUU not calculated correctly")
 		XCTAssertEqualWithAccuracy(CircleFitter.sumUV(uv), 21.00, accuracy: 0.01, "sUV not calculated correctly")
@@ -51,7 +51,7 @@ class CircleFitterTests: XCTestCase {
 	}
 	
 	func testShouldFitNewCenterAndRadius() {
-		let newCenter = CircleFitter.fitCenterAndRadius(examplePoints)
+		let newCenter = CircleFitter.fitCenterAndRadius(exampleTrail)
 		XCTAssertEqualWithAccuracy(newCenter.center.x, -11.84, accuracy: 0.01, "Center point not fitted correctly")
 		XCTAssertEqualWithAccuracy(newCenter.center.y, 8.45, accuracy: 0.01, "Center point not fitted correctly")
 		XCTAssertEqualWithAccuracy(newCenter.radius, 14.69, accuracy: 0.01, "Radius not fitter correctly")
@@ -65,7 +65,7 @@ class CircleFitterTests: XCTestCase {
 		}
 		
 		self.measure() {
-			let _ = CircleFitter.fitCenterAndRadius(p)
+			let _ = CircleFitter.fitCenterAndRadius(Trail(withPoints: p))
 			return ()
 		}
 	}

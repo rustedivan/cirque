@@ -50,28 +50,21 @@ struct Taper {
 	}
 }
 
-func polarize(_ points: PointArray, around c: Point) -> PolarArray {
-	var polar: PolarArray = []
-	
-	for i in 0 ..< points.count {
-		var p = points[i]
-		p.x -= c.x
-		p.y -= c.y
+func polarize(_ points: Trail, around c: Point) -> PolarArray {
+	return points.map { (p: Point) -> Polar in
+		let x = p.x - c.x
+		let y = p.y - c.y
 		
-		let a = atan2(p.y, p.x)
-		let r = sqrt(p.x * p.x + p.y * p.y)
-		
-		// UIView's Y axis is flipped, so the angle must be inverted to correct
-		polar.append((r: r, a: -a))
-	}
+		// UIView's Y axis is flipped, 
+		// so the angle must be negated to correct
+		var a = -atan2(y, x)
+		let r = sqrt(x * x + y * y)
 	
-	// Normalize angles
-	for i in 0 ..< polar.count {
-		if polar[i].a < 0.0 { polar[i].a += M_PI * 2.0 }
-		if polar[i].a > 2.0 * M_PI { polar[i].a -= M_PI * 2.0 }
+		if a < 0.0 { a += M_PI * 2.0 }
+		if a > 2.0 * M_PI { a -= M_PI * 2.0 }
+
+		return Polar(r: r, a: a)
 	}
-	
-	return polar
 }
 
 func angleDistances(_ points: PolarArray) -> [Double] {

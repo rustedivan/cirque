@@ -22,9 +22,9 @@ class CircleAnalyzer: XCTestCase {
 	}
 	
 	func polariseTestPoints(points: Array<(Double, Double)>) -> (polarPoints: PolarArray, radius: Double) {
-		let t = Trail(points: points)
-		let fit = CircleFitter.fitCenterAndRadius(t.points)
-		let p = polarize(t.points, around: fit.center)
+		let t = Trail(withPoints: points)
+		let fit = CircleFitter.fitCenterAndRadius(t)
+		let p = polarize(t, around: fit.center)
 		let r = fit.radius
 		return (polarPoints: p, radius: r)
 	}
@@ -242,8 +242,8 @@ class CircleAnalyzer: XCTestCase {
 	}
 	
 	func testCircleShouldBinAngles() {
-		let t = Trail(points: binTestCircle)
-		let p = polarize(t.points, around: zeroPoint)
+		let t = Trail(withPoints: binTestCircle)
+		let p = polarize(t, around: zeroPoint)
 		let buckets = TrailAnalyser.binPointsByAngle(p, intoBuckets: 4)
 		
 		XCTAssertEqual(buckets.count, 4, "Wrong number of buckets")

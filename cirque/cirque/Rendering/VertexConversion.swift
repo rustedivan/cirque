@@ -13,7 +13,7 @@ extension Trail : VertexSource {
 	func toVertices() -> VertexSource.Buffer {
 		// Inner and outer vertices for each segment
 		let segments = zip(self.angles, self.distances)
-		let stroke = zip(self.points, segments)
+		let stroke = zip(self, segments)
 
 		var vertices: VertexSource.Buffer = []
 		

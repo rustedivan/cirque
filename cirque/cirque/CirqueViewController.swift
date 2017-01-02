@@ -63,7 +63,7 @@ class CirqueViewController: UIViewController {
 		let p = touch.location(in: view)
 		circleController.endCircle(Point(x: Double(p.x), y: Double(p.y))) { (result: CircleResult) in
 			// Ignore if the circle isn't even a triangle
-			guard self.circleController.trail.points.count >= 3 else { return }
+			guard self.circleController.trail.count >= 3 else { return }
 			
 			DispatchQueue.main.async {
 				self.presentResult(result)

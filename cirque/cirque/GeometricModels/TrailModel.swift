@@ -12,12 +12,19 @@ import Darwin
 struct Trail {
 	static let segmentFilterDistance = 2.0
 	
-	var points = PointArray()
+	fileprivate var points = PointArray()
 	var angles: [Double] {
 		return anglesBetweenPoints()
 	}
 	var distances: [Double] {
 		return distancesBetweenPoints()
+	}
+	
+	init() {
+	}
+	
+	init(withPoints initialPoints: PointArray) {
+		points = initialPoints
 	}
 	
 	mutating func addPoint(_ p: Point) {
@@ -72,5 +79,63 @@ struct Trail {
 	}
 }
 
+// Make the Trail into a proxy for the underlying PointArray
+extension Trail : Collection {
+	var startIndex: PointArray.Index {
+		get { return points.startIndex }
+	}
+	var endIndex: PointArray.Index {
+		get { return points.endIndex }
+	}
+	subscript(position: PointArray.Index) -> PointArray.Iterator.Element {
+		get { return points[position] }
+	}
+	func index(after i: Int) -> Int {
+		return points.index(after: i)
+	}
+}
 
+extension Trail {
+	struct ArrayChunker: Sequence {
+		typealias Element = CountableRange<Int>
+		let stride: Int
+		let count: Int
+		
+		init(count: Int, chunkSize stride: Int) {
+			self.count = count
+			self.stride = stride
+		}
+		
+		func makeIterator() -> AnyIterator<CountableRange<Int>> {
+			var i = 0
+			return AnyIterator { () -> Element? in
+				guard i < self.count else { return nil }
+				let out = i ..< Swift.min(i + self.stride, self.count)
+				i += self.stride
+				return out
+			}
+		}
+	}
+	
+	func dumpAsSwiftArray() {
+		print("\n\n\n\nlet a = [")
+		for line in ArrayChunker(count: points.count, chunkSize: 5)
+		{
+			let pointsOnLine = points[line]
+			for point in pointsOnLine {
+				print(String(format:"(%.2f, %.2f) as TestPoint, ", point.x, point.y), terminator: "")
+			}
+			print("")
+		}
+		print("] as [TestPoint]\n\n\n")
+	}
+	
+	func dumpAsCSV() {
+		print("\n\n\n\n")
+		for point in points	{
+			print(String(format:"%f;\t%f", point.x, point.y))
+		}
+		print("\n\n\n")
+	}
+}
 
