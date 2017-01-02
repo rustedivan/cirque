@@ -10,6 +10,8 @@ import Foundation
 import Darwin
 
 struct Trail {
+	static let segmentFilterDistance = 2.0
+	
 	var points = PointArray()
 	var angles: [Double] {
 		return anglesBetweenPoints()
@@ -61,4 +63,14 @@ struct Trail {
 		
 		return segmentLengths
 	}
+	
+	func distanceFromEnd(_ point: Point) -> Double {
+		guard let last = points.last else { return 0.0 }
+		let p = Vector(dx: point.x - last.x,
+		               dy: point.y - last.y)
+		return sqrt(p.dx * p.dx + p.dy * p.dy)
+	}
 }
+
+
+

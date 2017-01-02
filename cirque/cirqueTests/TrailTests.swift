@@ -88,4 +88,33 @@ class TrailTests: XCTestCase {
 		XCTAssertEqual(t.distances.count, 3, "Trail should have one distance per point-pair")
 		XCTAssertEqual(t.distances.last!, 50.0, "Trail should calculate correct distance")
 	}
+	
+	func testTrailShouldPolarizePoints() {
+		let points = [Point(x: 105.0, y: -102.0),
+		              Point(x: -95.0, y: -102.0),
+		              Point(x: -95.0, y: 98.0),
+		              Point(x: 105.0, y: 98.0)]
+		var polar = polarize(points, around: Point(x: 5.0, y: -2.0))
+		
+		XCTAssertEqualWithAccuracy(polar[0].a, 1.0 * M_PI_4, accuracy: 0.01, "Incorrectly polarized")
+		XCTAssertEqualWithAccuracy(polar[0].r, 141.0, accuracy: 1.0, "Incorrectly polarized")
+		
+		XCTAssertEqualWithAccuracy(polar[1].a, 3.0 * M_PI_4, accuracy: 0.01, "Incorrectly polarized")
+		XCTAssertEqualWithAccuracy(polar[1].r, 141.0, accuracy: 1.0, "Incorrectly polarized")
+		
+		XCTAssertEqualWithAccuracy(polar[2].a, 5.0 * M_PI_4, accuracy: 0.01, "Incorrectly polarized")
+		XCTAssertEqualWithAccuracy(polar[2].r, 141.0, accuracy: 1.0, "Incorrectly polarized")
+		
+		XCTAssertEqualWithAccuracy(polar[3].a, 7.0 * M_PI_4, accuracy: 0.01, "Incorrectly polarized")
+		XCTAssertEqualWithAccuracy(polar[3].r, 141.0, accuracy: 1.0, "Incorrectly polarized")
+	}
+	
+	func testTrailShouldFilterShortSegments() {
+		var t = Trail()
+		t.addPoint(zeroPoint)
+		XCTAssertEqual(t.distanceFromEnd(Point(x: 10.0, y: 0.0)), 10.0, "Distance incorrect")
+		XCTAssertEqual(t.distanceFromEnd(Point(x: 20.0, y: 0.0)), 20.0, "Distance incorrect")
+		XCTAssertEqual(t.distanceFromEnd(Point(x: 1.0, y: 0.0)), 1.0, "Distance incorrect")
+		XCTAssertEqual(t.distanceFromEnd(Point(x: 3.0, y: 4.0)), 5.0, "Distance incorrect")
+	}
 }

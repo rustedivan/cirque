@@ -37,7 +37,7 @@ class CirqueViewController: UIViewController {
 		let p = touch.location(in: view)
 		circleController.beginNewCircle(Point(x: Double(p.x), y: Double(p.y)))
 		
-		let data = DrawingData(circle: circleController.circle)
+		let data = DrawingData(trail: circleController.trail)
 		stateMachine.currentState = .drawing(data)
 	}
 	
@@ -53,7 +53,7 @@ class CirqueViewController: UIViewController {
 		let p = touch.location(in: view)
 		circleController.addSegment(Point(x: Double(p.x), y: Double(p.y)))
 		
-		let data = DrawingData(circle: circleController.circle)
+		let data = DrawingData(trail: circleController.trail)
 		stateMachine.currentState = .drawing(data)
 	}
 	
@@ -63,7 +63,7 @@ class CirqueViewController: UIViewController {
 		let p = touch.location(in: view)
 		circleController.endCircle(Point(x: Double(p.x), y: Double(p.y))) { (result: CircleResult) in
 			// Ignore if the circle isn't even a triangle
-			guard self.circleController.circle.segments.points.count >= 3 else { return }
+			guard self.circleController.trail.points.count >= 3 else { return }
 			
 			DispatchQueue.main.async {
 				self.presentResult(result)
@@ -113,25 +113,25 @@ class CirqueViewController: UIViewController {
 			
 		case .accepted(let score, _, let fit, let errorArea, let hint):
 			// Show analysis
-			let data = AnalysingData(circle: circleController.circle, fit: fit, errorArea: errorArea)
+			let data = AnalysingData(trail: circleController.trail, fit: fit, errorArea: errorArea)
 			
 			stateMachine.currentState = .analysing(data)
 			
 			// Enqueue score countup
 			let startScoreCountupAt = DispatchTime.now() + .milliseconds(1500)
 			DispatchQueue.main.asyncAfter(deadline: startScoreCountupAt) {
-				let data = ScoringData(circle: self.circleController.circle, showAt: fit.center, score: score)
+				let data = ScoringData(trail: self.circleController.trail, showAt: fit.center, score: score)
 				self.stateMachine.currentState = .scoring(data)
 				
 				let startHintingAt = DispatchTime.now() + .milliseconds(1500)
 				DispatchQueue.main.asyncAfter(deadline: startHintingAt) {
-					let data = HintingData(circle: self.circleController.circle, fit: fit, hint: hint)
+					let data = HintingData(trail: self.circleController.trail, fit: fit, hint: hint)
 					self.stateMachine.currentState = .hinting(data)
 				}
 			}
 		case .rejected(let centroid):
 			// Show rejection immediately
-			let data = RejectingData(circle: circleController.circle, showAt: centroid)
+			let data = RejectingData(trail: circleController.trail, showAt: centroid)
 			stateMachine.currentState = .rejecting(data)
 			
 		}

@@ -15,36 +15,33 @@ enum CircleResult {
 }
 
 class CircleController {
-	var circle: Circle = Circle()
+	var trail = Trail()
 
 	var analysisTimestamp = Date()
 	var analysisRunning = false
 	let analysisQueue = DispatchQueue(label: "se.rusted.cirque.analysis", attributes: [])
 		
 	func beginNewCircle(_ p: Point) {
-		circle.begin()
-		circle.addSegment(p)
+		trail.addPoint(p)
 	}
 	
 	func addSegment(_ p: Point) {
-		let distanceFromLastSegment = circle.distanceFromEnd(p)
-		if distanceFromLastSegment < circle.segmentFilterDistance {
+		guard trail.distanceFromEnd(p) > Trail.segmentFilterDistance else {
 			return
 		}
 		
-		circle.addSegment(p)
+		trail.addPoint(p)
 	}
 
 	func endCircle(_ p: Point, after: @escaping (CircleResult) -> ()) {
-		circle.addSegment(p)
-		circle.end()
+		trail.addPoint(p)
 		
 //		circle.dumpAsSwiftArray()
 		
-		fitCircle(circle.segments) { (fit: CircleFit) in
+		fitCircle(trail) { (fit: CircleFit) in
 			self.analysisTimestamp = Date()
 			
-			let polar = polarize(self.circle.segments.points, around: fit.center)
+			let polar = polarize(self.trail.points, around: fit.center)
 			
 			let analyser = TrailAnalyser(points: polar, fitRadius: fit.radius, bucketCount: 36)
 			

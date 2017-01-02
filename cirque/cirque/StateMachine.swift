@@ -9,11 +9,11 @@
 import Foundation
 
 struct DrawingData {
-	let circle: Circle
+	let trail: Trail
 }
 
 struct AnalysingData {
-	let circle: Circle
+	let trail: Trail
 	let fit: BestFitCircle
 	let errorArea: ErrorArea
 	let bestFitProgress = progress(duration: 2.0)
@@ -21,20 +21,20 @@ struct AnalysingData {
 }
 
 struct ScoringData {
-	let circle: Circle
+	let trail: Trail
 	let showAt: Point
 	let score: Double
 	let countupProgress = progress(duration: 1.0)
 }
 
 struct HintingData {
-	let circle: Circle
+	let trail: Trail
 	let fit: BestFitCircle
 	let hint: HintType
 }
 
 struct RejectingData {
-	let circle: Circle
+	let trail: Trail
 	let showAt: Point
 	let rejectionProgress = progress(duration: 0.5)
 }
