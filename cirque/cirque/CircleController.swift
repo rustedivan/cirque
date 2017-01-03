@@ -38,30 +38,24 @@ class CircleController {
 		
 //		circle.dumpAsSwiftArray()
 		
-		fitCircle(trail) { (fit: CircleFit) in
+		analyseTrail(trail) { (fit: CircleFit, analysis: TrailAnalysis, hint: Hint?) in
 			self.analysisTimestamp = Date()
 			
-			let polar = polarize(self.trail, around: fit.center)
-			
-			let analyser = TrailAnalyser(points: polar, fitRadius: fit.radius, bucketCount: 36)
-			
-			let isCircle = analyser.isCircle()
 			var trend = 0.0
-			if isCircle {
+			if analysis.isCircle {
 				let historyWriter = TrailHistory(filename: "game-trail-history.trails")
-				historyWriter.addAnalysis(analyser)
+				historyWriter.addAnalysis(analysis)
 				trend = historyWriter.circularityScoreProgression()
 				historyWriter.save()
 //				historyWriter.dumpScoreHistory()
 				
-				analyser.dumpFullAnalysis()
+				print(analysis)
 				
-				let score = analyser.circularityScore()
+				let score = analysis.circularityScore
 				let errorArea = ErrorArea(polar, around: fit.center, radius: fit.radius, treshold: 2.0)
 				let t = Taper(taperRatio: 0.2, clockwise: analyser.isClockwise())
 				let bestFitCircle = BestFitCircle(around: fit.center, radius: fit.radius, startAngle: polar.first?.a ?? 0.0, progress: 1.0, taper: t)
 				
-				let hint = analyser.bestHint
 				after(.accepted(score: score,
 				                trend: trend,
 				                fit: bestFitCircle,
@@ -74,21 +68,22 @@ class CircleController {
 		}
 	}
 
-	func fitCircle(_ trail: Trail, cb: @escaping CircleFitCallback) {
-		if analysisRunning {return}
+	func analyseTrail(_ trail: Trail, cb: @escaping (CircleFit, TrailAnalysis) -> ()) {
+		if analysisRunning { return } // FIXME: block with states instead
 
 		analysisRunning = true
 
 		// Messy, so that unit tests can mock out the dispatch
-		dispatchFitJob(trail) { (fit: CircleFit) in
-			cb(fit)
+		dispatchFitJob(trail) { (fit: CircleFit, analysis: TrailAnalysis) in
+			cb(fit, analysis)
 			self.analysisRunning = false
 		}
 	}
 	
-	func dispatchFitJob(_ trail: Trail, cb: @escaping CircleFitCallback) {
+	func dispatchFitJob(_ trail: Trail, cb: @escaping ((CircleFit, TrailAnalysis, Hint?) -> ())) {
 		analysisQueue.async {
-			cb(CircleFitter.fitCenterAndRadius(trail))
+			TrailAnalyser.fitCenterAndRadius(trail)
+			cb()
 		}
 	}
 }

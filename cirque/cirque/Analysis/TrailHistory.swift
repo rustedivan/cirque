@@ -9,7 +9,7 @@
 import Foundation
 
 class TrailHistory {
-	var entries: [TrailAnalyser] = []
+	var entries: [TrailAnalysis] = []
 	var filename: String?
 	class var historyDir: String {
 		get {
@@ -30,11 +30,11 @@ class TrailHistory {
 		let loadData = try? Data(contentsOf: URL(fileURLWithPath: TrailHistory.historyDir + filename))
 		if let data = loadData {
 			let loader = NSKeyedUnarchiver(forReadingWith: data)
-			entries = loader.decodeObject(forKey: "trails") as! [TrailAnalyser]
+			entries = loader.decodeObject(forKey: "trails") as! [TrailAnalysis]
 		}
 	}
 	
-	func addAnalysis(_ trail: TrailAnalyser) {
+	func addAnalysis(_ trail: TrailAnalysis) {
 		entries.append(trail)
 	}
 	
@@ -67,7 +67,7 @@ extension TrailHistory {
 	func circularityScoreProgression() -> Double {
 		var scores = [Double]()
 		for analysis in entries {
-			scores.append(analysis.circularityScore())
+			scores.append(analysis.circularityScore)
 		}
 		
 		let indices = [Int](0..<scores.count)
@@ -90,7 +90,7 @@ extension TrailHistory {
 	func dumpScoreHistory() {
 		var scores = [Double]()
 		for analysis in entries {
-			scores.append(analysis.circularityScore())
+			scores.append(analysis.circularityScore)
 		}
 		
 		print(scores)

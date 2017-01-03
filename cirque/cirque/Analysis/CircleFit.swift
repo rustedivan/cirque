@@ -15,9 +15,8 @@ import CoreGraphics.CGGeometry
 // $ Move this code onto Surge library
 
 typealias CircleFit = (center: Point, radius: Double)
-typealias CircleFitCallback = (CircleFit) -> ()
 
-struct CircleFitter {
+extension TrailAnalyser {
 	
 	static func fitCenterAndRadius(_ trail: Trail) -> CircleFit {
 		// Transform into
@@ -76,32 +75,33 @@ struct CircleFitter {
 		let on = centroid(trail)
 		return (on, trail.map{ Point(x: $0.x - on.x, y: $0.y - on.y) } )
 	}
-	
-	static func sumUU(_ points: PointArray) -> Double {
-		return points.reduce(0.0) {$0 + ($1.x * $1.x)}
-	}
+}
 
-	static func sumUV(_ points: PointArray) -> Double {
-		return points.reduce(0.0) {$0 + ($1.x * $1.y)}
-	}
+// MARK: Sum combinations
+func sumUU(_ points: PointArray) -> Double {
+	return points.reduce(0.0) {$0 + ($1.x * $1.x)}
+}
 
-	static func sumVV(_ points: PointArray) -> Double {
-		return points.reduce(0.0) {$0 + ($1.y * $1.y)}
-	}
+func sumUV(_ points: PointArray) -> Double {
+	return points.reduce(0.0) {$0 + ($1.x * $1.y)}
+}
 
-	static func sumUUU(_ points: PointArray) -> Double {
-		return points.reduce(0.0) {$0 + ($1.x * $1.x * $1.x)}
-	}
+func sumVV(_ points: PointArray) -> Double {
+	return points.reduce(0.0) {$0 + ($1.y * $1.y)}
+}
 
-	static func sumVVV(_ points: PointArray) -> Double {
-		return points.reduce(0.0) {$0 + ($1.y * $1.y * $1.y)}
-	}
+func sumUUU(_ points: PointArray) -> Double {
+	return points.reduce(0.0) {$0 + ($1.x * $1.x * $1.x)}
+}
 
-	static func sumUUV(_ points: PointArray) -> Double {
-		return points.reduce(0.0) {$0 + ($1.x * $1.x * $1.y)}
-	}
+func sumVVV(_ points: PointArray) -> Double {
+	return points.reduce(0.0) {$0 + ($1.y * $1.y * $1.y)}
+}
 
-	static func sumUVV(_ points: PointArray) -> Double {
-		return points.reduce(0.0) {$0 + ($1.x * $1.y * $1.y)}
-	}
+func sumUUV(_ points: PointArray) -> Double {
+	return points.reduce(0.0) {$0 + ($1.x * $1.x * $1.y)}
+}
+
+func sumUVV(_ points: PointArray) -> Double {
+	return points.reduce(0.0) {$0 + ($1.x * $1.y * $1.y)}
 }

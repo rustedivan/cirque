@@ -13,10 +13,8 @@ enum HintType {
 }
 
 extension TrailAnalyser {
-	var bestHint: HintType {
-		get {
-			let data = radialDeviation()
-			return .radialDeviation(offset: data.peak, angle: data.angle)
-		}
+	func bestHint(analysis: TrailAnalysis) -> HintType {
+		let data = analysis.radialDeviation
+		return .radialDeviation(offset: data.peak, angle: data.angle)
 	}
 }

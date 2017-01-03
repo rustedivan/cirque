@@ -17,47 +17,64 @@ import Foundation
 						 it out with contract/expand info according to the time
 						 series of the historical error on a exponential decay
 						 window stretching back ~20-30 circles.
-
-	
 */
 
-class TrailAnalyser: NSObject, NSCoding {
-	let points: PolarArray!
-	let pointBuckets: [AngleBucket]!
-	let radius: Double
-	var angleDeltas: Array<Double>?
-	var bucketErrors: Array<Double>?
+// TODO: functional approach to analysis
+// - two types of analysis
+// -- ScalarAnalyser: ([PolarArray] -> Double)
+// -- SeriesAnalyser: ([PolarArray] -> (peak, angle))
+
+struct TrailAnalysis: Equatable, CustomDebugStringConvertible {
+	let isCircle: Bool
+	let isClockwise: Bool
+	let circularityScore: Double
+	let radialFitness: Double
+	let radialContraction: Double
+	let endCapsSeparation: Double
+	let strokeEvenness: Double
+	let radialDeviation: (peak: Double, angle: Double)
+	let strokeCongestion: (peak: Double, angle: Double)
 	
-	init(points polarPoints: PolarArray, fitRadius inRadius: Double, bucketCount: Int) {
-		points = polarPoints
-		radius = inRadius
-		pointBuckets = TrailAnalyser.binPointsByAngle(polarPoints, intoBuckets: bucketCount)
-		super.init()
+	static func ==(lhs: TrailAnalysis, rhs: TrailAnalysis) -> Bool {
+		if lhs.isCircle != rhs.isCircle { return false }
+		if lhs.isClockwise != rhs.isClockwise { return false }
+		if lhs.circularityScore != rhs.circularityScore { return false }
+		if lhs.radialFitness != rhs.radialFitness { return false }
+		if lhs.radialContraction != rhs.radialContraction { return false }
+		if lhs.endCapsSeparation != rhs.endCapsSeparation { return false }
+		if lhs.strokeEvenness != rhs.strokeEvenness { return false }
+		if lhs.radialDeviation != rhs.radialDeviation { return false }
+		if lhs.strokeCongestion != rhs.strokeCongestion { return false }
 	}
 	
-	required init?(coder aDecoder: NSCoder) {
-		radius = aDecoder.decodeDouble(forKey: "radius")
-		let rArray = aDecoder.decodeObject(forKey: "radii") as! [Double]
-		let aArray = aDecoder.decodeObject(forKey: "angles") as! [Double]
-		var bucketCount = aDecoder.decodeCInt(forKey: "bucketcount")
-		let pairs = Array(zip(rArray, aArray))
-		points = pairs.map{ Polar(r: $0.0, a: $0.1) }
-		
-		// Fixup old savefiles:
-		if bucketCount == 0 { bucketCount = 8 }
-		pointBuckets = TrailAnalyser.binPointsByAngle(points, intoBuckets: Int(bucketCount))
-		
-		super.init()
+	var debugDescription : String {
+		var out = "Accepted circle:"
+		out += "\tDirection:        \(isClockwise ? "clockwise" : "counter-clockwise")"
+		out += "\tCircularity:"
+		out += "\t- score:          \(Int(circularityScore * 100.0))%"
+		out += "\t- radial fitness: \(Int(radialFitness * 100.0))%"
+		out += "\t- contraction:    \(radialContraction)"
+		out += "\t- cap separation: \(Int(endCapsSeparation)) pixels"
+		out += "\tRadial deviation:"
+		out += "\t- peak:           \(Int(radialDeviation.peak))"
+		out += "\t- angle:          \(Int((radialDeviation.angle / M_PI) * 180.0))º"
+		out += "\tStroke evenness:"
+		out += "\t- peak:           \(Int(strokeCongestion.peak))"
+		out += "\t- angle:          \(Int((strokeCongestion.angle / M_PI) * 180.0))º"
+		return out
+	}
+}
+
+class TrailAnalyser {
+	let trail: Trail
+	let bucketCount: Int
+	
+	init(trail: Trail, bucketCount: Int) {
+		self.trail = trail
+		self.bucketCount = bucketCount
 	}
 	
-	func encode(with aCoder: NSCoder) {
-		let rList = NSArray(array: points.map{$0.r})
-		let aList = NSArray(array: points.map{$0.a})
-		
-		aCoder.encode(rList, forKey: "radii")
-		aCoder.encode(aList, forKey: "angles")
-		aCoder.encode(radius, forKey: "radius")
-		aCoder.encode(pointBuckets.count, forKey: "bucketcount")
+	func runAnalysis() -> TrailAnalysis {
 	}
 	
 	class func binPointsByAngle(_ points: PolarArray, intoBuckets buckets: Int) -> [AngleBucket] {
@@ -76,24 +93,10 @@ class TrailAnalyser: NSObject, NSCoding {
 		return histogram
 	}
 	
-	func dumpFullAnalysis() {
-		print("Accepted circle:")
-		print("\tDirection:        \(isClockwise() ? "clockwise" : "counter-clockwise")")
-		print("\tCircularity:")
-		print("\t- score:          \(Int(circularityScore() * 100.0))%")
-		print("\t- radial fitness: \(Int(radialFitness() * 100.0))%")
-		print("\t- contraction:    \(radialContraction())")
-		print("\t- cap separation: \(Int(endCapsSeparation())) pixels")
-		print("\tRadial deviation:")
-		print("\t- peak:           \(Int(radialDeviation().peak))")
-		print("\t- angle:          \(Int((radialDeviation().angle / M_PI) * 180.0))º")
-		print("\tStroke evenness:")
-		print("\t- peak:           \(Int(strokeCongestion().peak))")
-		print("\t- angle:          \(Int((strokeCongestion().angle / M_PI) * 180.0))º")
-	}
+	
 }
 
-extension TrailAnalyser {
+fileprivate extension TrailAnalyser {
 	/*	Grade the radial deviations on a reverse quadratic curve.
 			Approved radial fitnesses lie on 0.0...0.1, so scale that up
 			by a factor of 10 and clamp it to normalize. Reverse and square.
@@ -109,7 +112,7 @@ extension TrailAnalyser {
 		return gradedScore
 	}
 	
-	func calcBucketErrors() -> [Double] {
+	func calcBucketErrors(pointBuckets: [AngleBucket], fromRadius radius: Double) -> [Double] {
 		// Calculate moving average
 		let n = pointBuckets.count
 		var bucketErrors = Array<Double>(repeating: 0.0, count: n)
@@ -125,22 +128,17 @@ extension TrailAnalyser {
 		return bucketErrors
 	}
 	
-	func isClockwise() -> Bool {
-		if angleDeltas == nil {
-			angleDeltas = angleDistances(points)
-		}
-		let sumOfArcs = angleDeltas!.reduce(0.0, +)
-		
+	func isClockwise(angleDeltas: [Double]) -> Bool {
+		let sumOfArcs = angleDeltas.reduce(0.0, +)
 		return sumOfArcs < 0.0
 	}
 	
 	/*	Measure the relative RMS of radial errors, i.e. how round the circle is.
 			Given a fitted circle, calculate each point's radial displacement from
 			the fit. Find the RMS relative to the size of the circle. */
-	func radialFitness() -> Double {
+	func radialFitness(deviationsFromFit deviations: [Double], fromRadius radius: Double) -> Double {
 		let errorThreshold = 0.02
 
-		let deviations = deviationsFromFit()
 		let rmsError = sqrt(deviations.reduce(0.0) {$0 + $1 * $1} / Double(deviations.count))
 		let relativeRMS = rmsError / radius
 		
@@ -152,19 +150,17 @@ extension TrailAnalyser {
 			around the circle. Report the largest absolute deviation from the mean.
 			Report the value and map its center to an angle.
 	*/
-	func radialDeviation() -> (peak: Double, angle: Double) {
+	func radialDeviation(pointBuckets: [AngleBucket],
+	                     bucketErrors: [Double],
+	                     fromRadius radius: Double) -> (peak: Double, angle: Double) {
 		let errorThreshold = 1.0
 		
-		if bucketErrors == nil {
-			bucketErrors = calcBucketErrors()
-		}
-		
 		// Find largest/smallest value among the buckets
-		let n = bucketErrors!.count
+		let n = bucketErrors.count
 		var largestValue = -1.0
 		var largestIndex = -1
 		for i in 0..<n {
-			let v = bucketErrors![i]
+			let v = bucketErrors[i]
 			if v > largestValue {largestValue = v; largestIndex = i}
 		}
 		
@@ -180,13 +176,13 @@ extension TrailAnalyser {
 		}
 		
 		return (abs(peakError) > errorThreshold) ? (peak: peakError, angle: pointBuckets[largestIndex].angle) :
-																											 (peak: 0.0, angle: 0.0)
+																							 (peak: 0.0, angle: 0.0)
 	}
 	
-	/*	Measure difference between radial RMS and beginnig and end of the circle.
+	/*	Measure difference between radial RMS and beginning and end of the circle.
 	A contracting circle will have negative local relative radial RMS; an
 	an expanding circle will have a positive LRR-RMS. */
-	func radialContraction() -> Double {
+	func radialContraction(points: PolarArray) -> Double {
 		let errorThreshold = 2.0
 		
 		let n = points.count
@@ -205,13 +201,13 @@ extension TrailAnalyser {
 		return (abs(contraction) > errorThreshold) ? contraction : 0.0
 	}
 	
-	func deviationsFromFit() -> Array<Double> {
-		return points.map { $0.r - self.radius }
+	func deviationsFromFit(points: PolarArray, fromRadius radius: Double) -> [Double] {
+		return points.map { $0.r - radius }
 	}
 }
 
-extension TrailAnalyser {
-	func endCapsSeparation() -> Double {
+fileprivate extension TrailAnalyser {
+	func endCapsSeparation(points: PolarArray) -> Double {
 		let errorThreshold = 10.0
 		
 		let startPolar = points.first!
@@ -226,24 +222,17 @@ extension TrailAnalyser {
 	}
 }
 
-extension TrailAnalyser {
+fileprivate extension TrailAnalyser {
 	/*	Measure the how even the strokes are, i.e. the flow of the circle.
 	Measure the angular distance between points, and calculate the stddev
 	of them. A stddev below the treshold is snapped to zero ("good enough")
 	*/
-	func strokeEvenness() -> Double {
+	func strokeEvenness(angleDeltas: [Double]) -> Double {
 		let errorThreshold = 0.01 * (M_PI / 180.0)
 		
-		// FIXME: computed property pls
-		if angleDeltas == nil {
-			angleDeltas = angleDistances(points)
-		}
-		
-		let ad = angleDeltas!
-		
-		let avg = ad.reduce(0.0, +) / Double(ad.count)
-		let squaredErrors = ad.reduce(0.0) {$0 + ($1 - avg) * ($1 - avg)}
-		let stddev = sqrt(squaredErrors) / Double(ad.count)
+		let avg = angleDeltas.reduce(0.0, +) / Double(angleDeltas.count)
+		let squaredErrors = angleDeltas.reduce(0.0) {$0 + ($1 - avg) * ($1 - avg)}
+		let stddev = sqrt(squaredErrors) / Double(angleDeltas.count)
 		
 		if (stddev <= errorThreshold) {
 			print("Snapping stroke evenness to perfect")
@@ -257,7 +246,7 @@ extension TrailAnalyser {
 			fell into each. Find the bucket that deviates the most from the
 			mean. Return its relative error and direction.
 	*/
-	func strokeCongestion() -> (peak: Double, angle: Double) {
+	func strokeCongestion(pointBuckets: [AngleBucket]) -> (peak: Double, angle: Double) {
 		let n = pointBuckets.count
 		let bucketSizes = pointBuckets.map{ $0.points.count }
 		let avgBucketSize = bucketSizes.reduce(0.0) { $0 + Double($1) } / Double(n)
@@ -283,22 +272,20 @@ extension TrailAnalyser {
 	}
 }
 
-extension TrailAnalyser {
-	func isCircle() -> Bool {
+fileprivate extension TrailAnalyser {
+	func isCircle(pointBuckets: [AngleBucket], radialFitness: Double, endCapsSeparation: Double, fitRadius radius: Double) -> Bool {
 		// Circle must be closed
 		let endCapErrorThreshold = radius / 2.0	// Caps are off by half the radius
-		if (self.endCapsSeparation() > endCapErrorThreshold) {
-			print("Rejected end caps: \(self.endCapsSeparation()) > \(endCapErrorThreshold)")
+		if (endCapsSeparation > endCapErrorThreshold) {
+			print("Rejected end caps: \(endCapsSeparation) > \(endCapErrorThreshold)")
 			return false
 		}
 
 		// Circle must be round
 		// Threshold value of 11% is determined via experimentation.
 		let radialErrorThreshold = 0.11
-		let p = self.radialFitness()
-		
-		if (p > radialErrorThreshold) {
-			print("Rejected roundness: \(p) > \(radialErrorThreshold)")
+		if (radialFitness > radialErrorThreshold) {
+			print("Rejected roundness: \(radialFitness) > \(radialErrorThreshold)")
 			return false
 		}
 		

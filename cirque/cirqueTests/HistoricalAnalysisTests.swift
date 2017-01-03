@@ -54,17 +54,10 @@ class HistoricalAnalysisTests: XCTestCase {
 		}
 	}
 	
-	func makeTrailAnalysis(_ points: Array<Point>) -> TrailAnalyser {
-		let t = Trail(withPoints: points)
-		let fit = CircleFitter.fitCenterAndRadius(t)
-		let polar = polarize(t, around: fit.center)
-		return TrailAnalyser(points: polar, fitRadius: fit.radius, bucketCount: 8)
-	}
-	
 	func testBuildsTrailHistory() {
-		let trail1 = makeTrailAnalysis(circle1)
-		let trail2 = makeTrailAnalysis(circle2)
-		let trail3 = makeTrailAnalysis(circle3)
+		let trail1 = TrailAnalyser(trail: Trail(withPoints: circle1), bucketCount: 36).runAnalysis()
+		let trail2 = TrailAnalyser(trail: Trail(withPoints: circle2), bucketCount: 36).runAnalysis()
+		let trail3 = TrailAnalyser(trail: Trail(withPoints: circle3), bucketCount: 36).runAnalysis()
 		
 		let history = TrailHistory()
 		history.addAnalysis(trail1)
@@ -72,14 +65,14 @@ class HistoricalAnalysisTests: XCTestCase {
 		history.addAnalysis(trail3)
 		
 		XCTAssertEqual(history.entries.count, 3, "Did not track all added histories")
-		XCTAssertEqual(history.entries[0].points.count, trail1.points.count, "Did not pack in order")
-		XCTAssertEqual(history.entries[1].points.count, trail2.points.count, "Did not pack in order")
-		XCTAssertEqual(history.entries[2].points.count, trail3.points.count, "Did not pack in order")
+		XCTAssertEqual(history.entries[0], trail1, "Did not pack in order")
+		XCTAssertEqual(history.entries[1], trail2, "Did not pack in order")
+		XCTAssertEqual(history.entries[2], trail3, "Did not pack in order")
 	}
 
 	func testPersistsTrailHistory() {
-		let trail1 = makeTrailAnalysis(circle1)
-		let trail2 = makeTrailAnalysis(circle2)
+		let trail1 = TrailAnalyser(trail: Trail(withPoints: circle1), bucketCount: 36).runAnalysis()
+		let trail2 = TrailAnalyser(trail: Trail(withPoints: circle2), bucketCount: 36).runAnalysis()
 		
 		let history1 = TrailHistory(filename: "testhistory.trails")
 		history1.addAnalysis(trail1)
@@ -91,15 +84,15 @@ class HistoricalAnalysisTests: XCTestCase {
 		
 		let history3 = TrailHistory(filename: "testhistory.trails")
 		XCTAssertEqual(history3.entries.count, 2, "Did not save all added histories")
-		XCTAssertEqual(history3.entries[0].points.count, trail1.points.count, "Did not save in order")
-		XCTAssertEqual(history3.entries[1].points.count, trail2.points.count, "Did not save in order")
+		XCTAssertEqual(history3.entries[0], trail1, "Did not save in order")
+		XCTAssertEqual(history3.entries[1], trail2, "Did not save in order")
 	}
 
 	func testCanDetectLinearImprovement() {
 
 		let history = TrailHistory()
 		for trail in linearImprovement {
-			let ta = makeTrailAnalysis(trail)
+			let ta = TrailAnalyser(trail: Trail(withPoints: trail), bucketCount: 36).runAnalysis()
 			history.addAnalysis(ta)
 		}
 		
@@ -109,8 +102,8 @@ class HistoricalAnalysisTests: XCTestCase {
 
 	func testCanDetectLinearWorsening() {
 		let history = TrailHistory()
-		for trail in Array(linearImprovement.reversed()) {
-			let ta = makeTrailAnalysis(trail)
+		for trail in linearImprovement.reversed() {
+			let ta = TrailAnalyser(trail: Trail(withPoints: trail), bucketCount: 36).runAnalysis()
 			history.addAnalysis(ta)
 		}
 		
@@ -120,8 +113,8 @@ class HistoricalAnalysisTests: XCTestCase {
 
 	func testCanDetectStagnantImprovement() {
 		let history = TrailHistory()
-		let ta1 = makeTrailAnalysis(linearImprovement[0])
-		let ta2 = makeTrailAnalysis(linearImprovement[1])
+		let ta1 = TrailAnalyser(trail: Trail(withPoints: linearImprovement[0]), bucketCount: 36).runAnalysis()
+		let ta2 = TrailAnalyser(trail: Trail(withPoints: linearImprovement[0]), bucketCount: 36).runAnalysis()
 		for _ in 0..<5 {
 			history.addAnalysis(ta1)
 			history.addAnalysis(ta2)

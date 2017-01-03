@@ -1137,3 +1137,11 @@ let counterClockwiseCircle = [
 	(253.00, 364.00) as TestPoint, (253.50, 362.00) as TestPoint, (254.00, 359.50) as TestPoint, (254.00, 357.00) as TestPoint, (254.50, 355.00) as TestPoint,
 	(254.50, 353.00) as TestPoint, (254.50, 350.50) as TestPoint, (255.00, 347.50) as TestPoint, (255.50, 345.50) as TestPoint,
 	] as [TestPoint]
+
+let circleFitPoints = [	TestPoint(x: 0.00, y: 0.00),
+												TestPoint(x: 0.50, y: 0.25),
+												TestPoint(x: 1.00, y: 1.00),
+												TestPoint(x: 1.50, y: 2.25),
+												TestPoint(x: 2.00, y: 4.00),
+												TestPoint(x: 2.50, y: 6.25),
+												TestPoint(x: 3.00, y: 9.00)]
