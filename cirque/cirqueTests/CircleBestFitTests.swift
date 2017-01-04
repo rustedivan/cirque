@@ -27,7 +27,7 @@ class CircleBestFitTests: XCTestCase {
 			let taper = Taper(taperRatio: 0.1, clockwise: false)
 			
 			return { (p: Double) in
-				BestFitCircle(around: around, radius: 100.0, startAngle: a0, progress: p, taper: taper)
+				BestFitCircle(fit: CircleFit(around, 100.0), startAngle: a0, taper: taper)
 			}
 		}
 		
@@ -65,7 +65,7 @@ class CircleBestFitTests: XCTestCase {
 			let taper = Taper(taperRatio: 0.1, clockwise: false)
 			
 			return { (a0: Double) in
-				BestFitCircle(around: around, radius: 100.0, startAngle: a0, progress: p, taper: taper)
+				BestFitCircle(fit: CircleFit(around, 100.0), startAngle: a0, taper: taper)
 			}
 		}
 		
@@ -99,7 +99,7 @@ class CircleBestFitTests: XCTestCase {
 			let taper = Taper(taperRatio: taper, clockwise: false)
 			
 			return { (p: Double) in
-				BestFitCircle(around: around, radius: 100.0, startAngle: a0, progress: p, taper: taper)
+				BestFitCircle(fit: CircleFit(around, 100.0), startAngle: a0, taper: taper)
 			}
 		}
 		
@@ -140,7 +140,7 @@ class CircleBestFitTests: XCTestCase {
 			let taper = Taper(taperRatio: 0.1, clockwise: true)
 			
 			return { (p: Double) in
-				BestFitCircle(around: around, radius: 100.0, startAngle: a0, progress: p, taper: taper)
+				BestFitCircle(fit: CircleFit(around, 100.0), startAngle: a0, taper: taper)
 			}
 		}
 		
@@ -176,18 +176,17 @@ class CircleBestFitTests: XCTestCase {
 	}
 	
 	func testGenerateBestFitTriangles() {
-		let modelRadius = 100.0
-		let around = Point(x: 10.0, y: -20.0)
+		let fit = CircleFit(Point(x: 10.0, y: -20.0), 100.0)
 		
 		let taper = Taper(taperRatio: 0.2, clockwise: false)
-		var f = BestFitCircle(around: around, radius: modelRadius, startAngle: 0.2, progress: 0.8, taper: taper)
+		var f = BestFitCircle(fit: fit, startAngle: 0.2, taper: taper)
 		f.bestFitWidth = 2.0
 		let t = f.toVertices()
-		XCTAssertEqual(t.count, 289 * 2, "Should have generated 0.8 * 360 segments of two vertices each")
+		XCTAssertEqual(t.count, 360 * 2, "Should have generated 360 segments of two vertices each")
 		
 		func radius(_ v: CirqueVertex) -> Double {
-			let p = Point(x: Double(v.position.x) - around.x,
-			              y: Double(v.position.y) - around.y)
+			let p = Point(x: Double(v.position.x) - fit.center.x,
+			              y: Double(v.position.y) - fit.center.y)
 			let r = sqrt(p.x * p.x + p.y * p.y)
 			return r
 		}

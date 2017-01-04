@@ -101,7 +101,7 @@ class CirqueViewController: UIViewController {
 		case (_, .rejecting(let data)):
 			rejectScore(at: data.showAt)
 		case (_, .hinting(let data)):
-			showHint(fit: data.fit, hint: data.hint)
+			showHint(fit: data.bestCircle.fit, hint: data.hint)
 		case (.hinting, _):
 			hideHint()
 		default: break
@@ -111,22 +111,24 @@ class CirqueViewController: UIViewController {
 	func presentResult(_ result: CircleResult) {
 		switch result {
 			
-		case .accepted(let score, _, let fit, let errorArea, let hint):
+		case .accepted(let score, _, let bestCircle, let errorArea, let hint):
 			// Show analysis
-			let data = AnalysingData(trail: circleController.trail, fit: fit, errorArea: errorArea)
+			let data = AnalysingData(trail: circleController.trail, bestCircle: bestCircle, errorArea: errorArea)
 			
 			stateMachine.currentState = .analysing(data)
 			
 			// Enqueue score countup
 			let startScoreCountupAt = DispatchTime.now() + .milliseconds(1500)
 			DispatchQueue.main.asyncAfter(deadline: startScoreCountupAt) {
-				let data = ScoringData(trail: self.circleController.trail, showAt: fit.center, score: score)
+				let data = ScoringData(trail: self.circleController.trail, showAt: bestCircle.fit.center, score: score)
 				self.stateMachine.currentState = .scoring(data)
 				
-				let startHintingAt = DispatchTime.now() + .milliseconds(1500)
-				DispatchQueue.main.asyncAfter(deadline: startHintingAt) {
-					let data = HintingData(trail: self.circleController.trail, fit: fit, hint: hint)
-					self.stateMachine.currentState = .hinting(data)
+				if let hint = hint {
+					let startHintingAt = DispatchTime.now() + .milliseconds(1500)
+					DispatchQueue.main.asyncAfter(deadline: startHintingAt) {
+						let data = HintingData(trail: self.circleController.trail, bestCircle: bestCircle, hint: hint)
+						self.stateMachine.currentState = .hinting(data)
+					}
 				}
 			}
 		case .rejected(let centroid):
@@ -147,11 +149,11 @@ class CirqueViewController: UIViewController {
 		scoreView.presentScore(score: 0.0)
 	}
 	
-	func showHint(fit: BestFitCircle, hint: HintType) {
+	func showHint(fit: CircleFit, hint: HintType) {
 		analysisView.isHidden = false
 		if case .radialDeviation(let hintData) = hint {
 			analysisView.presentAnalysis(showAt: fit.center,
-			                             radius: fit.fitRadius + hintData.offset,
+			                             radius: fit.radius + hintData.offset,
 			                             angle: hintData.angle)
 		}
 	}

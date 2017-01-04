@@ -11,9 +11,7 @@ import simd
 
 extension Trail : VertexSource {
 	func toVertices() -> VertexSource.Buffer {
-		// Inner and outer vertices for each segment
-		let segments = zip(self.angles, self.distances)
-		let stroke = zip(self, segments)
+		let stroke = zip(self, zip(angles, distances))
 
 		var vertices: VertexSource.Buffer = []
 		
@@ -54,13 +52,13 @@ extension ErrorArea : VertexSource {
 			// so we can build two triangles.
 			// One backward and down, one forward and up.
 			var prevP = Polar(a: prevBar.a, r: prevBar.r)
-			var prevR = Polar(a: prevBar.a, r: fitRadius)
+			var prevR = Polar(a: prevBar.a, r: fit.radius)
 			
 			var thisP = Polar(a: thisBar.a, r: thisBar.r)
-			var thisR = Polar(a: thisBar.a, r: fitRadius)
+			var thisR = Polar(a: thisBar.a, r: fit.radius)
 			
 			var nextP = Polar(a: nextBar.a, r: nextBar.r)
-			var nextR = Polar(a: nextBar.a, r: fitRadius)
+			var nextR = Polar(a: nextBar.a, r: fit.radius)
 			
 			// Avoid twisted rectangles by flipping
 			// the bars so they all point "outward" -
@@ -94,8 +92,8 @@ extension ErrorArea : VertexSource {
 		for p in zip(polarPoints, angleDeltas) {
 			let angle = -p.0.a // Invert angle due to UIView's flipped Y axis
 			progress += p.1
-			let v = CirqueVertex(position: [	Float(cos(angle) * p.0.r + center.x),
-																				Float(sin(angle) * p.0.r + center.y),
+			let v = CirqueVertex(position: [	Float(cos(angle) * p.0.r + fit.center.x),
+																				Float(sin(angle) * p.0.r + fit.center.y),
 																				0.0,
 																				1.0 ],
 			                     color: RenderStyle.errorColor.vec4,
@@ -117,19 +115,19 @@ extension BestFitCircle : VertexSource {
 			let angle = -segment.0 // Invert angle due to UIView's flipped Y axis
 			let width = segment.1 * bestFitWidth
 			
-			let pIn =  Point(x: cos(angle) * (fitRadius - (width / 2.0)),
-								 			 y: sin(angle) * (fitRadius - (width / 2.0)))
-			let pOut = Point(x: cos(angle) * (fitRadius + (width / 2.0)),
-			                 y: sin(angle) * (fitRadius + (width / 2.0)))
+			let pIn =  Point(x: cos(angle) * (fit.radius - (width / 2.0)),
+								 			 y: sin(angle) * (fit.radius - (width / 2.0)))
+			let pOut = Point(x: cos(angle) * (fit.radius + (width / 2.0)),
+			                 y: sin(angle) * (fit.radius + (width / 2.0)))
 			
 			let progress = Float(abs(angle - (-startAngle)) / (2.0 * M_PI))
-			let vL = CirqueVertex(position: vector_float4(Float(pIn.x + center.x),
-			                                              Float(pIn.y + center.y),
+			let vL = CirqueVertex(position: vector_float4(Float(pIn.x + fit.center.x),
+			                                              Float(pIn.y + fit.center.y),
 			                                              0.0, 1.0),
 			                      color: RenderStyle.bestFitColor.vec4,
 														progress: progress)
-			let vR = CirqueVertex(position: vector_float4(Float(pOut.x + center.x),
-			                                              Float(pOut.y + center.y),
+			let vR = CirqueVertex(position: vector_float4(Float(pOut.x + fit.center.x),
+			                                              Float(pOut.y + fit.center.y),
 			                                              0.0, 1.0),
 			                      color: RenderStyle.bestFitColor.vec4,
 			                      progress: progress)

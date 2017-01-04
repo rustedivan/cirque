@@ -21,9 +21,8 @@ class CircleErrorAreaTests: XCTestCase {
     }
     
     func testGenerateErrorArea() {
-			let modelRadius = 100.0
+			let fit = CircleFit(Point(x: 10.0, y: -20.0), 100.0)
 			let errorTreshold = 4.0
-			let around = Point(x: 10.0, y: -20.0)
 			var imperfectPoints: [Polar] = []
 			imperfectPoints.append(Polar(a:  0.0, r: 100.0))	// In range
 			imperfectPoints.append(Polar(a:  0.1, r: 101.0))	// In range
@@ -38,13 +37,12 @@ class CircleErrorAreaTests: XCTestCase {
 			imperfectPoints.append(Polar(a:  0.10, r: 100.0))	// In range
 			
 			let e = ErrorArea(imperfectPoints,
-												around: around,
-												radius: modelRadius,
+			                  fit: fit,
 												treshold: errorTreshold)
 
-			XCTAssertEqual(e.center.x, around.x)
-			XCTAssertEqual(e.center.y, around.y)
-			XCTAssertEqual(e.fitRadius, modelRadius)
+			XCTAssertEqual(e.fit.center.x, fit.center.x)
+			XCTAssertEqual(e.fit.center.y, fit.center.y)
+			XCTAssertEqual(e.fit.radius, fit.radius)
 			
 			XCTAssertEqual(e.errorBars.count, 9)
 			
@@ -77,9 +75,8 @@ class CircleErrorAreaTests: XCTestCase {
 	}
 	
 	func testShouldCaptureRootAngle() {
-		let modelRadius = 100.0
+		let fit = CircleFit(Point(x: 10.0, y: -20.0), 100.0)
 		let errorTreshold = 4.0
-		let around = Point(x: 10.0, y: -20.0)
 		var imperfectPoints: [Polar] = []
 		imperfectPoints.append(Polar(a:  0.4, r: 100.0))	// In range
 		imperfectPoints.append(Polar(a:  0.5, r: 101.0))	// In range
@@ -90,17 +87,15 @@ class CircleErrorAreaTests: XCTestCase {
 		imperfectPoints.append(Polar(a:  1.0, r:  99.0))	// In range
 		
 		let e = ErrorArea(imperfectPoints,
-		                  around: around,
-		                  radius: modelRadius,
+		                  fit: fit,
 		                  treshold: errorTreshold)
 		
 		XCTAssertEqual(e.rootAngle, 0.4, "Root angle is not that of first point (regardless of error area)")
 	}
 	
 	func testGenerateErrorTriangles() {
-		let modelRadius = 100.0
+		let fit = CircleFit(Point(x: 10.0, y: -20.0), 100.0)
 		let errorTreshold = 4.0
-		let around = Point(x: 10.0, y: -20.0)
 		var imperfectPoints: [Polar] = []
 		imperfectPoints.append(Polar(a:  0.0, r: 100.0))	// In range
 		imperfectPoints.append(Polar(a:  0.1, r: 101.0))	// In range
@@ -110,15 +105,14 @@ class CircleErrorAreaTests: XCTestCase {
 		imperfectPoints.append(Polar(a:  0.5, r: 102.0))	// In range
 		
 		let e = ErrorArea(imperfectPoints,
-										  around: around,
-										  radius: modelRadius,
+										  fit: fit,
 										  treshold: errorTreshold)
 		let t = e.toVertices()
 		XCTAssertEqual(t.count, 6 * 3, "Should have generated six triangles")
 		
 		func radius(_ v: CirqueVertex) -> Double {
-			let p = Point(x: Double(v.position.x) - around.x,
-										y: Double(v.position.y) - around.y)
+			let p = Point(x: Double(v.position.x) - fit.center.x,
+										y: Double(v.position.y) - fit.center.y)
 			let r = sqrt(p.x * p.x + p.y * p.y)
 			return r
 		}

@@ -41,7 +41,7 @@ class CirqueView: UIView {
 				                      intoEncoder: encoder)
 				
 				let bestFitUniforms = data.bestFitUniforms
-				renderPath.renderPass(vertices: data.fit,
+				renderPath.renderPass(vertices: data.bestCircle,
 				                      inRenderPass: .bestFit(bestFitUniforms),
 				                      intoEncoder: encoder)
 			case .scoring(let data):
@@ -55,7 +55,7 @@ class CirqueView: UIView {
 				                      inRenderPass: .trail(trailUniforms),
 				                      intoEncoder: encoder)
 				let bestFitUniforms = data.bestFitUniforms
-				renderPath.renderPass(vertices: data.fit,
+				renderPath.renderPass(vertices: data.bestCircle,
 				                      inRenderPass: .bestFit(bestFitUniforms),
 				                      intoEncoder: encoder)
 			}

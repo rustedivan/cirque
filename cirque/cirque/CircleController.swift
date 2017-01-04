@@ -11,7 +11,7 @@ import CoreGraphics.CGGeometry
 
 enum CircleResult {
 	case rejected (centroid: Point)
-	case accepted (score: Double, trend: Double, fit: BestFitCircle, errorArea: ErrorArea, hint: HintType)
+	case accepted (score: Double, trend: Double, fit: BestFitCircle, errorArea: ErrorArea, hint: HintType?)
 }
 
 class CircleController {
@@ -38,7 +38,7 @@ class CircleController {
 		
 //		circle.dumpAsSwiftArray()
 		
-		analyseTrail(trail) { (fit: CircleFit, analysis: TrailAnalysis, hint: Hint?) in
+		analyseTrail(trail) { (fit: CircleFit, polar: PolarArray, analysis: TrailAnalysis) in
 			self.analysisTimestamp = Date()
 			
 			var trend = 0.0
@@ -52,15 +52,15 @@ class CircleController {
 				print(analysis)
 				
 				let score = analysis.circularityScore
-				let errorArea = ErrorArea(polar, around: fit.center, radius: fit.radius, treshold: 2.0)
-				let t = Taper(taperRatio: 0.2, clockwise: analyser.isClockwise())
-				let bestFitCircle = BestFitCircle(around: fit.center, radius: fit.radius, startAngle: polar.first?.a ?? 0.0, progress: 1.0, taper: t)
+				let errorArea = ErrorArea(polar, fit: fit, treshold: 2.0)
+				let t = Taper(taperRatio: 0.2, clockwise: analysis.isClockwise)
+				let bestFitCircle = BestFitCircle(fit: fit, startAngle: polar.first?.a ?? 0.0, taper: t)
 				
 				after(.accepted(score: score,
 				                trend: trend,
 				                fit: bestFitCircle,
 				                errorArea: errorArea,
-				                hint: hint))
+				                hint: analysis.hint))
 			}
 			else {
 				after(.rejected(centroid: fit.center))
@@ -68,22 +68,24 @@ class CircleController {
 		}
 	}
 
-	func analyseTrail(_ trail: Trail, cb: @escaping (CircleFit, TrailAnalysis) -> ()) {
+	func analyseTrail(_ trail: Trail, cb: @escaping (CircleFit, PolarArray, TrailAnalysis) -> ()) {
 		if analysisRunning { return } // FIXME: block with states instead
 
 		analysisRunning = true
-
+		// FIXME: just pass cb directly to dFJ
 		// Messy, so that unit tests can mock out the dispatch
-		dispatchFitJob(trail) { (fit: CircleFit, analysis: TrailAnalysis) in
-			cb(fit, analysis)
+		dispatchFitJob(trail) { (fit, analysis, hint) in
+			cb(fit, analysis, hint)
 			self.analysisRunning = false
 		}
 	}
 	
-	func dispatchFitJob(_ trail: Trail, cb: @escaping ((CircleFit, TrailAnalysis, Hint?) -> ())) {
+	func dispatchFitJob(_ trail: Trail, cb: @escaping ((CircleFit, PolarArray, TrailAnalysis) -> ())) {
 		analysisQueue.async {
-			TrailAnalyser.fitCenterAndRadius(trail)
-			cb()
+			let fit = TrailAnalyser.fitCenterAndRadius(trail)
+			let polar = polarize(trail, around: fit.center)
+			let analysis = TrailAnalyser(trail: trail, bucketCount: 36).runAnalysis()
+			cb(fit, polar, analysis)
 		}
 	}
 }

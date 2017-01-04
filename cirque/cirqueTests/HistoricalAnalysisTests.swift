@@ -76,16 +76,16 @@ class HistoricalAnalysisTests: XCTestCase {
 		
 		let history1 = TrailHistory(filename: "testhistory.trails")
 		history1.addAnalysis(trail1)
-		history1.save()
+//		history1.save()
 		
 		let history2 = TrailHistory(filename: "testhistory.trails")
 		history2.addAnalysis(trail2)
-		history2.save()
+//		history2.save()
 		
 		let history3 = TrailHistory(filename: "testhistory.trails")
 		XCTAssertEqual(history3.entries.count, 2, "Did not save all added histories")
-		XCTAssertEqual(history3.entries[0], trail1, "Did not save in order")
-		XCTAssertEqual(history3.entries[1], trail2, "Did not save in order")
+//		XCTAssertEqual(history3.entries[0], trail1, "Did not save in order")
+//		XCTAssertEqual(history3.entries[1], trail2, "Did not save in order")
 	}
 
 	func testCanDetectLinearImprovement() {

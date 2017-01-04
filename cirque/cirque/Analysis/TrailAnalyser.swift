@@ -34,6 +34,7 @@ struct TrailAnalysis: Equatable, CustomDebugStringConvertible {
 	let strokeEvenness: Double
 	let radialDeviation: (peak: Double, angle: Double)
 	let strokeCongestion: (peak: Double, angle: Double)
+	let hint: HintType?
 	
 	static func ==(lhs: TrailAnalysis, rhs: TrailAnalysis) -> Bool {
 		if lhs.isCircle != rhs.isCircle { return false }
@@ -45,6 +46,8 @@ struct TrailAnalysis: Equatable, CustomDebugStringConvertible {
 		if lhs.strokeEvenness != rhs.strokeEvenness { return false }
 		if lhs.radialDeviation != rhs.radialDeviation { return false }
 		if lhs.strokeCongestion != rhs.strokeCongestion { return false }
+		
+		return true
 	}
 	
 	var debugDescription : String {
@@ -75,6 +78,7 @@ class TrailAnalyser {
 	}
 	
 	func runAnalysis() -> TrailAnalysis {
+		return TrailAnalysis(isCircle: false, isClockwise: false, circularityScore: 0.0, radialFitness: 0.0, radialContraction: 0.0, endCapsSeparation: 0.0, strokeEvenness: 0.0, radialDeviation: (peak: 0.0, angle: 0.0), strokeCongestion: (peak: 0.0, angle: 0.0), hint: nil)
 	}
 	
 	class func binPointsByAngle(_ points: PolarArray, intoBuckets buckets: Int) -> [AngleBucket] {
@@ -101,10 +105,10 @@ fileprivate extension TrailAnalyser {
 			Approved radial fitnesses lie on 0.0...0.1, so scale that up
 			by a factor of 10 and clamp it to normalize. Reverse and square.
 	*/
-	func circularityScore() -> Double {
+	func circularityScore(radialFitness: Double) -> Double {
 		let errorInterval = 0.0...1.0
 		let errorScale = 10.0
-		let scaledError = radialFitness() * errorScale
+		let scaledError = radialFitness * errorScale
 		let lowerBound = min(scaledError, errorInterval.upperBound)
 		let error = max(lowerBound, errorInterval.lowerBound)
 		let score = error - (errorInterval.upperBound - errorInterval.lowerBound)

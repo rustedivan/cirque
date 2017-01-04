@@ -14,7 +14,7 @@ struct DrawingData {
 
 struct AnalysingData {
 	let trail: Trail
-	let fit: BestFitCircle
+	let bestCircle: BestFitCircle
 	let errorArea: ErrorArea
 	let bestFitProgress = progress(duration: 2.0)
 	let errorProgress = progress(duration: 2.5)	
@@ -29,7 +29,7 @@ struct ScoringData {
 
 struct HintingData {
 	let trail: Trail
-	let fit: BestFitCircle
+	let bestCircle: BestFitCircle
 	let hint: HintType
 }
 
