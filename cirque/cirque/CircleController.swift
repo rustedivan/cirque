@@ -38,7 +38,7 @@ class CircleController {
 		
 //		circle.dumpAsSwiftArray()
 		
-		analyseTrail(trail) { (fit: CircleFit, polar: PolarArray, analysis: TrailAnalysis) in
+		analyseTrail(trail) { (polar: PolarArray, analysis: TrailAnalysis) in
 			self.analysisTimestamp = Date()
 			
 			var trend = 0.0
@@ -52,40 +52,41 @@ class CircleController {
 				print(analysis)
 				
 				let score = analysis.circularityScore
-				let errorArea = ErrorArea(polar, fit: fit, treshold: 2.0)
+				let errorArea = ErrorArea(polar, fit: analysis.circleFit, treshold: 2.0)
 				let t = Taper(taperRatio: 0.2, clockwise: analysis.isClockwise)
-				let bestFitCircle = BestFitCircle(fit: fit, startAngle: polar.first?.a ?? 0.0, taper: t)
+				let bestFitCircle = BestFitCircle(fit: analysis.circleFit, startAngle: polar.first?.a ?? 0.0, progress: 1.0, taper: t)
+				
+				let hint: HintType? = .radialDeviation(offset: 0.0, angle: 0.0)
 				
 				after(.accepted(score: score,
 				                trend: trend,
 				                fit: bestFitCircle,
 				                errorArea: errorArea,
-				                hint: analysis.hint))
+				                hint: hint))
 			}
 			else {
-				after(.rejected(centroid: fit.center))
+				after(.rejected(centroid: analysis.circleFit.center))
 			}
 		}
 	}
 
-	func analyseTrail(_ trail: Trail, cb: @escaping (CircleFit, PolarArray, TrailAnalysis) -> ()) {
+	func analyseTrail(_ trail: Trail, cb: @escaping (PolarArray, TrailAnalysis) -> ()) {
 		if analysisRunning { return } // FIXME: block with states instead
 
 		analysisRunning = true
 		// FIXME: just pass cb directly to dFJ
 		// Messy, so that unit tests can mock out the dispatch
-		dispatchFitJob(trail) { (fit, analysis, hint) in
-			cb(fit, analysis, hint)
+		dispatchFitJob(trail) { (analysis, hint) in
+			cb(analysis, hint)
 			self.analysisRunning = false
 		}
 	}
 	
-	func dispatchFitJob(_ trail: Trail, cb: @escaping ((CircleFit, PolarArray, TrailAnalysis) -> ())) {
+	func dispatchFitJob(_ trail: Trail, cb: @escaping ((PolarArray, TrailAnalysis) -> ())) {
 		analysisQueue.async {
-			let fit = TrailAnalyser.fitCenterAndRadius(trail)
-			let polar = polarize(trail, around: fit.center)
 			let analysis = TrailAnalyser(trail: trail, bucketCount: 36).runAnalysis()
-			cb(fit, polar, analysis)
+			let polar = polarize(trail, around: analysis.circleFit.center)
+			cb(polar, analysis)
 		}
 	}
 }

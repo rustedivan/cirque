@@ -27,7 +27,7 @@ class CircleBestFitTests: XCTestCase {
 			let taper = Taper(taperRatio: 0.1, clockwise: false)
 			
 			return { (p: Double) in
-				BestFitCircle(fit: CircleFit(around, 100.0), startAngle: a0, taper: taper)
+				BestFitCircle(fit: CircleFit(around, 100.0), startAngle: a0, progress: p, taper: taper)
 			}
 		}
 		
@@ -65,7 +65,7 @@ class CircleBestFitTests: XCTestCase {
 			let taper = Taper(taperRatio: 0.1, clockwise: false)
 			
 			return { (a0: Double) in
-				BestFitCircle(fit: CircleFit(around, 100.0), startAngle: a0, taper: taper)
+				BestFitCircle(fit: CircleFit(around, 100.0), startAngle: a0, progress: p, taper: taper)
 			}
 		}
 		
@@ -99,7 +99,7 @@ class CircleBestFitTests: XCTestCase {
 			let taper = Taper(taperRatio: taper, clockwise: false)
 			
 			return { (p: Double) in
-				BestFitCircle(fit: CircleFit(around, 100.0), startAngle: a0, taper: taper)
+				BestFitCircle(fit: CircleFit(around, 100.0), startAngle: a0, progress: p, taper: taper)
 			}
 		}
 		
@@ -140,7 +140,7 @@ class CircleBestFitTests: XCTestCase {
 			let taper = Taper(taperRatio: 0.1, clockwise: true)
 			
 			return { (p: Double) in
-				BestFitCircle(fit: CircleFit(around, 100.0), startAngle: a0, taper: taper)
+				BestFitCircle(fit: CircleFit(around, 100.0), startAngle: a0, progress: p, taper: taper)
 			}
 		}
 		
@@ -179,10 +179,10 @@ class CircleBestFitTests: XCTestCase {
 		let fit = CircleFit(Point(x: 10.0, y: -20.0), 100.0)
 		
 		let taper = Taper(taperRatio: 0.2, clockwise: false)
-		var f = BestFitCircle(fit: fit, startAngle: 0.2, taper: taper)
+		var f = BestFitCircle(fit: fit, startAngle: 0.2, progress: 0.8, taper: taper)
 		f.bestFitWidth = 2.0
 		let t = f.toVertices()
-		XCTAssertEqual(t.count, 360 * 2, "Should have generated 360 segments of two vertices each")
+		XCTAssertEqual(t.count, 289 * 2, "Should have generated 361 segments of two vertices each")
 		
 		func radius(_ v: CirqueVertex) -> Double {
 			let p = Point(x: Double(v.position.x) - fit.center.x,

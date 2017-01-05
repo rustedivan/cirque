@@ -25,21 +25,72 @@ import Foundation
 // -- SeriesAnalyser: ([PolarArray] -> (peak, angle))
 
 struct TrailAnalysis: Equatable, CustomDebugStringConvertible {
-	let isCircle: Bool
+	let circleFit: CircleFit
 	let isClockwise: Bool
-	let circularityScore: Double
+	let isComplete: Bool
 	let radialFitness: Double
 	let radialContraction: Double
 	let endCapsSeparation: Double
 	let strokeEvenness: Double
 	let radialDeviation: (peak: Double, angle: Double)
 	let strokeCongestion: (peak: Double, angle: Double)
-	let hint: HintType?
+	
+	/*	Grade the radial deviations on a reverse quadratic curve.
+			Approved radial fitnesses lie on 0.0...0.1, so scale that up
+			by a factor of 10 and clamp it to normalize. Reverse and square.
+	*/
+	var circularityScore: Double {
+		let errorInterval = 0.0...1.0
+		let errorScale = 10.0
+		let scaledError = radialFitness * errorScale
+		let lowerBound = min(scaledError, errorInterval.upperBound)
+		let error = max(lowerBound, errorInterval.lowerBound)
+		let score = error - (errorInterval.upperBound - errorInterval.lowerBound)
+		let gradedScore = score * score
+		return gradedScore
+	}
+	
+	var isCircle: Bool {
+		// Circle must be closed
+		let endCapErrorThreshold = circleFit.radius / 2.0	// Caps are off by half the radius
+		if (endCapsSeparation > endCapErrorThreshold) {
+			print("Rejected end caps: \(endCapsSeparation) > \(endCapErrorThreshold)")
+			return false
+		}
+		
+		// Circle must be round
+		// Threshold value of 11% is determined via experimentation.
+		let radialErrorThreshold = 0.11
+		if (radialFitness > radialErrorThreshold) {
+			print("Rejected roundness: \(radialFitness) > \(radialErrorThreshold)")
+			return false
+		}
+		
+		if isComplete == false {
+			print("Rejected completeness: most point buckets are empty")
+			return false
+		}
+		
+		return true
+	}
+	
+	/*	Grade the radial deviations on a reverse quadratic curve.
+	Approved radial fitnesses lie on 0.0...0.1, so scale that up
+	by a factor of 10 and clamp it to normalize. Reverse and square.
+	*/
+	func circularityScore(radialFitness: Double) -> Double {
+		let errorInterval = 0.0...1.0
+		let errorScale = 10.0
+		let scaledError = radialFitness * errorScale
+		let lowerBound = min(scaledError, errorInterval.upperBound)
+		let error = max(lowerBound, errorInterval.lowerBound)
+		let score = error - (errorInterval.upperBound - errorInterval.lowerBound)
+		let gradedScore = score * score
+		return gradedScore
+	}
 	
 	static func ==(lhs: TrailAnalysis, rhs: TrailAnalysis) -> Bool {
-		if lhs.isCircle != rhs.isCircle { return false }
 		if lhs.isClockwise != rhs.isClockwise { return false }
-		if lhs.circularityScore != rhs.circularityScore { return false }
 		if lhs.radialFitness != rhs.radialFitness { return false }
 		if lhs.radialContraction != rhs.radialContraction { return false }
 		if lhs.endCapsSeparation != rhs.endCapsSeparation { return false }
@@ -78,7 +129,24 @@ class TrailAnalyser {
 	}
 	
 	func runAnalysis() -> TrailAnalysis {
-		return TrailAnalysis(isCircle: false, isClockwise: false, circularityScore: 0.0, radialFitness: 0.0, radialContraction: 0.0, endCapsSeparation: 0.0, strokeEvenness: 0.0, radialDeviation: (peak: 0.0, angle: 0.0), strokeCongestion: (peak: 0.0, angle: 0.0), hint: nil)
+		let fit = TrailAnalyser.fitCenterAndRadius(trail)
+		let polarPoints = polarize(trail, around: fit.center)
+		let angleDeltas = angleDistances(polarPoints)
+		let pointBuckets = TrailAnalyser.binPointsByAngle(polarPoints, intoBuckets: bucketCount)
+		let deviations = deviationsFromFit(points: polarPoints, fromRadius: fit.radius)
+		let bucketErrors = TrailAnalyser.calcBucketErrors(pointBuckets: pointBuckets, fromRadius: fit.radius)
+		
+		return TrailAnalysis(
+			circleFit:								fit,
+			isClockwise:							isClockwise(angleDeltas: angleDeltas),
+			isComplete:								isComplete(pointBuckets: pointBuckets),
+			radialFitness:						radialFitness(deviationsFromFit: deviations, fromRadius: fit.radius),
+			radialContraction:				radialContraction(points: polarPoints),
+			endCapsSeparation:				endCapsSeparation(trail: trail),
+			strokeEvenness:						strokeEvenness(angleDeltas: angleDeltas),
+			radialDeviation:					radialDeviation(pointBuckets: pointBuckets, bucketErrors: bucketErrors, fromRadius: fit.radius),
+			strokeCongestion:					strokeCongestion(pointBuckets: pointBuckets)
+		)
 	}
 	
 	class func binPointsByAngle(_ points: PolarArray, intoBuckets buckets: Int) -> [AngleBucket] {
@@ -101,22 +169,7 @@ class TrailAnalyser {
 }
 
 fileprivate extension TrailAnalyser {
-	/*	Grade the radial deviations on a reverse quadratic curve.
-			Approved radial fitnesses lie on 0.0...0.1, so scale that up
-			by a factor of 10 and clamp it to normalize. Reverse and square.
-	*/
-	func circularityScore(radialFitness: Double) -> Double {
-		let errorInterval = 0.0...1.0
-		let errorScale = 10.0
-		let scaledError = radialFitness * errorScale
-		let lowerBound = min(scaledError, errorInterval.upperBound)
-		let error = max(lowerBound, errorInterval.lowerBound)
-		let score = error - (errorInterval.upperBound - errorInterval.lowerBound)
-		let gradedScore = score * score
-		return gradedScore
-	}
-	
-	func calcBucketErrors(pointBuckets: [AngleBucket], fromRadius radius: Double) -> [Double] {
+	class func calcBucketErrors(pointBuckets: [AngleBucket], fromRadius radius: Double) -> [Double] {
 		// Calculate moving average
 		let n = pointBuckets.count
 		var bucketErrors = Array<Double>(repeating: 0.0, count: n)
@@ -135,6 +188,12 @@ fileprivate extension TrailAnalyser {
 	func isClockwise(angleDeltas: [Double]) -> Bool {
 		let sumOfArcs = angleDeltas.reduce(0.0, +)
 		return sumOfArcs < 0.0
+	}
+	
+	// Circle must be complete - most buckets should have points in them
+	func isComplete(pointBuckets: [AngleBucket]) -> Bool {
+		let emptyBuckets = pointBuckets.filter { $0.points.isEmpty }.count
+		return emptyBuckets < pointBuckets.count / 2
 	}
 	
 	/*	Measure the relative RMS of radial errors, i.e. how round the circle is.
@@ -211,15 +270,12 @@ fileprivate extension TrailAnalyser {
 }
 
 fileprivate extension TrailAnalyser {
-	func endCapsSeparation(points: PolarArray) -> Double {
+	func endCapsSeparation(trail: Trail) -> Double {
+		guard let firstPoint = trail.first else { return 0.0 }
+		guard let lastPoint = trail.last else { return 0.0 }
 		let errorThreshold = 10.0
 		
-		let startPolar = points.first!
-		let startPoint = Point(x: cos(startPolar.a) * startPolar.r, y: sin(startPolar.a) * startPolar.r)
-		let endPolar = points.last!
-		let endPoint = Point(x: cos(endPolar.a) * endPolar.r, y: sin(endPolar.a) * endPolar.r)
-		
-		let capsSeparationVector = Vector(dx: endPoint.x - startPoint.x, dy: endPoint.y - startPoint.y)
+		let capsSeparationVector = Vector(dx: lastPoint.x - firstPoint.x, dy: lastPoint.y - firstPoint.y)
 		let separation = sqrt(capsSeparationVector.dx * capsSeparationVector.dx +
 													capsSeparationVector.dy * capsSeparationVector.dy)
 		return (separation > errorThreshold) ? separation : 0.0
@@ -273,34 +329,5 @@ fileprivate extension TrailAnalyser {
 			sparsestIndex : densestIndex
 
 		return (peak: Double(bucketSizes[worstBucket]) - avgBucketSize, angle: pointBuckets[worstBucket].angle)
-	}
-}
-
-fileprivate extension TrailAnalyser {
-	func isCircle(pointBuckets: [AngleBucket], radialFitness: Double, endCapsSeparation: Double, fitRadius radius: Double) -> Bool {
-		// Circle must be closed
-		let endCapErrorThreshold = radius / 2.0	// Caps are off by half the radius
-		if (endCapsSeparation > endCapErrorThreshold) {
-			print("Rejected end caps: \(endCapsSeparation) > \(endCapErrorThreshold)")
-			return false
-		}
-
-		// Circle must be round
-		// Threshold value of 11% is determined via experimentation.
-		let radialErrorThreshold = 0.11
-		if (radialFitness > radialErrorThreshold) {
-			print("Rejected roundness: \(radialFitness) > \(radialErrorThreshold)")
-			return false
-		}
-		
-		// Circle must be complete
-		for bucket in pointBuckets {
-			if bucket.points.isEmpty {
-				print("Rejected completeness: point bucket at \(bucket.angle) is empty")
-				return false
-			}
-		}
-		
-		return true
 	}
 }

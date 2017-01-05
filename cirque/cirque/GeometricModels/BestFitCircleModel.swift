@@ -13,12 +13,12 @@ struct BestFitCircle {
 	var fit: CircleFit
 	var bestFitWidth = 1.5
 	
-	init(fit: CircleFit, startAngle: Double, taper: Taper) {
+	init(fit: CircleFit, startAngle: Double, progress: Double, taper: Taper) {
 		self.fit = fit
 		
 		let fidelity = 1.0/360.0
 		let direction = taper.clockwise ? -1.0 : 1.0
-		let endAngle = startAngle + 2.0 * M_PI * direction
+		let endAngle = startAngle + progress * 2.0 * M_PI * direction
 		let step = 2.0 * M_PI * fidelity * direction
 		
 		let arcs = stride(from: startAngle, through: endAngle, by: step)

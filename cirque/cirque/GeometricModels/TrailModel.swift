@@ -80,7 +80,7 @@ struct Trail {
 }
 
 // Make the Trail into a proxy for the underlying PointArray
-extension Trail : Collection {
+extension Trail : BidirectionalCollection {
 	var startIndex: PointArray.Index {
 		get { return points.startIndex }
 	}
@@ -92,6 +92,9 @@ extension Trail : Collection {
 	}
 	func index(after i: Int) -> Int {
 		return points.index(after: i)
+	}
+	func index(before i: Int) -> Int {
+		return points.index(before: i)
 	}
 }
 
