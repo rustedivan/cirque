@@ -10,6 +10,8 @@
 		1402B4CB1A3469CC00E335B3 /* TrailTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1402B4CA1A3469CC00E335B3 /* TrailTests.swift */; };
 		1402B4CD1A346C7D00E335B3 /* TrailModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1402B4CC1A346C7D00E335B3 /* TrailModel.swift */; };
 		1402B4CE1A346D6C00E335B3 /* TrailModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1402B4CC1A346C7D00E335B3 /* TrailModel.swift */; };
+		140E68AC1E1DF765002479A7 /* FixedTimeSeries.swift in Sources */ = {isa = PBXBuildFile; fileRef = 140E68AB1E1DF765002479A7 /* FixedTimeSeries.swift */; };
+		140E68AF1E1DF78F002479A7 /* FixedTimeSeriesTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 140E68AE1E1DF78F002479A7 /* FixedTimeSeriesTests.swift */; };
 		141A8E181A3C6C36002ED07F /* CircleFit.swift in Sources */ = {isa = PBXBuildFile; fileRef = 141A8E171A3C6C36002ED07F /* CircleFit.swift */; };
 		142A02211A66EECF00AC3942 /* HistoricalAnalysisTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 142A02201A66EECF00AC3942 /* HistoricalAnalysisTests.swift */; };
 		144170151CFB693E00A1BF03 /* CircleErrorAreaTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 144170141CFB693E00A1BF03 /* CircleErrorAreaTests.swift */; };
@@ -80,6 +82,8 @@
 /* Begin PBXFileReference section */
 		1402B4CA1A3469CC00E335B3 /* TrailTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TrailTests.swift; sourceTree = "<group>"; };
 		1402B4CC1A346C7D00E335B3 /* TrailModel.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = TrailModel.swift; path = GeometricModels/TrailModel.swift; sourceTree = "<group>"; };
+		140E68AB1E1DF765002479A7 /* FixedTimeSeries.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = FixedTimeSeries.swift; path = Analysis/FixedTimeSeries.swift; sourceTree = "<group>"; };
+		140E68AE1E1DF78F002479A7 /* FixedTimeSeriesTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FixedTimeSeriesTests.swift; sourceTree = "<group>"; };
 		141A8E171A3C6C36002ED07F /* CircleFit.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = CircleFit.swift; path = Analysis/CircleFit.swift; sourceTree = "<group>"; };
 		142A02201A66EECF00AC3942 /* HistoricalAnalysisTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = HistoricalAnalysisTests.swift; sourceTree = "<group>"; };
 		144170141CFB693E00A1BF03 /* CircleErrorAreaTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CircleErrorAreaTests.swift; sourceTree = "<group>"; };
@@ -167,6 +171,7 @@
 				14D189421A52C50E00CD0862 /* TrailAnalyser.swift */,
 				14D371601E175B6A0056D399 /* Hinting.swift */,
 				145D01131A6C064700B6D5C9 /* TrailHistory.swift */,
+				140E68AB1E1DF765002479A7 /* FixedTimeSeries.swift */,
 			);
 			name = Analysis;
 			sourceTree = "<group>";
@@ -239,6 +244,7 @@
 				1402B4CA1A3469CC00E335B3 /* TrailTests.swift */,
 				145855C31A502BED00C44CB1 /* TrailAnalyserTests.swift */,
 				142A02201A66EECF00AC3942 /* HistoricalAnalysisTests.swift */,
+				140E68AE1E1DF78F002479A7 /* FixedTimeSeriesTests.swift */,
 				14D6059419FCE63C0096E228 /* Supporting Files */,
 			);
 			path = cirqueTests;
@@ -381,6 +387,7 @@
 				14F0EDC11DE8D354003120BA /* CGRenderPath.swift in Sources */,
 				14DBBDC91E0FBCA8009239E0 /* Uniforms.swift in Sources */,
 				14D189431A52C50E00CD0862 /* TrailAnalyser.swift in Sources */,
+				140E68AC1E1DF765002479A7 /* FixedTimeSeries.swift in Sources */,
 				14E749951DFF77360036939B /* GeometryHelpers.swift in Sources */,
 				144F0BEF1E0CCECB00850009 /* StateMachine.swift in Sources */,
 				14748B271E051C6D00002A94 /* BestFitCircleModel.swift in Sources */,
@@ -413,6 +420,8 @@
 				14DBBDCC1E1013FA009239E0 /* Uniforms.swift in Sources */,
 				145D01121A6C05DE00B6D5C9 /* HistoryMockTrails.swift in Sources */,
 				145855C41A502BED00C44CB1 /* TrailAnalyserTests.swift in Sources */,
+				140E68AF1E1DF78F002479A7 /* FixedTimeSeriesTests.swift in Sources */,
+				140E68AD1E1DF765002479A7 /* FixedTimeSeries.swift in Sources */,
 				149CD5271E06CF6F003A83C9 /* Style.swift in Sources */,
 				145A267F1A52BDD700B3FBAB /* MockTrails.swift in Sources */,
 				14AFB4811A59394D00EC7EA7 /* CircleController.swift in Sources */,
