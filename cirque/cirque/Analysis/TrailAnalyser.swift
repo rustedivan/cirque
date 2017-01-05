@@ -21,8 +21,8 @@ import Foundation
 
 // TODO: functional approach to analysis
 // - two types of analysis
-// -- ScalarAnalyser: ([PolarArray] -> Double)
-// -- SeriesAnalyser: ([PolarArray] -> (peak, angle))
+// -- ScalarAnalyser: ([[Polar]] -> Double)
+// -- SeriesAnalyser: ([[Polar]] -> (peak, angle))
 
 struct TrailAnalysis: Equatable, CustomDebugStringConvertible {
 	let circleFit: CircleFit
@@ -149,7 +149,7 @@ class TrailAnalyser {
 		)
 	}
 	
-	class func binPointsByAngle(_ points: PolarArray, intoBuckets buckets: Int) -> [AngleBucket] {
+	class func binPointsByAngle(_ points: [Polar], intoBuckets buckets: Int) -> [AngleBucket] {
 		var histogram = [AngleBucket](repeating: ([], 0.0), count: buckets)
 		let nBuckets = Double(buckets)
 		
@@ -245,7 +245,7 @@ fileprivate extension TrailAnalyser {
 	/*	Measure difference between radial RMS and beginning and end of the circle.
 	A contracting circle will have negative local relative radial RMS; an
 	an expanding circle will have a positive LRR-RMS. */
-	func radialContraction(points: PolarArray) -> Double {
+	func radialContraction(points: [Polar]) -> Double {
 		let errorThreshold = 2.0
 		
 		let n = points.count
@@ -264,7 +264,7 @@ fileprivate extension TrailAnalyser {
 		return (abs(contraction) > errorThreshold) ? contraction : 0.0
 	}
 	
-	func deviationsFromFit(points: PolarArray, fromRadius radius: Double) -> [Double] {
+	func deviationsFromFit(points: [Polar], fromRadius radius: Double) -> [Double] {
 		return points.map { $0.r - radius }
 	}
 }

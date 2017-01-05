@@ -95,7 +95,7 @@ class CircleAnalyzer: XCTestCase {
 	/* Radial deviations: given a fit circle, calculate the residial vector of radial samples.
 	*/
 //	func testCalculateRadialDeviations() {
-//		let points: PolarArray = [	(a: 0.0, r: 100.0),
+//		let points: [Polar] = [	(a: 0.0, r: 100.0),
 //																(a: M_PI_2, r: 95.0),
 //																(a: M_PI, r: 105.0),
 //																(a: 3.0 * M_PI_2, r: 150.0)]

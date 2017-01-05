@@ -71,37 +71,37 @@ extension TrailAnalyser {
 		return c
 	}
 	
-	static func centerPoints(_ trail: Trail) -> (Point, PointArray) {
+	static func centerPoints(_ trail: Trail) -> (Point, [Point]) {
 		let on = centroid(trail)
 		return (on, trail.map{ Point(x: $0.x - on.x, y: $0.y - on.y) } )
 	}
 }
 
 // MARK: Sum combinations
-func sumUU(_ points: PointArray) -> Double {
+func sumUU(_ points: [Point]) -> Double {
 	return points.reduce(0.0) {$0 + ($1.x * $1.x)}
 }
 
-func sumUV(_ points: PointArray) -> Double {
+func sumUV(_ points: [Point]) -> Double {
 	return points.reduce(0.0) {$0 + ($1.x * $1.y)}
 }
 
-func sumVV(_ points: PointArray) -> Double {
+func sumVV(_ points: [Point]) -> Double {
 	return points.reduce(0.0) {$0 + ($1.y * $1.y)}
 }
 
-func sumUUU(_ points: PointArray) -> Double {
+func sumUUU(_ points: [Point]) -> Double {
 	return points.reduce(0.0) {$0 + ($1.x * $1.x * $1.x)}
 }
 
-func sumVVV(_ points: PointArray) -> Double {
+func sumVVV(_ points: [Point]) -> Double {
 	return points.reduce(0.0) {$0 + ($1.y * $1.y * $1.y)}
 }
 
-func sumUUV(_ points: PointArray) -> Double {
+func sumUUV(_ points: [Point]) -> Double {
 	return points.reduce(0.0) {$0 + ($1.x * $1.x * $1.y)}
 }
 
-func sumUVV(_ points: PointArray) -> Double {
+func sumUVV(_ points: [Point]) -> Double {
 	return points.reduce(0.0) {$0 + ($1.x * $1.y * $1.y)}
 }

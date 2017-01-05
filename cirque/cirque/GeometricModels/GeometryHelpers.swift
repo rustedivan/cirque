@@ -12,10 +12,8 @@ import simd
 
 typealias Point = (x: Double, y: Double)
 typealias Vector = (dx: Double, dy: Double)
-typealias PointArray = [Point]
 typealias Polar = (r: Double, a: Double)
-typealias PolarArray = [Polar]
-typealias AngleBucket = (points: PolarArray, angle: Double)
+typealias AngleBucket = (points: [Polar], angle: Double)
 
 let zeroPoint = Point(x: 0.0, y: 0.0)
 
@@ -50,7 +48,7 @@ struct Taper {
 	}
 }
 
-func polarize(_ points: Trail, around c: Point) -> PolarArray {
+func polarize(_ points: Trail, around c: Point) -> [Polar] {
 	return points.map { (p: Point) -> Polar in
 		let x = p.x - c.x
 		let y = p.y - c.y
@@ -67,7 +65,7 @@ func polarize(_ points: Trail, around c: Point) -> PolarArray {
 	}
 }
 
-func angleDistances(_ points: PolarArray) -> [Double] {
+func angleDistances(_ points: [Polar]) -> [Double] {
 	var deltaA: [Double] = []
 	for i in 0 ..< points.count - 1 {
 		let prev = points[i].a

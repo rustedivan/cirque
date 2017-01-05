@@ -15,7 +15,7 @@ struct ErrorArea {
 	var rootAngle: Double
 
 	// FIXME: it's pretty ugly to pass the polar array directly
-	init(_ points: PolarArray, fit: CircleFit, treshold: Double) {
+	init(_ points: [Polar], fit: CircleFit, treshold: Double) {
 		self.fit = fit
 		rootAngle = points.first?.a ?? 0.0
 		var insideErrorArea = false

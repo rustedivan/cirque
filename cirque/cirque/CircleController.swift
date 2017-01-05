@@ -38,7 +38,7 @@ class CircleController {
 		
 //		circle.dumpAsSwiftArray()
 		
-		analyseTrail(trail) { (polar: PolarArray, analysis: TrailAnalysis) in
+		analyseTrail(trail) { (polar: [Polar], analysis: TrailAnalysis) in
 			self.analysisTimestamp = Date()
 			
 			var trend = 0.0
@@ -70,7 +70,7 @@ class CircleController {
 		}
 	}
 
-	func analyseTrail(_ trail: Trail, cb: @escaping (PolarArray, TrailAnalysis) -> ()) {
+	func analyseTrail(_ trail: Trail, cb: @escaping ([Polar], TrailAnalysis) -> ()) {
 		if analysisRunning { return } // FIXME: block with states instead
 
 		analysisRunning = true
@@ -82,7 +82,7 @@ class CircleController {
 		}
 	}
 	
-	func dispatchFitJob(_ trail: Trail, cb: @escaping ((PolarArray, TrailAnalysis) -> ())) {
+	func dispatchFitJob(_ trail: Trail, cb: @escaping (([Polar], TrailAnalysis) -> ())) {
 		analysisQueue.async {
 			let analysis = TrailAnalyser(trail: trail, bucketCount: 36).runAnalysis()
 			let polar = polarize(trail, around: analysis.circleFit.center)

@@ -12,7 +12,7 @@ import Darwin
 struct Trail {
 	static let segmentFilterDistance = 2.0
 	
-	fileprivate var points = PointArray()
+	fileprivate var points : [Point] = []
 	var angles: [Double] {
 		return anglesBetweenPoints()
 	}
@@ -23,7 +23,7 @@ struct Trail {
 	init() {
 	}
 	
-	init(withPoints initialPoints: PointArray) {
+	init(withPoints initialPoints: [Point]) {
 		points = initialPoints
 	}
 	
@@ -79,15 +79,15 @@ struct Trail {
 	}
 }
 
-// Make the Trail into a proxy for the underlying PointArray
+// Make the Trail into a proxy for the underlying [Point]
 extension Trail : BidirectionalCollection {
-	var startIndex: PointArray.Index {
+	var startIndex: Array<Point>.Index {
 		get { return points.startIndex }
 	}
-	var endIndex: PointArray.Index {
+	var endIndex: Array<Point>.Index {
 		get { return points.endIndex }
 	}
-	subscript(position: PointArray.Index) -> PointArray.Iterator.Element {
+	subscript(position: Array<Point>.Index) -> Array<Point>.Iterator.Element {
 		get { return points[position] }
 	}
 	func index(after i: Int) -> Int {
