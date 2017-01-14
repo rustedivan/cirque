@@ -8,6 +8,7 @@
 
 import Foundation
 import CoreGraphics.CGGeometry
+import ThatsOK
 
 enum CircleResult {
 	case rejected (centroid: Point)
@@ -65,6 +66,7 @@ class CircleController {
 				                hint: hint))
 			}
 			else {
+				okassert()
 				after(.rejected(centroid: analysis.circleFit.center))
 			}
 		}
