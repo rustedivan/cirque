@@ -79,26 +79,8 @@ extension TrailHistory {
 	}
 	
 	func circularityScoreProgression() -> Double {
-		var scores = [Double]()
-		for analysis in entries {
-			scores.append(analysis.circularityScore)
-		}
-		
-		let indices = [Int](0..<scores.count)
-
-		let n = Double(scores.count)
-		let sumT = indices.reduce(0.0) {$0 + Double($1)}
-		let sumS = scores.reduce(0.0, +)
-
-		var sumST = 0.0
-		for i in 0..<scores.count {
-			sumST += Double(indices[i]) * scores[i]
-		}
-		
-		let sumTT = indices.reduce(0.0) {$0 + Double($1 * $1)}
-		let regression = (sumST - (sumS * sumT)/n) / (sumTT - sumT*sumT/n)
-		
-		return regression
+		let scores = entries.map { $0.circularityScore }
+		return linearTrend(scores)
 	}
 	
 	func dumpScoreHistory() {

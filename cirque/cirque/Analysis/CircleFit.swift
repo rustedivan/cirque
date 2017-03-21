@@ -105,3 +105,23 @@ func sumUUV(_ points: [Point]) -> Double {
 func sumUVV(_ points: [Point]) -> Double {
 	return points.reduce(0.0) {$0 + ($1.x * $1.y * $1.y)}
 }
+
+// MARK: Regression
+func linearTrend(_ values: [Double]) -> Double {
+	let indices = [Int](0 ..< values.count)
+	let n = Double(values.count)
+	
+	let sumX = Double(indices.reduce(0, +))
+	let sumY = values.reduce(0.0, +)
+	let avgX = sumX / n
+	let avgY = sumY / n
+	
+	let sumXX = indices.reduce(0.0) { $0 + Double($1 * $1) }
+	let sumXY = zip(indices, values).reduce(0.0) { $0 + Double($1.0) * $1.1 }
+	
+	let numerator = (sumXY / n) - (avgX * avgY)
+	let denominator = ((sumXX/n) - (avgX * avgX))
+	let regression = numerator / denominator
+	
+	return regression
+}

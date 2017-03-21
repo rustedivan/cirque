@@ -68,6 +68,12 @@ class HistoricalAnalysisTests: XCTestCase {
 		                     strokeCongestion: (peak: 0.25 * seedVal, angle: -seedVal))
 	}
 	
+	func testLinearTrend() {
+		let values = [52.21, 53.12, 54.48, 55.84, 57.20, 58.57, 59.93, 61.29, 63.11, 64.47]
+		let trend = linearTrend(values)
+		XCTAssertEqualWithAccuracy(trend, 1.38, accuracy: 0.01)
+	}
+	
 	func testShouldStoreOneAnalysis() {
 		let a = testAnalysis(seed: 1)
 		
