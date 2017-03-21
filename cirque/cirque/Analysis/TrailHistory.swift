@@ -8,6 +8,15 @@
 
 import Foundation
 
+struct TrendAnalysis {
+	let score: Double
+	let fitness: Double
+	let radius: Double
+	let clockwise: Bool
+	let contraction: Double
+	let capSeparation: Double
+}
+
 class TrailHistory {
 	var entries: [TrailAnalysis] = []
 	var filename: String?
@@ -22,7 +31,7 @@ class TrailHistory {
 	init() {
 	}
 
-	convenience init(filename: String) {
+	convenience init(filename: String, slots: (immediate: Int, trend: Int, characteristic: Int)) {
 		self.init()
 		
 		self.filename = filename
@@ -64,6 +73,11 @@ class TrailHistory {
 }
 
 extension TrailHistory {
+	var trendAnalysis: TrendAnalysis {
+		return TrendAnalysis(score: circularityScoreProgression(),
+		                     fitness: 0.0, radius: 0.0, clockwise: false, contraction: 0.0, capSeparation: 0.0)
+	}
+	
 	func circularityScoreProgression() -> Double {
 		var scores = [Double]()
 		for analysis in entries {

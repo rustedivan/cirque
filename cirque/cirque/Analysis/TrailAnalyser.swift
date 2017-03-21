@@ -19,11 +19,6 @@ import Foundation
 						 window stretching back ~20-30 circles.
 */
 
-// TODO: functional approach to analysis
-// - two types of analysis
-// -- ScalarAnalyser: ([[Polar]] -> Double)
-// -- SeriesAnalyser: ([[Polar]] -> (peak, angle))
-
 struct TrailAnalysis: Equatable, CustomDebugStringConvertible {
 	let circleFit: CircleFit
 	let isClockwise: Bool
@@ -72,21 +67,6 @@ struct TrailAnalysis: Equatable, CustomDebugStringConvertible {
 		}
 		
 		return true
-	}
-	
-	/*	Grade the radial deviations on a reverse quadratic curve.
-	Approved radial fitnesses lie on 0.0...0.1, so scale that up
-	by a factor of 10 and clamp it to normalize. Reverse and square.
-	*/
-	func circularityScore(radialFitness: Double) -> Double {
-		let errorInterval = 0.0...1.0
-		let errorScale = 10.0
-		let scaledError = radialFitness * errorScale
-		let lowerBound = min(scaledError, errorInterval.upperBound)
-		let error = max(lowerBound, errorInterval.lowerBound)
-		let score = error - (errorInterval.upperBound - errorInterval.lowerBound)
-		let gradedScore = score * score
-		return gradedScore
 	}
 	
 	static func ==(lhs: TrailAnalysis, rhs: TrailAnalysis) -> Bool {

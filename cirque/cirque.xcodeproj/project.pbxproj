@@ -17,6 +17,7 @@
 		144170151CFB693E00A1BF03 /* CircleErrorAreaTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 144170141CFB693E00A1BF03 /* CircleErrorAreaTests.swift */; };
 		144170171CFE396500A1BF03 /* CirqueView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 14E44FAF1C550F09006B594D /* CirqueView.swift */; };
 		144F0BEF1E0CCECB00850009 /* StateMachine.swift in Sources */ = {isa = PBXBuildFile; fileRef = 144F0BEE1E0CCECB00850009 /* StateMachine.swift */; };
+		1450EECB1E2CE8F300FC9CF9 /* FixedTimeSeries.swift in Sources */ = {isa = PBXBuildFile; fileRef = 140E68AB1E1DF765002479A7 /* FixedTimeSeries.swift */; };
 		145855C41A502BED00C44CB1 /* TrailAnalyserTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 145855C31A502BED00C44CB1 /* TrailAnalyserTests.swift */; };
 		145A267F1A52BDD700B3FBAB /* MockTrails.swift in Sources */ = {isa = PBXBuildFile; fileRef = 145A267E1A52BDD700B3FBAB /* MockTrails.swift */; };
 		145D01121A6C05DE00B6D5C9 /* HistoryMockTrails.swift in Sources */ = {isa = PBXBuildFile; fileRef = 145D01111A6C05DE00B6D5C9 /* HistoryMockTrails.swift */; };
@@ -420,8 +421,8 @@
 				14DBBDCC1E1013FA009239E0 /* Uniforms.swift in Sources */,
 				145D01121A6C05DE00B6D5C9 /* HistoryMockTrails.swift in Sources */,
 				145855C41A502BED00C44CB1 /* TrailAnalyserTests.swift in Sources */,
+				1450EECB1E2CE8F300FC9CF9 /* FixedTimeSeries.swift in Sources */,
 				140E68AF1E1DF78F002479A7 /* FixedTimeSeriesTests.swift in Sources */,
-				140E68AD1E1DF765002479A7 /* FixedTimeSeries.swift in Sources */,
 				149CD5271E06CF6F003A83C9 /* Style.swift in Sources */,
 				145A267F1A52BDD700B3FBAB /* MockTrails.swift in Sources */,
 				14AFB4811A59394D00EC7EA7 /* CircleController.swift in Sources */,

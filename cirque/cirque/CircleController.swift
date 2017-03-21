@@ -43,7 +43,7 @@ class CircleController {
 			
 			var trend = 0.0
 			if analysis.isCircle {
-				let historyWriter = TrailHistory(filename: "game-trail-history.trails")
+				let historyWriter = TrailHistory(filename: "game-trail-history.trails", slots: (immediate: 100, trend: 10, characteristic: 1))
 				historyWriter.addAnalysis(analysis)
 				trend = historyWriter.circularityScoreProgression()
 				historyWriter.save()

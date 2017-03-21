@@ -54,86 +54,117 @@ class HistoricalAnalysisTests: XCTestCase {
 		}
 	}
 	
-	func testBuildsTrailHistory() {
-		let trail1 = TrailAnalyser(trail: Trail(withPoints: circle1), bucketCount: 36).runAnalysis()
-		let trail2 = TrailAnalyser(trail: Trail(withPoints: circle2), bucketCount: 36).runAnalysis()
-		let trail3 = TrailAnalyser(trail: Trail(withPoints: circle3), bucketCount: 36).runAnalysis()
-		
-		let history = TrailHistory()
-		history.addAnalysis(trail1)
-		history.addAnalysis(trail2)
-		history.addAnalysis(trail3)
-		
-		XCTAssertEqual(history.entries.count, 3, "Did not track all added histories")
-		XCTAssertEqual(history.entries[0], trail1, "Did not pack in order")
-		XCTAssertEqual(history.entries[1], trail2, "Did not pack in order")
-		XCTAssertEqual(history.entries[2], trail3, "Did not pack in order")
+	func testAnalysis(seed: Int) -> TrailAnalysis {
+		let seedVal = Double(seed)
+		return TrailAnalysis(circleFit: CircleFit(center: Point(10.0 * seedVal, -2.0 * seedVal),
+		                                          radius: 15.0 * seedVal),
+		                     isClockwise: (seed % 2 == 0),
+		                     isComplete: true,
+		                     radialFitness: 0.05 - 0.01 * seedVal, // Lower is better
+		                     radialContraction: -0.1 * seedVal,
+		                     endCapsSeparation: seedVal,
+		                     strokeEvenness: seedVal + 0.5,
+		                     radialDeviation: (peak: 0.15 * seedVal, angle: seedVal),
+		                     strokeCongestion: (peak: 0.25 * seedVal, angle: -seedVal))
 	}
-
-	func testPersistsTrailHistory() {
-		let trail1 = TrailAnalyser(trail: Trail(withPoints: circle1), bucketCount: 36).runAnalysis()
-		let trail2 = TrailAnalyser(trail: Trail(withPoints: circle2), bucketCount: 36).runAnalysis()
-		
-		let history1 = TrailHistory(filename: "testhistory.trails")
-		history1.addAnalysis(trail1)
-//		history1.save()
-		
-		let history2 = TrailHistory(filename: "testhistory.trails")
-		history2.addAnalysis(trail2)
-//		history2.save()
-		
-		let history3 = TrailHistory(filename: "testhistory.trails")
-		XCTAssertEqual(history3.entries.count, 2, "Did not save all added histories")
-//		XCTAssertEqual(history3.entries[0], trail1, "Did not save in order")
-//		XCTAssertEqual(history3.entries[1], trail2, "Did not save in order")
-	}
-
-	func testCanDetectLinearImprovement() {
-
-		let history = TrailHistory()
-		for trail in linearImprovement {
-			let ta = TrailAnalyser(trail: Trail(withPoints: trail), bucketCount: 36).runAnalysis()
-			history.addAnalysis(ta)
-		}
-		
-		let fitnessProgression = history.circularityScoreProgression()
-		XCTAssertGreaterThan(fitnessProgression, 0.0, "Fitness should be improving")
-	}
-
-	func testCanDetectLinearWorsening() {
-		let history = TrailHistory()
-		for trail in linearImprovement.reversed() {
-			let ta = TrailAnalyser(trail: Trail(withPoints: trail), bucketCount: 36).runAnalysis()
-			history.addAnalysis(ta)
-		}
-		
-		let fitnessProgression = history.circularityScoreProgression()
-		XCTAssertLessThan(fitnessProgression, 0.0, "Fitness should be worsening")
-	}
-
-	func testCanDetectStagnantImprovement() {
-		let history = TrailHistory()
-		let ta1 = TrailAnalyser(trail: Trail(withPoints: linearImprovement[0]), bucketCount: 36).runAnalysis()
-		let ta2 = TrailAnalyser(trail: Trail(withPoints: linearImprovement[0]), bucketCount: 36).runAnalysis()
-		for _ in 0..<5 {
-			history.addAnalysis(ta1)
-			history.addAnalysis(ta2)
-		}
-		
-		let fitnessProgression = history.circularityScoreProgression()
-		XCTAssertEqualWithAccuracy(fitnessProgression, 0.0, accuracy: 0.05, "Fitness should be worsening")
-	}
-
-//	func testCanDiscernDominantErrorType() {
-//		XCTFail("Not implemented: Type-value of error enum in history")
-//	}
 	
-//	func testCanDetectDominantErrorPosition() {
-//		XCTFail("Not implemented: Significant error sum peak for history bucket > 1 sigma")
-//	}
-//	
-//
-//	func testCanDetermineBestRadiusForPlayer() {
-//		XCTFail("Not implemented: find covariation between low error and radius")
-//	}
+	func testShouldStoreOneAnalysis() {
+		let a = testAnalysis(seed: 1)
+		
+		let h = TrailHistory(filename: "testhistory.analysis", slots: (immediate: 3, trend: 2, characteristic: 1))
+		h.addAnalysis(a)
+		
+		XCTAssertEqual(h.entries.first!, a)
+	}
+	
+	func testShouldCalculateTrendAnalysis() {
+		let a1 = testAnalysis(seed: 1)
+		let a2 = testAnalysis(seed: 2)
+		let a3 = testAnalysis(seed: 3)
+		let a4 = testAnalysis(seed: 4)
+		let a5 = testAnalysis(seed: 5)
+		
+		let h = TrailHistory(filename: "testhistory.analysis", slots: (immediate: 3, trend: 2, characteristic: 1))
+		h.addAnalysis(a1)
+		h.addAnalysis(a2)
+		h.addAnalysis(a3)
+		h.addAnalysis(a4)
+		h.addAnalysis(a5)
+		
+		// Trend tests
+		
+		// Score is increasing
+		XCTAssertGreaterThanOrEqual(h.trendAnalysis.score, 0.1)
+		// Radius is increasing
+		XCTAssertEqual(h.trendAnalysis.radius, 0.1)
+		// Most often clockwise
+		XCTAssertEqual(h.trendAnalysis.clockwise, true)
+		// Fitness is improving
+		XCTAssertEqual(h.trendAnalysis.fitness, 0.1)
+		// Contraction distance is getting worse
+		XCTAssertEqual(h.trendAnalysis.contraction, 0.1)
+		// End cap distance is getting worse
+		XCTAssertEqual(h.trendAnalysis.capSeparation, 0.2)
+	}
+	
+	func testShouldDominateByNewerData() {
+		let a1 = testAnalysis(seed: 3)
+		let a2 = testAnalysis(seed: 3)
+		let a3 = testAnalysis(seed: 3)
+		
+		let a4 = testAnalysis(seed: 1)
+		let a5 = testAnalysis(seed: 1)
+		let a6 = testAnalysis(seed: 1)
+		let a7 = testAnalysis(seed: 1)
+		let a8 = testAnalysis(seed: 1)
+		let a9 = testAnalysis(seed: 1)
+		
+		let h = TrailHistory(filename: "testhistory.analysis", slots: (immediate: 3, trend: 2, characteristic: 1))
+		h.addAnalysis(a1)
+		h.addAnalysis(a2)
+		h.addAnalysis(a3)
+		XCTAssertEqual(h.trendAnalysis.fitness, 3.0)
+		
+		h.addAnalysis(a4)
+		h.addAnalysis(a5)
+		h.addAnalysis(a6)
+		h.addAnalysis(a7)
+		h.addAnalysis(a8)
+		h.addAnalysis(a9)
+		
+		let straightAverage = (3 * 3.0 + 6 * 1.0) / 9.0
+		XCTAssertLessThan(h.trendAnalysis.fitness, straightAverage)
+	}
+	
+	
+	func testShouldPersistAnalysis() {
+	}
+	
+	
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
