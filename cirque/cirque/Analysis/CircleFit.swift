@@ -125,3 +125,23 @@ func linearTrend(_ values: [Double]) -> Double {
 	
 	return regression
 }
+
+// $ No idea how to make this generic. No protocol for floating-point math, only IntegerArithmetic.
+func linearTrend(_ values: [Float]) -> Double {
+	let indices = [Int](0 ..< values.count)
+	let n = Float(values.count)
+	
+	let sumX = Float(indices.reduce(0, +))
+	let sumY = values.reduce(0.0, +)
+	let avgX = sumX / n
+	let avgY = sumY / n
+	
+	let sumXX = indices.reduce(0.0) { $0 + Float($1 * $1) }
+	let sumXY = zip(indices, values).reduce(0.0) { $0 + Float($1.0) * $1.1 }
+	
+	let numerator = (sumXY / n) - (avgX * avgY)
+	let denominator = ((sumXX/n) - (avgX * avgX))
+	let regression = numerator / denominator
+	
+	return Double(regression)
+}

@@ -58,13 +58,13 @@ class HistoricalAnalysisTests: XCTestCase {
 		let seedVal = Double(seed)
 		return TrailAnalysis(circleFit: CircleFit(center: Point(10.0 * seedVal, -2.0 * seedVal),
 		                                          radius: 15.0 * seedVal),
-		                     isClockwise: (seed % 2 == 0),
+		                     isClockwise: (seed % 3 > 0),
 		                     isComplete: true,
 		                     radialFitness: 0.05 - 0.01 * seedVal, // Lower is better
 		                     radialContraction: -0.1 * seedVal,
 		                     endCapsSeparation: seedVal,
 		                     strokeEvenness: seedVal + 0.5,
-		                     radialDeviation: (peak: 0.15 * seedVal, angle: seedVal),
+		                     radialDeviation: (peak: 0.15 * seedVal, angle: (M_PI/2.0) + seedVal * 0.01),
 		                     strokeCongestion: (peak: 0.25 * seedVal, angle: -seedVal))
 	}
 	
@@ -77,10 +77,11 @@ class HistoricalAnalysisTests: XCTestCase {
 	func testShouldStoreOneAnalysis() {
 		let a = testAnalysis(seed: 1)
 		
-		let h = TrailHistory(filename: "testhistory.analysis", slots: (immediate: 3, trend: 2, characteristic: 1))
+		let h = TrailHistory(filename: "testhistory.analysis")
 		h.addAnalysis(a)
 		
-		XCTAssertEqual(h.entries.first!, a)
+		XCTAssertEqualWithAccuracy(h.history.scoreHistory.average, a.circularityScore, accuracy: 0.01)
+		
 	}
 	
 	func testShouldCalculateTrendAnalysis() {
@@ -90,7 +91,7 @@ class HistoricalAnalysisTests: XCTestCase {
 		let a4 = testAnalysis(seed: 4)
 		let a5 = testAnalysis(seed: 5)
 		
-		let h = TrailHistory(filename: "testhistory.analysis", slots: (immediate: 3, trend: 2, characteristic: 1))
+		let h = TrailHistory(filename: "testhistory.analysis")
 		h.addAnalysis(a1)
 		h.addAnalysis(a2)
 		h.addAnalysis(a3)
@@ -98,50 +99,23 @@ class HistoricalAnalysisTests: XCTestCase {
 		h.addAnalysis(a5)
 		
 		// Trend tests
-		
+		let a = h.trendAnalysis
 		// Score is increasing
-		XCTAssertGreaterThanOrEqual(h.trendAnalysis.score, 0.1)
+		XCTAssertGreaterThanOrEqual(a.score, 0.1)
 		// Radius is increasing
-		XCTAssertEqual(h.trendAnalysis.radius, 0.1)
+		XCTAssertEqualWithAccuracy(a.radius, 15.0, accuracy: 0.01)
 		// Most often clockwise
-		XCTAssertEqual(h.trendAnalysis.clockwise, true)
+		XCTAssertEqual(a.clockwise, true)
 		// Fitness is improving
-		XCTAssertEqual(h.trendAnalysis.fitness, 0.1)
+		XCTAssertEqualWithAccuracy(a.fitness, -0.01, accuracy: 0.01)
 		// Contraction distance is getting worse
-		XCTAssertEqual(h.trendAnalysis.contraction, 0.1)
+		XCTAssertEqualWithAccuracy(a.contraction, 0.1, accuracy: 0.01)
 		// End cap distance is getting worse
-		XCTAssertEqual(h.trendAnalysis.capSeparation, 0.2)
+		XCTAssertEqualWithAccuracy(a.capSeparation, 1.0, accuracy: 0.01)
+		// Outward bump to the north
+		XCTAssertGreaterThan(a.radialDeviation.direction, 0.0)
+		XCTAssertEqualWithAccuracy(a.radialDeviation.angle, M_PI/2.0, accuracy: 0.1)
 	}
-	
-	func testShouldDominateByNewerData() {
-		let a1 = testAnalysis(seed: 3)
-		let a2 = testAnalysis(seed: 3)
-		let a3 = testAnalysis(seed: 3)
-		
-		let a4 = testAnalysis(seed: 1)
-		let a5 = testAnalysis(seed: 1)
-		let a6 = testAnalysis(seed: 1)
-		let a7 = testAnalysis(seed: 1)
-		let a8 = testAnalysis(seed: 1)
-		let a9 = testAnalysis(seed: 1)
-		
-		let h = TrailHistory(filename: "testhistory.analysis", slots: (immediate: 3, trend: 2, characteristic: 1))
-		h.addAnalysis(a1)
-		h.addAnalysis(a2)
-		h.addAnalysis(a3)
-		XCTAssertEqual(h.trendAnalysis.fitness, 3.0)
-		
-		h.addAnalysis(a4)
-		h.addAnalysis(a5)
-		h.addAnalysis(a6)
-		h.addAnalysis(a7)
-		h.addAnalysis(a8)
-		h.addAnalysis(a9)
-		
-		let straightAverage = (3 * 3.0 + 6 * 1.0) / 9.0
-		XCTAssertLessThan(h.trendAnalysis.fitness, straightAverage)
-	}
-	
 	
 	func testShouldPersistAnalysis() {
 	}

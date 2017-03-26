@@ -10,65 +10,29 @@ import Foundation
 
 
 struct FixedTimeSeries {
-	struct SpillBuffer {
-		let capacity: Int
-		var buffer: [Double] = []
-		private var writes: Int = 0
-		
-		init(capacity size: Int) {
-			capacity = size
-		}
-		
-		mutating func append(_ value: Double) {
-			buffer.append(value)
-			if buffer.count > capacity {
-				buffer.removeFirst()
-			}
-			writes += 1
-		}
-		
-		mutating func flush() {
-			writes = 0
-		}
-		
-		var shouldFlush: Bool {
-			return writes >= capacity
-		}
+	let maxSamples: Int
+	var timeSeries: [Float]
+	private var storedAverage: Float
+	
+	init(depth: Int) {
+		maxSamples = depth
+		timeSeries = []
+		storedAverage = 0.0
 	}
+	
+	var average: Double { return Double(storedAverage) }
 
-	var immediate : SpillBuffer
-	var trend : SpillBuffer
-	var characteristic : SpillBuffer
-	
-	init(immediateSlots: Int, trendSlots: Int, characteristicSlots: Int) {
-		characteristic = SpillBuffer(capacity: characteristicSlots)
-		trend = SpillBuffer(capacity: immediateSlots)
-		immediate = SpillBuffer(capacity: immediateSlots)
-	}
-	
-	mutating func push(_ value: Double) {
-		// The immediate buffer spills its average into the trend buffer
-		immediate.append(value)
-		if immediate.shouldFlush {
-			trend.append(immediateAverage)
-			immediate.flush()
-		}
+	mutating func add(_ v: Double) {
+		let fV = Float(v)	// More compact storage
 		
-		if trend.shouldFlush {
-			characteristic.append(bestTrend)
-			trend.flush()
+		if timeSeries.count >= maxSamples {
+			// Take out oldest value from stored average (cancel first value, average without its count)
+			storedAverage = (-timeSeries.first! + Float(timeSeries.count) * storedAverage) / Float(timeSeries.count - 1)
+			timeSeries = Array(timeSeries.dropFirst())
 		}
-		
-		if characteristic.shouldFlush {
-			// Do nothing
-		}
-	}
-	
-	private var immediateAverage: Double {
-		return immediate.buffer.reduce(0.0, +) / Double(immediate.buffer.count)
-	}
-	
-	private var bestTrend: Double {
-		return trend.buffer.max() ?? 0.0
+
+		// Update stored average with incoming value
+		storedAverage = (fV + Float(timeSeries.count) * storedAverage) / Float(timeSeries.count + 1)
+		timeSeries.append(fV)
 	}
 }
