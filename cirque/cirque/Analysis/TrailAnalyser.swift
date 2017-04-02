@@ -83,18 +83,18 @@ struct TrailAnalysis: Equatable, CustomDebugStringConvertible {
 	
 	var debugDescription : String {
 		var out = "Accepted circle:"
-		out += "\tDirection:        \(isClockwise ? "clockwise" : "counter-clockwise")"
-		out += "\tCircularity:"
-		out += "\t- score:          \(Int(circularityScore * 100.0))%"
-		out += "\t- radial fitness: \(Int(radialFitness * 100.0))%"
-		out += "\t- contraction:    \(radialContraction)"
-		out += "\t- cap separation: \(Int(endCapsSeparation)) pixels"
-		out += "\tRadial deviation:"
-		out += "\t- peak:           \(Int(radialDeviation.peak))"
-		out += "\t- angle:          \(Int((radialDeviation.angle / M_PI) * 180.0))º"
-		out += "\tStroke evenness:"
-		out += "\t- peak:           \(Int(strokeCongestion.peak))"
-		out += "\t- angle:          \(Int((strokeCongestion.angle / M_PI) * 180.0))º"
+		out += "\n\tDirection:        \(isClockwise ? "clockwise" : "counter-clockwise")"
+		out += "\n\tCircularity:"
+		out += "\n\t- score:          \(Int(circularityScore * 100.0))%"
+		out += "\n\t- radial fitness: \(Int(radialFitness * 100.0))%"
+		out += "\n\t- contraction:    \(radialContraction)"
+		out += "\n\t- cap separation: \(Int(endCapsSeparation)) pixels"
+		out += "\n\tRadial deviation:"
+		out += "\n\t- peak:           \(Int(radialDeviation.peak))"
+		out += "\n\t- angle:          \(Int((radialDeviation.angle / M_PI) * 180.0))º"
+		out += "\n\tStroke evenness:"
+		out += "\n\t- peak:           \(Int(strokeCongestion.peak))"
+		out += "\n\t- angle:          \(Int((strokeCongestion.angle / M_PI) * 180.0))º"
 		return out
 	}
 }
