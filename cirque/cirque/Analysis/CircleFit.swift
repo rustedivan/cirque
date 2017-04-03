@@ -12,8 +12,6 @@ import CoreGraphics.CGGeometry
 // Based on least-square fitting from
 // http://www.dtcenter.org/met/users/docs/write_ups/circle_fit.pdf
 
-// $ Move this code onto Surge library
-
 typealias CircleFit = (center: Point, radius: Double)
 
 extension TrailAnalyser {
@@ -126,7 +124,7 @@ func linearTrend(_ values: [Double]) -> Double {
 	return regression
 }
 
-// $ No idea how to make this generic. No protocol for floating-point math, only IntegerArithmetic.
+// FIXME: No idea how to make this generic. No protocol for floating-point math, only IntegerArithmetic.
 func linearTrend(_ values: [Float]) -> Double {
 	let indices = [Int](0 ..< values.count)
 	let n = Float(values.count)

@@ -36,7 +36,7 @@ struct CGRenderPath : RenderPath {
 			return
 		}
 		
-		// $ TODO: could probably pack CALayer/(device+pxfmt+cmdencoder) into protocol-init
+		// TODO: could probably pack CALayer/(device+pxfmt+cmdencoder) into protocol-init
 		trailRenderer = CGTrailRenderer(layer: targetLayer)
 		errorRenderer = CGErrorRenderer(layer: targetLayer)
 		bestFitRenderer = CGBestFitRenderer(layer: targetLayer)

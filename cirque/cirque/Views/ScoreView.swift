@@ -55,7 +55,6 @@ class ScoreView: UIView {
 	}
 	
 	fileprivate func percentageAsImage(_ percentageString: String, imageWidth: CGFloat) -> UIImage {
-		// $ Add test for this
 		let fontSize = imageWidth / 2.35	// Linear estimate between image width and this particular font setup
 		
 		var fontAttributes: [String:AnyObject]

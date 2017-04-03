@@ -28,6 +28,7 @@
 		14748B271E051C6D00002A94 /* BestFitCircleModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 14748B261E051C6D00002A94 /* BestFitCircleModel.swift */; };
 		14748B281E051D9B00002A94 /* ErrorAreaModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 14748B241E051C1900002A94 /* ErrorAreaModel.swift */; };
 		14748B291E051D9B00002A94 /* BestFitCircleModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 14748B261E051C6D00002A94 /* BestFitCircleModel.swift */; };
+		1475FEC31E92D6DC00A723D3 /* AnalysisController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1475FEC21E92D6DC00A723D3 /* AnalysisController.swift */; };
 		1478A2921C8DFA8E0072290C /* Shaders.metal in Sources */ = {isa = PBXBuildFile; fileRef = 1478A2911C8DFA8E0072290C /* Shaders.metal */; };
 		14998D031D299E3800C34DF9 /* dot.plan in Resources */ = {isa = PBXBuildFile; fileRef = 14998D021D299E3800C34DF9 /* dot.plan */; };
 		149CD5261E06C6D2003A83C9 /* Style.swift in Sources */ = {isa = PBXBuildFile; fileRef = 149CD5251E06C6D2003A83C9 /* Style.swift */; };
@@ -96,6 +97,7 @@
 		146583DE1DFA4B8D005EDF40 /* CircleBestFitTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CircleBestFitTests.swift; sourceTree = "<group>"; };
 		14748B241E051C1900002A94 /* ErrorAreaModel.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = ErrorAreaModel.swift; path = GeometricModels/ErrorAreaModel.swift; sourceTree = "<group>"; };
 		14748B261E051C6D00002A94 /* BestFitCircleModel.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = BestFitCircleModel.swift; path = GeometricModels/BestFitCircleModel.swift; sourceTree = "<group>"; };
+		1475FEC21E92D6DC00A723D3 /* AnalysisController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = AnalysisController.swift; path = Analysis/AnalysisController.swift; sourceTree = "<group>"; };
 		1478A2911C8DFA8E0072290C /* Shaders.metal */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.metal; name = Shaders.metal; path = Shaders/Shaders.metal; sourceTree = "<group>"; };
 		14998D021D299E3800C34DF9 /* dot.plan */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = dot.plan; path = ../dot.plan; sourceTree = "<group>"; };
 		149CD5251E06C6D2003A83C9 /* Style.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = Style.swift; path = Rendering/Style.swift; sourceTree = "<group>"; };
@@ -168,6 +170,7 @@
 		14748B2B1E051F5500002A94 /* Analysis */ = {
 			isa = PBXGroup;
 			children = (
+				1475FEC21E92D6DC00A723D3 /* AnalysisController.swift */,
 				141A8E171A3C6C36002ED07F /* CircleFit.swift */,
 				14D189421A52C50E00CD0862 /* TrailAnalyser.swift */,
 				14D371601E175B6A0056D399 /* Hinting.swift */,
@@ -405,6 +408,7 @@
 				1478A2921C8DFA8E0072290C /* Shaders.metal in Sources */,
 				14D605A319FCEC900096E228 /* CircleController.swift in Sources */,
 				14EDEA0E1DE286EF00AF2F25 /* VertexConversion.swift in Sources */,
+				1475FEC31E92D6DC00A723D3 /* AnalysisController.swift in Sources */,
 				1402B4CD1A346C7D00E335B3 /* TrailModel.swift in Sources */,
 				149CD5261E06C6D2003A83C9 /* Style.swift in Sources */,
 				14EDEA081DE27E2000AF2F25 /* MetalRenderers.swift in Sources */,

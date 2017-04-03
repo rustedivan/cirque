@@ -84,6 +84,7 @@ class TrailHistory {
 	}
 	
 	func save() {
+		return
 		if let savefile = filename {
 			// Create /Application Support if needed:
 			let directory = TrailHistory.historyDir
