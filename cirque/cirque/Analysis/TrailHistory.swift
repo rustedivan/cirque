@@ -8,7 +8,7 @@
 
 import Foundation
 
-struct TrendAnalysis {
+struct TrendAnalysis : CustomDebugStringConvertible {
 	let score: Double
 	let fitness: Double
 	let radius: Double
@@ -16,6 +16,23 @@ struct TrendAnalysis {
 	let contraction: Double
 	let capSeparation: Double
 	let radialDeviation: (angle: Double, direction: Double)
+	
+	var debugDescription : String {
+		var out = ""
+		out += "\n\tScore:       \(score > 0.0 ? "improving" : "worsening")"
+		out += "\n\tDirection:   \(clockwise ? "mostly clockwise" : "mostly counter-clockwise")"
+		out += "\n\tFitness:     \(fitness > 0.0 ? "improving" : "worsening")"
+		out += "\n\tRadius:      \(radius > 0.0 ? "growing" : "shrinking")"
+		out += "\n\tEnd angle:   \(contraction < 0.0 ? "stabilizing" : "worsening")"
+		out += "\n\tSeparation:  \(contraction > 0.0 ? "widening" : "closing")"
+		out += "\n\tSeparation:  \(contraction > 0.0 ? "widening" : "closing")"
+		
+		let direction = (radialDeviation.direction > 0.0 ? "outward" : "inward")
+		let angle = radialDeviation.angle * 180 / .pi
+		out += "\n\tHumps:       \(direction) at \(angle)º"
+		
+		return out
+	}
 }
 
 class History {
@@ -128,6 +145,10 @@ extension TrailHistory {
 		let errorAngle = Double(recentDeviationAngleHistory.reduce(0.0, +) / Float(recentDeviationAngleHistory.count))
 		let errorDirection = recentDeviationMagnitudeHistory.reduce(0.0, +) > 0.0 ? 1.0 : -1.0
 		return (errorAngle, errorDirection)
+	}
+	
+	func dumpTrends() {
+		print(trendAnalysis)
 	}
 	
 	func dumpScoreHistory() {

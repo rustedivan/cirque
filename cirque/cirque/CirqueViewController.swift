@@ -67,8 +67,10 @@ class CirqueViewController: UIViewController {
 		
 		// TODO: block input while running
 		analysisController.analyseTrail(trail: trail) { result in
-			// Ignore if the circle isn't even a triangle
-			guard self.circleController.trail.count >= 3 else { return }
+			// If accepted, write analysis into history
+			if case .accepted(_, _, let analysis) = result {
+				self.historyWriter.addAnalysis(analysis)
+			}
 			
 			// Present back on the UI thread
 			DispatchQueue.main.async {
@@ -175,6 +177,8 @@ class CirqueViewController: UIViewController {
 			                             radius: bestFit.fit.radius + hintData.offset,
 			                             angle: hintData.angle)
 		}
+		
+		historyWriter.dumpTrends()
 	}
 	
 	func hideHint() {
