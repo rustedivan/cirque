@@ -91,10 +91,10 @@ struct TrailAnalysis: Equatable, CustomDebugStringConvertible {
 		out += "\n\t- cap separation: \(Int(endCapsSeparation)) pixels"
 		out += "\n\tRadial deviation:"
 		out += "\n\t- peak:           \(Int(radialDeviation.peak))"
-		out += "\n\t- angle:          \(Int((radialDeviation.angle / M_PI) * 180.0))º"
+		out += "\n\t- angle:          \(Int((radialDeviation.angle / .pi) * 180.0))º"
 		out += "\n\tStroke evenness:"
 		out += "\n\t- peak:           \(Int(strokeCongestion.peak))"
-		out += "\n\t- angle:          \(Int((strokeCongestion.angle / M_PI) * 180.0))º"
+		out += "\n\t- angle:          \(Int((strokeCongestion.angle / .pi) * 180.0))º"
 		return out
 	}
 }
@@ -134,10 +134,10 @@ class TrailAnalyser {
 		let nBuckets = Double(buckets)
 		
 		for i in 0..<buckets {
-			histogram[i].angle = (2.0 * M_PI / nBuckets) * Double(i)
+			histogram[i].angle = (2.0 * .pi / nBuckets) * Double(i)
 		}
 		
-		let bucketWidth = 2.0 * M_PI / nBuckets
+		let bucketWidth = 2.0 * .pi / nBuckets
 		for p in points {
 			let i = Int(p.a / bucketWidth)
 			histogram[i].points.append(p)
@@ -268,7 +268,7 @@ fileprivate extension TrailAnalyser {
 	of them. A stddev below the treshold is snapped to zero ("good enough")
 	*/
 	func strokeEvenness(angleDeltas: [Double]) -> Double {
-		let errorThreshold = 0.01 * (M_PI / 180.0)
+		let errorThreshold = 0.01 * (.pi / 180.0)
 		
 		let avg = angleDeltas.reduce(0.0, +) / Double(angleDeltas.count)
 		let squaredErrors = angleDeltas.reduce(0.0) {$0 + ($1 - avg) * ($1 - avg)}

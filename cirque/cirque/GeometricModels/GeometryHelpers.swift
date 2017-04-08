@@ -58,8 +58,8 @@ func polarize(_ points: Trail, around c: Point) -> [Polar] {
 		var a = -atan2(y, x)
 		let r = sqrt(x * x + y * y)
 	
-		if a < 0.0 { a += M_PI * 2.0 }
-		if a > 2.0 * M_PI { a -= M_PI * 2.0 }
+		if a < 0.0 { a += .pi * 2.0 }
+		if a > 2.0 * .pi { a -= .pi * 2.0 }
 
 		return Polar(r: r, a: a)
 	}
@@ -71,8 +71,8 @@ func angleDistances(_ points: [Polar]) -> [Double] {
 		let prev = points[i].a
 		let next = points[i + 1].a
 		var d = next - prev
-		if d > M_PI { d -= 2.0 * M_PI }
-		if d < -M_PI { d += 2.0 * M_PI }
+		if d > .pi { d -= 2.0 * .pi }
+		if d < -.pi { d += 2.0 * .pi }
 		deltaA.append(d)
 	}
 	return deltaA

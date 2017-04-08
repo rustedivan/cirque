@@ -64,7 +64,7 @@ class HistoricalAnalysisTests: XCTestCase {
 		                     radialContraction: -0.1 * seedVal,
 		                     endCapsSeparation: seedVal,
 		                     strokeEvenness: seedVal + 0.5,
-		                     radialDeviation: (peak: 0.15 * seedVal, angle: (M_PI/2.0) + seedVal * 0.01),
+		                     radialDeviation: (peak: 0.15 * seedVal, angle: (.pi/2.0) + seedVal * 0.01),
 		                     strokeCongestion: (peak: 0.25 * seedVal, angle: -seedVal))
 	}
 	
@@ -114,7 +114,7 @@ class HistoricalAnalysisTests: XCTestCase {
 		XCTAssertEqualWithAccuracy(a.capSeparation, 1.0, accuracy: 0.01)
 		// Outward bump to the north
 		XCTAssertGreaterThan(a.radialDeviation.direction, 0.0)
-		XCTAssertEqualWithAccuracy(a.radialDeviation.angle, M_PI/2.0, accuracy: 0.1)
+		XCTAssertEqualWithAccuracy(a.radialDeviation.angle, .pi/2.0, accuracy: 0.1)
 	}
 	
 	func testShouldPersistAnalysis() {

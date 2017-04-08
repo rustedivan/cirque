@@ -87,9 +87,9 @@ class CircleAnalyzer: XCTestCase {
 		let congestionUL = TrailAnalyser(trail: congestionUpLeft, bucketCount: 8).runAnalysis().strokeCongestion
 		
 		XCTAssertGreaterThan(congestionD.peak, 0.0, "Did not calculate congestion")
-		XCTAssertEqualWithAccuracy(congestionD.angle, 3.0 * M_PI_2, accuracy: M_PI_4, "Did not direct congestion")
+		XCTAssertEqualWithAccuracy(congestionD.angle, 3.0 * .pi/2.0, accuracy: .pi/4.0, "Did not direct congestion")
 		XCTAssertGreaterThan(congestionUL.peak, 0.0, "Did not calculate congestion")
-		XCTAssertEqualWithAccuracy(congestionUL.angle, 3.0 * M_PI_4, accuracy: M_PI_4, "Did not direct congestion")
+		XCTAssertEqualWithAccuracy(congestionUL.angle, 3.0 * .pi/4.0, accuracy: .pi/4.0, "Did not direct congestion")
 	}
 	
 	/* Radial deviations: given a fit circle, calculate the residial vector of radial samples.
@@ -122,10 +122,10 @@ class CircleAnalyzer: XCTestCase {
 		let noBump = TrailAnalyser(trail: noBumpTrail, bucketCount: 36).runAnalysis().radialDeviation
 		
 		XCTAssertLessThan(bumpInUL.peak, 0.0, "Did not calculate deviation")
-		XCTAssertEqualWithAccuracy(bumpInUL.angle, M_PI_2, accuracy: 0.30, "Did not find deviation in Q2 bucket")
+		XCTAssertEqualWithAccuracy(bumpInUL.angle, .pi/2.0, accuracy: 0.30, "Did not find deviation in Q2 bucket")
 
 		XCTAssertLessThan(bumpInD.peak, 0.0, "Did not calculate deviation")
-		XCTAssertEqualWithAccuracy(bumpInD.angle, 6.0 * M_PI_4, accuracy: 0.30, "Did not find deviation")
+		XCTAssertEqualWithAccuracy(bumpInD.angle, 6.0 * .pi/4.0, accuracy: 0.30, "Did not find deviation")
 
 		XCTAssertLessThan(flatRight.peak, 0.0, "Did not calculate deviation")
 		XCTAssertEqualWithAccuracy(flatRight.angle, 0.0, accuracy: 0.30, "Did not find deviation")
@@ -246,9 +246,9 @@ class CircleAnalyzer: XCTestCase {
 		XCTAssertEqual(buckets[3].points.count, 3, "Wrong number of points in down-bucket")
 		
 		XCTAssertEqualWithAccuracy(buckets[0].angle, 0.0, accuracy: 0.01, "Bucket 0 in wrong direction")
-		XCTAssertEqualWithAccuracy(buckets[1].angle, M_PI_2, accuracy: 0.01, "Bucket 1 in wrong direction")
-		XCTAssertEqualWithAccuracy(buckets[2].angle, M_PI, accuracy: 0.01, "Bucket 2 in wrong direction")
-		XCTAssertEqualWithAccuracy(buckets[3].angle, 3.0 * M_PI_2, accuracy: 0.01, "Bucket 3 in wrong direction")
+		XCTAssertEqualWithAccuracy(buckets[1].angle, .pi/2.0, accuracy: 0.01, "Bucket 1 in wrong direction")
+		XCTAssertEqualWithAccuracy(buckets[2].angle, .pi, accuracy: 0.01, "Bucket 2 in wrong direction")
+		XCTAssertEqualWithAccuracy(buckets[3].angle, 3.0 * .pi/2.0, accuracy: 0.01, "Bucket 3 in wrong direction")
 	}
 	
 	func testShouldCalculateCentroid() {

@@ -15,7 +15,7 @@ class ScoreView: UIView {
 		let countUpStartTime: Date
 		
 		func scoreString(atTime time: Date, countDuration duration: Double) -> String {
-			guard score > DBL_EPSILON else { return "X" }
+			guard score > 0.001 else { return "X" }
 			
 			let displayedDuration = time.timeIntervalSince(countUpStartTime)
 			

@@ -46,7 +46,7 @@ class TrailTests: XCTestCase {
 		t.addPoint(Point(x: 100.0, y: 0.0))
 		t.addPoint(Point(x: 100.0, y: 100.0))
 		let angles = t.angles
-		XCTAssertEqualWithAccuracy(angles[1], M_PI_4, accuracy: 0.01, "Segment should be angled between its neighbours")
+		XCTAssertEqualWithAccuracy(angles[1], .pi / 4.0, accuracy: 0.01, "Segment should be angled between its neighbours")
 	}
 	
 	func testTrailShouldHaveAngledEndSegments() {
@@ -57,7 +57,7 @@ class TrailTests: XCTestCase {
 		t.addPoint(Point(x: 100.0, y: 100.0))
 		let angles = t.angles
 		XCTAssertEqualWithAccuracy(angles[0], 0.0, accuracy: 0.01, "End point should point at its neighbor")
-		XCTAssertEqualWithAccuracy(angles[2], M_PI_2, accuracy: 0.01, "End point should point at its neighbor")
+		XCTAssertEqualWithAccuracy(angles[2], .pi / 2.0, accuracy: 0.01, "End point should point at its neighbor")
 	}
 	
 	func testTrailShouldRecalculateTrailEndWhenExtending() {
@@ -72,8 +72,8 @@ class TrailTests: XCTestCase {
 		XCTAssertEqualWithAccuracy(angles[3], 0.0, accuracy: 0.01, "End point should be aligned")
 		t.addPoint(Point(x: 30.0, y: 10.0))
 		angles = t.angles
-		XCTAssertEqualWithAccuracy(angles[4], M_PI_2, accuracy: 0.01, "New end point should be aligned")
-		XCTAssertEqualWithAccuracy(angles[3], M_PI_4, accuracy: 0.01, "Last end point should be updated")
+		XCTAssertEqualWithAccuracy(angles[4], .pi/2.0, accuracy: 0.01, "New end point should be aligned")
+		XCTAssertEqualWithAccuracy(angles[3], .pi/4.0, accuracy: 0.01, "Last end point should be updated")
 	}
 	
 	func testTrailGeneratesDistancesBetweenSegments() {
@@ -96,16 +96,16 @@ class TrailTests: XCTestCase {
 		              Point(x: 105.0, y: 98.0)]
 		var polar = polarize(Trail(withPoints: points), around: Point(x: 5.0, y: -2.0))
 		
-		XCTAssertEqualWithAccuracy(polar[0].a, 1.0 * M_PI_4, accuracy: 0.01, "Incorrectly polarized")
+		XCTAssertEqualWithAccuracy(polar[0].a, 1.0 * .pi/4.0, accuracy: 0.01, "Incorrectly polarized")
 		XCTAssertEqualWithAccuracy(polar[0].r, 141.0, accuracy: 1.0, "Incorrectly polarized")
 		
-		XCTAssertEqualWithAccuracy(polar[1].a, 3.0 * M_PI_4, accuracy: 0.01, "Incorrectly polarized")
+		XCTAssertEqualWithAccuracy(polar[1].a, 3.0 * .pi/4.0, accuracy: 0.01, "Incorrectly polarized")
 		XCTAssertEqualWithAccuracy(polar[1].r, 141.0, accuracy: 1.0, "Incorrectly polarized")
 		
-		XCTAssertEqualWithAccuracy(polar[2].a, 5.0 * M_PI_4, accuracy: 0.01, "Incorrectly polarized")
+		XCTAssertEqualWithAccuracy(polar[2].a, 5.0 * .pi/4.0, accuracy: 0.01, "Incorrectly polarized")
 		XCTAssertEqualWithAccuracy(polar[2].r, 141.0, accuracy: 1.0, "Incorrectly polarized")
 		
-		XCTAssertEqualWithAccuracy(polar[3].a, 7.0 * M_PI_4, accuracy: 0.01, "Incorrectly polarized")
+		XCTAssertEqualWithAccuracy(polar[3].a, 7.0 * .pi/4.0, accuracy: 0.01, "Incorrectly polarized")
 		XCTAssertEqualWithAccuracy(polar[3].r, 141.0, accuracy: 1.0, "Incorrectly polarized")
 	}
 	

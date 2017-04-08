@@ -18,8 +18,8 @@ struct BestFitCircle {
 		
 		let fidelity = 1.0/360.0
 		let direction = taper.clockwise ? -1.0 : 1.0
-		let endAngle = startAngle + progress * 2.0 * M_PI * direction
-		let step = 2.0 * M_PI * fidelity * direction
+		let endAngle = startAngle + progress * 2.0 * .pi * direction
+		let step = 2.0 * .pi * fidelity * direction
 		
 		let arcs = stride(from: startAngle, through: endAngle, by: step)
 		let widths = taper.taperWidths(angles: arcs)

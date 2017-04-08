@@ -120,7 +120,7 @@ extension BestFitCircle : VertexSource {
 			let pOut = Point(x: cos(angle) * (fit.radius + (width / 2.0)),
 			                 y: sin(angle) * (fit.radius + (width / 2.0)))
 			
-			let progress = Float(abs(angle - (-startAngle)) / (2.0 * M_PI))
+			let progress = Float(abs(angle - (-startAngle)) / (.pi * 2.0))
 			let vL = CirqueVertex(position: vector_float4(Float(pIn.x + fit.center.x),
 			                                              Float(pIn.y + fit.center.y),
 			                                              0.0, 1.0),
