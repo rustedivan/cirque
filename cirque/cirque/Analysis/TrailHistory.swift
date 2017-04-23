@@ -24,8 +24,7 @@ struct TrendAnalysis : CustomDebugStringConvertible {
 		out += "\n\tFitness:     \(fitness > 0.0 ? "improving" : "worsening")"
 		out += "\n\tRadius:      \(radius > 0.0 ? "growing" : "shrinking")"
 		out += "\n\tEnd angle:   \(contraction < 0.0 ? "stabilizing" : "worsening")"
-		out += "\n\tSeparation:  \(contraction > 0.0 ? "widening" : "closing")"
-		out += "\n\tSeparation:  \(contraction > 0.0 ? "widening" : "closing")"
+		out += "\n\tSeparation:  \(capSeparation > 0.0 ? "widening" : "closing")"
 		
 		let direction = (radialDeviation.direction > 0.0 ? "outward" : "inward")
 		let angle = radialDeviation.angle * 180 / .pi
@@ -35,7 +34,7 @@ struct TrendAnalysis : CustomDebugStringConvertible {
 	}
 }
 
-class History {
+class History : NSObject, NSCoding {
 	static let Depth = 1000
 	var scoreHistory: FixedTimeSeries
 	var fitnessHistory: FixedTimeSeries
@@ -46,7 +45,7 @@ class History {
 	var deviationAngleHistory: FixedTimeSeries
 	var deviationMagnitudeHistory: FixedTimeSeries
 	
-	init(_ slots: (immediate: Int, trend: Int, characteristic: Int)) {
+	override init() {
 		scoreHistory = FixedTimeSeries(depth: History.Depth)
 		fitnessHistory = FixedTimeSeries(depth: History.Depth)
 		radiusHistory = FixedTimeSeries(depth: History.Depth)
@@ -55,6 +54,7 @@ class History {
 		capSeparationHistory = FixedTimeSeries(depth: History.Depth)
 		deviationAngleHistory = FixedTimeSeries(depth: History.Depth)
 		deviationMagnitudeHistory = FixedTimeSeries(depth: History.Depth)
+		super.init()
 	}
 	
 	func pushAnalysis(_ analysis: TrailAnalysis) {
@@ -67,9 +67,37 @@ class History {
 		deviationAngleHistory.add(analysis.radialDeviation.angle)
 		deviationMagnitudeHistory.add(analysis.radialDeviation.peak)
 	}
+	
+	required init?(coder aDecoder: NSCoder) {
+		let empty = FixedTimeSeries(depth: History.Depth)
+		func decodeSeries(_ key: String) -> FixedTimeSeries {
+			let stored = aDecoder.decodeObject(forKey: key) as? FixedTimeSeries.Coding
+			return stored?.decoded as? FixedTimeSeries ?? empty
+		}
+		scoreHistory = decodeSeries("scoreHistory")
+		fitnessHistory = decodeSeries("fitnessHistory")
+		radiusHistory = decodeSeries("radiusHistory")
+		clockwiseHistory = decodeSeries("clockwiseHistory")
+		contractionHistory = decodeSeries("contractionHistory")
+		capSeparationHistory = decodeSeries("capSeparationHistory")
+		deviationAngleHistory = decodeSeries("deviationAngleHistory")
+		deviationMagnitudeHistory = decodeSeries("deviationMagnitudeHistory")
+	}
+	
+	func encode(with aCoder: NSCoder) {
+		aCoder.encode(scoreHistory.encoded, forKey: "scoreHistory")
+		aCoder.encode(fitnessHistory.encoded, forKey: "fitnessHistory")
+		aCoder.encode(radiusHistory.encoded, forKey: "radiusHistory")
+		aCoder.encode(clockwiseHistory.encoded, forKey: "clockwiseHistory")
+		aCoder.encode(contractionHistory.encoded, forKey: "contractionHistory")
+		aCoder.encode(capSeparationHistory.encoded, forKey: "capSeparationHistory")
+		aCoder.encode(deviationAngleHistory.encoded, forKey: "deviationAngleHistory")
+		aCoder.encode(deviationMagnitudeHistory.encoded, forKey: "deviationMagnitudeHistory")
+	}
 }
 
 class TrailHistory {
+	var saveTimestamp: Date
 	var history: History
 	var filename: String?
 	class var historyDir: String {
@@ -81,7 +109,8 @@ class TrailHistory {
 	}
 	
 	init() {
-		history = History((immediate: 0, trend: 0, characteristic: 0))
+		history = History()
+		saveTimestamp = Date()
 	}
 
 	convenience init(filename: String) {
@@ -92,7 +121,8 @@ class TrailHistory {
 		let loadData = try? Data(contentsOf: URL(fileURLWithPath: TrailHistory.historyDir + filename))
 		if let data = loadData {
 			let loader = NSKeyedUnarchiver(forReadingWith: data)
-			history = loader.decodeObject(forKey: "history") as! History
+			saveTimestamp = (loader.decodeObject(forKey: "timestamp") as? Date) ?? Date()
+			history = (loader.decodeObject(forKey: "history") as? History) ?? History()
 		}
 	}
 	
@@ -101,7 +131,6 @@ class TrailHistory {
 	}
 	
 	func save() {
-		return
 		if let savefile = filename {
 			// Create /Application Support if needed:
 			let directory = TrailHistory.historyDir
@@ -116,7 +145,8 @@ class TrailHistory {
 			
 			let saveData = NSMutableData()
 			let saver = NSKeyedArchiver(forWritingWith: saveData)
-			saver.encode(history, forKey: "trails")
+			saver.encode(Date(), forKey: "timestamp")
+			saver.encode(history, forKey: "history")
 			saver.finishEncoding()
 			saveData.write(toFile: directory + savefile, atomically: true)
 			
@@ -149,14 +179,5 @@ extension TrailHistory {
 	
 	func dumpTrends() {
 		print(trendAnalysis)
-	}
-	
-	func dumpScoreHistory() {
-		let scores = [Double]()
-//		for analysis in entries {
-//			scores.append(analysis.circularityScore)
-//		}
-//		
-		print(scores)
 	}
 }

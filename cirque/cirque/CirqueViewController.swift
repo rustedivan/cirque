@@ -12,7 +12,6 @@ class CirqueViewController: UIViewController {
 
 	var renderingLink: CADisplayLink!
 	var circleController: CircleController!
-	let historyWriter = TrailHistory(filename: "game-trail-history.trails")
 	let analysisController = AnalysisController()
 	var stateMachine: StateMachine = StateMachine(startState: .idle)
 	
@@ -69,7 +68,8 @@ class CirqueViewController: UIViewController {
 		analysisController.analyseTrail(trail: trail) { result in
 			// If accepted, write analysis into history
 			if case .accepted(_, _, let analysis) = result {
-				self.historyWriter.addAnalysis(analysis)
+				let appDelegate = UIApplication.shared.delegate as! AppDelegate
+				appDelegate.historyWriter.addAnalysis(analysis)
 			}
 			
 			// Present back on the UI thread
@@ -177,8 +177,6 @@ class CirqueViewController: UIViewController {
 			                             radius: bestFit.fit.radius + hintData.offset,
 			                             angle: hintData.angle)
 		}
-		
-		historyWriter.dumpTrends()
 	}
 	
 	func hideHint() {

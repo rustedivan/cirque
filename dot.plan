@@ -1,15 +1,5 @@
-# Renderer setup
-
-## Renderers:
-struct Chunk {
-	[Vertex]
-	PrimitiveType
-}
-
-## Circle View:
-- circle renderer
-- model renderer
-- error area renderer
-
-## Analysis View:
-- UIView hierarchy
+# Retention loop
++ store running history with incremental saves
+- create scoring profile (track effort/skill points)
+- dump score profile to uilabels
+- on ep%20, dump trends

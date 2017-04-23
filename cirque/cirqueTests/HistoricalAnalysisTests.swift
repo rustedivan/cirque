@@ -118,9 +118,36 @@ class HistoricalAnalysisTests: XCTestCase {
 	}
 	
 	func testShouldPersistAnalysis() {
+		let a0 = testAnalysis(seed: 1)
+		let a1 = testAnalysis(seed: 2)
+
+		do {
+			let h = TrailHistory(filename: "testhistory.analysis")
+			h.addAnalysis(a0)
+			h.addAnalysis(a1)
+			h.save()
+		}
+		
+		do {
+			let h = TrailHistory(filename: "testhistory.analysis")
+			let s0 = Double(h.history.scoreHistory.timeSeries[0])
+			let s1 = Double(h.history.scoreHistory.timeSeries[1])
+			let f0 = Double(h.history.fitnessHistory.timeSeries[0])
+			let f1 = Double(h.history.fitnessHistory.timeSeries[1])
+			
+			XCTAssertEqualWithAccuracy(s0, a0.circularityScore, accuracy: 0.001)
+			XCTAssertEqualWithAccuracy(s1, a1.circularityScore, accuracy: 0.001)
+			XCTAssertEqualWithAccuracy(f0, a0.radialFitness, accuracy: 0.001)
+			XCTAssertEqualWithAccuracy(f1, a1.radialFitness, accuracy: 0.001)
+			
+			XCTAssertEqual(h.history.radiusHistory.timeSeries.count, 2)
+			XCTAssertEqual(h.history.clockwiseHistory.timeSeries.count, 2)
+			XCTAssertEqual(h.history.contractionHistory.timeSeries.count, 2)
+			XCTAssertEqual(h.history.capSeparationHistory.timeSeries.count, 2)
+			XCTAssertEqual(h.history.deviationAngleHistory.timeSeries.count, 2)
+			XCTAssertEqual(h.history.deviationMagnitudeHistory.timeSeries.count, 2)
+		}
 	}
-	
-	
 }
 
 
