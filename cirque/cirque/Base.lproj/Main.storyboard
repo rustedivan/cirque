@@ -1,11 +1,12 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="11762" systemVersion="16C67" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" colorMatched="YES" initialViewController="BV1-FR-VrT">
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="12120" systemVersion="16E195" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" colorMatched="YES" initialViewController="BV1-FR-VrT">
     <device id="retina4_7" orientation="portrait">
         <adaptation id="fullscreen"/>
     </device>
     <dependencies>
         <deployment identifier="iOS"/>
-        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="11757"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="12088"/>
+        <capability name="Constraints to layout margins" minToolsVersion="6.0"/>
         <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
     </dependencies>
     <scenes>
@@ -21,6 +22,43 @@
                         <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
+                            <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="8dT-GB-Htb" userLabel="User View" customClass="UserProfileView" customModule="cirque" customModuleProvider="target">
+                                <rect key="frame" x="24" y="20" width="327" height="46"/>
+                                <subviews>
+                                    <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Label" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="skz-uC-eM1" userLabel="Effort">
+                                        <rect key="frame" x="4" y="0.0" width="319" height="21"/>
+                                        <constraints>
+                                            <constraint firstAttribute="height" constant="21" id="xm9-uM-Xzq"/>
+                                        </constraints>
+                                        <fontDescription key="fontDescription" type="system" pointSize="17"/>
+                                        <nil key="textColor"/>
+                                        <nil key="highlightedColor"/>
+                                    </label>
+                                    <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Label" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="fqK-1G-0It" userLabel="Skill">
+                                        <rect key="frame" x="4" y="25" width="319" height="21"/>
+                                        <constraints>
+                                            <constraint firstAttribute="height" constant="21" id="ieg-4x-hU5"/>
+                                        </constraints>
+                                        <fontDescription key="fontDescription" type="system" pointSize="17"/>
+                                        <nil key="textColor"/>
+                                        <nil key="highlightedColor"/>
+                                    </label>
+                                </subviews>
+                                <color key="backgroundColor" white="0.66666666666666663" alpha="0.6017765410958904" colorSpace="calibratedWhite"/>
+                                <constraints>
+                                    <constraint firstItem="fqK-1G-0It" firstAttribute="top" secondItem="skz-uC-eM1" secondAttribute="bottom" constant="4" id="5qt-95-fgA"/>
+                                    <constraint firstAttribute="trailing" secondItem="skz-uC-eM1" secondAttribute="trailing" constant="4" id="MXo-MI-fja"/>
+                                    <constraint firstItem="skz-uC-eM1" firstAttribute="top" secondItem="8dT-GB-Htb" secondAttribute="top" id="WGR-D5-KaA"/>
+                                    <constraint firstItem="skz-uC-eM1" firstAttribute="leading" secondItem="8dT-GB-Htb" secondAttribute="leading" constant="4" id="bcf-n0-wgM"/>
+                                    <constraint firstAttribute="trailing" secondItem="fqK-1G-0It" secondAttribute="trailing" constant="4" id="bqm-AB-9a2"/>
+                                    <constraint firstAttribute="bottom" secondItem="fqK-1G-0It" secondAttribute="bottom" id="pQl-Rt-S46"/>
+                                    <constraint firstItem="fqK-1G-0It" firstAttribute="leading" secondItem="8dT-GB-Htb" secondAttribute="leading" constant="4" id="vb4-7j-iJh"/>
+                                </constraints>
+                                <connections>
+                                    <outlet property="effortLabel" destination="skz-uC-eM1" id="IcB-8E-3Tm"/>
+                                    <outlet property="skillLabel" destination="fqK-1G-0It" id="EQq-Op-Z9I"/>
+                                </connections>
+                            </view>
                             <view opaque="NO" contentMode="scaleToFill" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="Mss-1K-8Mr" customClass="ScoreView" customModule="cirque" customModuleProvider="target">
                                 <rect key="frame" x="67" y="269" width="240" height="128"/>
                                 <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
@@ -34,6 +72,9 @@
                         <color key="backgroundColor" red="0.0" green="0.0" blue="0.0" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                         <constraints>
                             <constraint firstAttribute="trailing" secondItem="QAv-du-Bna" secondAttribute="trailing" id="2jd-pQ-PEf"/>
+                            <constraint firstItem="8dT-GB-Htb" firstAttribute="leading" secondItem="3se-qz-xqx" secondAttribute="leadingMargin" constant="8" id="4Ub-cc-l3Z"/>
+                            <constraint firstItem="8dT-GB-Htb" firstAttribute="top" secondItem="8aa-yV-Osq" secondAttribute="bottom" id="LiP-T9-91l"/>
+                            <constraint firstAttribute="trailingMargin" secondItem="8dT-GB-Htb" secondAttribute="trailing" constant="8" id="NXL-IB-dEK"/>
                             <constraint firstItem="QAv-du-Bna" firstAttribute="top" secondItem="3se-qz-xqx" secondAttribute="top" id="ef5-eQ-fvf"/>
                             <constraint firstItem="QAv-du-Bna" firstAttribute="leading" secondItem="3se-qz-xqx" secondAttribute="leading" id="ibC-YM-7xy"/>
                             <constraint firstItem="qHh-Mt-9TT" firstAttribute="top" secondItem="QAv-du-Bna" secondAttribute="bottom" id="nil-Jb-9Or"/>
@@ -42,6 +83,7 @@
                     <connections>
                         <outlet property="analysisView" destination="QAv-du-Bna" id="BwA-bT-PuQ"/>
                         <outlet property="scoreView" destination="Mss-1K-8Mr" id="Ex8-mg-GWa"/>
+                        <outlet property="userProfileView" destination="8dT-GB-Htb" id="MCt-PA-Dmo"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="SZV-WD-TEh" sceneMemberID="firstResponder"/>

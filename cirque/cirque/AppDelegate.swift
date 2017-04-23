@@ -10,12 +10,29 @@ import UIKit
 
 @UIApplicationMain
 class AppDelegate: UIResponder, UIApplicationDelegate {
+	static let HistoryFilename = "game-trail-history.trails"
+	static let UserFilename = "game-user-profile.profile"
+	
 	var window: UIWindow?
-	var historyWriter = TrailHistory(filename: "game-trail-history.trails")
+	var historyWriter = TrailHistory(filename: AppDelegate.HistoryFilename)
+	var userProfile = UserProfile()
 
+	class var appSaveDir: String {
+		get {
+			let appSupportDir = NSSearchPathForDirectoriesInDomains(.applicationSupportDirectory, .userDomainMask, true)[0]
+			let bundleId = Bundle.main.bundleIdentifier
+			return appSupportDir + "/" + bundleId! + "/"
+		}
+	}
+	
 	func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplicationLaunchOptionsKey: Any]?) -> Bool {
 		print("Loading starting trends from \(historyWriter.saveTimestamp):")
 		historyWriter.dumpTrends()
+		
+		if let loadedProfile = (NSKeyedUnarchiver.unarchiveObject(withFile: AppDelegate.appSaveDir + AppDelegate.UserFilename) as? UserProfile) {
+			userProfile = loadedProfile
+			print("Loading user profile with E=\(userProfile.effortPoints), F=\(userProfile.skillPoints)")
+		}
 		return true
 	}
 
@@ -28,6 +45,8 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 		print("Saving current trends:")
 		historyWriter.dumpTrends()
 		historyWriter.save()
+		let saved = NSKeyedArchiver.archiveRootObject(userProfile, toFile: AppDelegate.appSaveDir + AppDelegate.UserFilename)
+		print("Saving user points: \(saved ? "√" : "x")")
 	}
 
 	func applicationWillEnterForeground(_ application: UIApplication) {

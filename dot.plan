@@ -1,5 +1,7 @@
 # Retention loop
 + store running history with incremental saves
-- create scoring profile (track effort/skill points)
-- dump score profile to uilabels
-- on ep%20, dump trends
++ create scoring profile (track effort/skill points)
++ dump score profile to uilabels
+- on available button, dump trends
+- clean up app save dir (pull up to AppDelegate completely)
+- clean up Views' viewmodels (declare protocol, move to models themselves)

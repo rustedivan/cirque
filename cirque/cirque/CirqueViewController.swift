@@ -17,6 +17,7 @@ class CirqueViewController: UIViewController {
 	
 	@IBOutlet var scoreView: ScoreView!
 	@IBOutlet var analysisView: AnalysisView!
+	@IBOutlet var userProfileView: UserProfileView!
 
 	var cirqueView: CirqueView {
 		return view as! CirqueView
@@ -70,6 +71,8 @@ class CirqueViewController: UIViewController {
 			if case .accepted(_, _, let analysis) = result {
 				let appDelegate = UIApplication.shared.delegate as! AppDelegate
 				appDelegate.historyWriter.addAnalysis(analysis)
+				appDelegate.userProfile.addEffort()
+				appDelegate.userProfile.addSkill(analysis.circularityScore)
 			}
 			
 			// Present back on the UI thread
@@ -136,6 +139,9 @@ class CirqueViewController: UIViewController {
 			let data = RejectingData(trail: circleController.trail, showAt: centroid)
 			stateMachine.currentState = .rejecting(data)
 		}
+		
+		let appDelegate = UIApplication.shared.delegate as! AppDelegate
+		userProfileView.presentProfile(appDelegate.userProfile)
 	}
 	
 	func animateAnalysis(showScore score: Double, bestFit: BestFitCircle, withHint hint: HintType?) {
